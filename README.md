@@ -5,7 +5,8 @@ Website for LINFO1002-P2
 
 ## Initial setup
 
-**Make sure, before proceeding, that you at least have Python 3.10 installed as `python3`**
+**Make sure, before proceeding, that you at least have Python 3.10 installed as `python3`. If you're on a retarded Linux distro, you may have to substitute `python3` for `python3.10`**
+
 Create a Python virtual environment and activate it:
 
 ```sh
