@@ -51,6 +51,16 @@ The pre-commit hook does various things such as:
 - Automatically unstaging `.flaskenv` (the version on remote is meant as an *example*)
 - Probably some other stuff in `.git/hooks/pre-commit.sample` idk
 
+### Enabling
+
+To enable the hook (highly recommended if you don't wanna screw up), copy the `.git-templates/hooks/pre-commit` file to `.git/hooks/pre-commit`:
+
+```sh
+% cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
+```
+
+### Bypassing
+
 If you need to bypass this hook, such as when modifying the contents of the example `.flaskenv` file, use the `--no-verify` option:
 
 ```sh
