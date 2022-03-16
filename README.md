@@ -15,9 +15,10 @@ Create a Python virtual environment and activate it:
 Install the requirements with `pip`:
 
 ```sh
-(env) % pip3 install -r requirements.txt
+(env) % python3 -m pip install -r requirements.txt
 ```
 
+(It's important to use the `python3 -m` prefix; not sure why nor do I care why.)
 You can deactivate the virtual environment by issuing:
 
 ```sh
