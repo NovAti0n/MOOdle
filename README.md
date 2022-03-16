@@ -10,7 +10,7 @@ Website for LINFO1002-P2
 Create a Python virtual environment and activate it:
 
 ```sh
-% python3 -m venv env/
+% python3 -m venv env
 % source env/bin/activate
 ```
 
@@ -27,7 +27,7 @@ You can deactivate the virtual environment by issuing:
 (env) % deactivate
 ```
 
-## Running flask app
+## Running Flask app
 
 Make sure your virtual environment is still activated:
 
@@ -35,10 +35,10 @@ Make sure your virtual environment is still activated:
 % source env/bin/activate
 ```
 
-Then, set the relevant Flask environment variables and run:
+Then, run the Flask server:
 
 ```sh
-% export FLASK_ENV=development # nothing to do with virtual environments
-% export FLASK_APP=main # entrypoint for the app
 % flask run
 ```
+
+If you need Flask to run in development mode (enables live reload among other things), go to `.flaskenv` and uncomment the line starting with `FLASK_ENV`. You can then start the server with the same command as above.
