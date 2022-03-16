@@ -35,10 +35,10 @@ Make sure your virtual environment is still activated:
 % source env/bin/activate
 ```
 
-Rename the file `.flaskenv.example` to `.flaskenv`. You can then start the server:
+Start the server:
 
 ```sh
 % flask run
 ```
 
-If you need Flask to run in development mode (enables live reload among other things), go to the `.flaskenv` file you've just copied and uncomment the line starting with `FLASK_ENV`. You can then start the server with the same command as above.
+If you need Flask to run in development mode (enables live reload among other things), rename the file `.flaskenv.example` to `.flaskenv` and uncomment the line starting with `FLASK_ENV` in this file. You can then start the server with the same command as above.
