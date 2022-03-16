@@ -1,25 +1,18 @@
-{% extends "base.html" %}
-
-<<<<<<< HEAD
-<html lang = "fr">
+<!DOCTYPE html>
+<html lang="fr">
 	<head>
 		<meta charset = "UTF-8"> <!-- must be in the first 1024 bytes of the document -->
 		<meta name = "keywords" content = "stats,vache"></meta>
 		<meta name = "description" content = "Les stats sur les vaches"> <!-- can't be longer than 275 characters as per Google's 2017 limit on the SERP -->
 		<meta name = "viewport" content = "width=device-width,initial-scale=1">
 		<meta name = "robots" content = "index,follow">
-
-		<title>Les vaches</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link rel="stylesheet" href="/css/style.css">
+		<title>Statify</title>
 	</head>
 
 	<body>
-		<h1>Les vaches</h1>
+		{% block content %}{% endblock %}
+		<script src="/js/chart.min.js"></script>
 	</body>
 </html>
-=======
-{% block content %}
-<body>
-	<h1>Les vaches</h1>
-</body>
-{% endblock %}
->>>>>>> e07616cd61e5ef69b8fd39a6494414e92d6e5fc8

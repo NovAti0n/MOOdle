@@ -1,8 +1,14 @@
-from flask import Flask
+from flask import Flask, render_template
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="../public/templates/",
+    static_folder="../public/static",
+    static_url_path="",
+)
 
 
 @app.route("/")
 def index():
-    return "<h1>Hello, World!</h1><p>pif !</p>"
+    name = None
+    return render_template("index.html", name=name)
