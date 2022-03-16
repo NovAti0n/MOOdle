@@ -42,3 +42,17 @@ Start the server:
 ```
 
 If you need Flask to run in development mode (enables live reload among other things), rename the file `.flaskenv.example` to `.flaskenv` and uncomment the line starting with `FLASK_ENV` in this file. You can then start the server with the same command as above.
+
+## `pre-commit` hook
+
+The pre-commit hook does various things such as:
+
+- Making sure there are no terminated whitespaces in staged files
+- Automatically unstaging `.flaskenv` (the version on remote is meant as an *example*)
+- Probably some other stuff in `.git/hooks/pre-commit.sample` idk
+
+If you need to bypass this hook, such as when modifying the contents of the example `.flaskenv` file, use the `--no-verify` option:
+
+```sh
+% git commit -S -m "flaskenv: Detailed commit message" --no-verify
+```
