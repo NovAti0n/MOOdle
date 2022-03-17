@@ -7,4 +7,7 @@ app = Flask(
 	static_url_path=""
 )
 
+
+
 from src import routes # Import is at the bottom because of circular imports
+routes.route_handler(app)
