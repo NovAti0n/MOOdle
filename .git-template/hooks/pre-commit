@@ -7,13 +7,13 @@ else
 	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904 # initial commit; diff against an empty tree object
 fi
 
-allownonascii=$(git config --bool hooks.allownonascii)
-
 # redirect output to stderr
 
 exec 1>&2
 
-if [ "$allownonascii" != "true" ] && test $(git diff --cached --name-only --diff-filter=A -z $against | LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0; then
+# don't allow non-ASCII characters in filenames
+
+if test $(git diff --cached --name-only --diff-filter=A -z $against | LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0; then
 	echo "Tryna add non-ASCII filenames"
 	exit 1
 fi
@@ -24,4 +24,8 @@ git reset -- .flaskenv
 
 # if there are terminating whitespaces, print the offending file names and fail
 
-exec git diff-index --check --cached $against --
+git diff-index --check --cached $against --
+
+# run 'editorconfig-checker' and fail if it fails
+
+exec ec -config .editorconfig
