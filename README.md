@@ -35,6 +35,14 @@ Make sure your virtual environment is still activated:
 % source env/bin/activate
 ```
 
+Generate the database:
+
+```sh
+% flask init-db
+```
+
+This process can take up to 2 minutes. Be patient.
+
 Start the server:
 
 ```sh
