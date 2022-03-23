@@ -4,8 +4,8 @@ import os
 import time
 
 def init_db():
-	conn = sqlite3.connect('db.sqlite3')
-	cursor = conn.cursor()
+	db = sqlite3.connect("db.sqlite3")
+	cursor = db.cursor()
 
 	files = sorted(os.listdir("./src/sql/init"))
 
@@ -14,9 +14,9 @@ def init_db():
 			script = f.read()
 
 		cursor.executescript(script)
-		conn.commit()
+		db.commit()
 
-	conn.close()
+	db.close()
 
 @click.command("init-db")
 def init_db_command():
@@ -24,3 +24,13 @@ def init_db_command():
 	start = time.time()
 	init_db()
 	click.echo(f"Database initialized in {round(time.time() - start, 2)}s")
+
+def query(statement):
+	db = sqlite3.connect("db.sqlite3")
+	cursor = db.cursor()
+
+	result = [i for i in cursor.execute(statement)]
+
+	db.close()
+
+	return result
