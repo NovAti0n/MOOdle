@@ -1,6 +1,7 @@
 import click
 import sqlite3
 import os
+import time
 
 def init_db():
 	conn = sqlite3.connect('db.sqlite3')
@@ -20,5 +21,6 @@ def init_db():
 @click.command("init-db")
 def init_db_command():
 	click.echo("Generating database...")
+	start = time.time()
 	init_db()
-	click.echo("Database initialized")
+	click.echo(f"Database initialized in {round(time.time() - start, 2)}s")
