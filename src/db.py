@@ -10,8 +10,6 @@ def init_db() -> None:
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
-	files = sorted(os.listdir("./src/sql/init"))
-
 	with click.progressbar(sorted(os.listdir("./src/sql/init")), label="Generating database...") as files:
 		for i in files:
 			script = pathlib.Path(f"./src/sql/init/{i}").read_text()
@@ -26,7 +24,6 @@ def query(statement: str) -> list:
 	cursor = db.cursor()
 
 	result = list(cursor.execute(statement))
-
 	db.close()
 
 	return result
