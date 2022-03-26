@@ -5,7 +5,7 @@ import pathlib
 import time
 
 @click.command("init-db")
-def init_db():
+def init_db() -> None:
 	start = time.time()
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
@@ -21,7 +21,7 @@ def init_db():
 	db.close()
 	click.echo(f"Database generated in {round(time.time() - start, 2)}s")
 
-def query(statement):
+def query(statement: str) -> list:
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
