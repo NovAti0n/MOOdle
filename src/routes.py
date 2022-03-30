@@ -10,7 +10,6 @@ def index():
     dates = [_[0] for _ in query("SELECT date FROM velages")]
     min_date = "-".join(dates[0].split("/")[::-1])
     max_date = "-".join(dates[-1].split("/")[::-1])
-    print(min_date)
     return render_template(
         "index.html",
         title="Home",
