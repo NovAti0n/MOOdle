@@ -6,14 +6,13 @@
 
 	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
 
-	<!-- this needs to be some kind of search thing, because there are waaaay to many families -->
+	<label for = "family">
+	<input list = "families-datalist" id = "family">
 
-	<label for = "famille">
-	<select name = "famille">
-		<option value = "famille a">famille a</option>
-		<option value = "famille b">famille b</option>
-	</select>
-
-	<!-- TODO date selector for mm/yy -->
+	<datalist id = "families-datalist">
+		{% for id, name in families %}
+			<option value = "{{ name }}">
+		{% endfor %}
+	</datalist>
 </body>
 {% endblock %}
