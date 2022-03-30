@@ -6,13 +6,19 @@
 
 	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
 
-	<label for = "family">
+	<label for = "family"></label>
 	<input list = "families-datalist" id = "family">
 
 	<datalist id = "families-datalist">
-		{% for _, name in families %}
-			<option value = "{{ name }}">
+		{% for family in families.values() %}
+			<option value = "{{ family.name }}">
 		{% endfor %}
 	</datalist>
+
+	<h2>Familles</h2>
+
+	{% for family in families.values() %}
+		<p>{{ family.name }} {{ family.count }}</p>
+	{% endfor %}
 </body>
 {% endblock %}
