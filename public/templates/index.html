@@ -6,16 +6,18 @@
 
 	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
 
-	<label for = "family">
-	<input list = "families-datalist" id = "family">
-
-	<datalist id = "families-datalist">
+	<datalist id="families-datalist">
 		{% for _, name in families %}
-			<option value = "{{ name }}">
-		{% endfor %}
+		<option value="{{ name }}">
+			{% endfor %}
 	</datalist>
-	<input type="date" value="jj/mm/aaaa" name="date" min="{{min_date}}" max="{{max_date}}">
 
+	<form method="post">
+		<label for="family">
+		<input list="families-datalist" id="family" name="famille" required>
+		<input type="date" value="jj/mm/aaaa" name="date" min="{{min_date}}" max="{{max_date}}" required>
+		<input type="submit">
+	</form>
 
 </body>
 {% endblock %}
