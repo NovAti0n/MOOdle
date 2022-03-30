@@ -5,7 +5,7 @@ from src.db import query
 
 def index():
 	if request.form.get("date", False):
-		pass
+		"pass"
 
 	families = query("SELECT * FROM familles")
 	families = filter(lambda family: family[1] != "Unknown", families)
