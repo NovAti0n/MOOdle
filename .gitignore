@@ -1,4 +1,11 @@
-env
-node_modules
+# Virtual environments
+env/
+venv/
+.env/
+.venv/
+
+# Python cache
 __pycache__/
+
+# All SQLite files (journals, dabatase, ...)
 db.sqlite3*
