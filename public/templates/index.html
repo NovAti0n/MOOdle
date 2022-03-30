@@ -10,7 +10,7 @@
 	<input list = "families-datalist" id = "family">
 
 	<datalist id = "families-datalist">
-		{% for id, name in families %}
+		{% for _, name in families %}
 			<option value = "{{ name }}">
 		{% endfor %}
 	</datalist>
