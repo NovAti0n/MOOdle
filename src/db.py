@@ -19,11 +19,11 @@ def init_db() -> None:
 	db.close()
 	click.echo(f"Database generated in {round(time.time() - start, 2)}s")
 
-def query(statement: str) -> list:
+def query(statement: str, *args) -> list:
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
-	result = list(cursor.execute(statement))
+	result = list(cursor.execute(statement, args))
 	db.close()
 
 	return result
