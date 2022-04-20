@@ -13,7 +13,16 @@
 
 	<body>
 		{% block content %}{% endblock %}
+
+		<script id="vert-shader" type="x-shader/x-vertex">
+			{{ static_include("glsl/vert.glsl") | safe }}
+		</script>
+
+		<script id="frag-shader" type="x-shader/x-fragment">
+			{{ static_include("glsl/frag.glsl") | safe }}
+		</script>
+
 		<script src="/js/chart.min.js"></script>
-		<script src="/js/paturage.js"></script>
+		<script src="/js/paturage.js" ></script>
 	</body>
 </html>
