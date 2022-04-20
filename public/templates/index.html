@@ -6,19 +6,33 @@
 
 	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
 
-	<label for = "family"></label>
-	<input list = "families-datalist" id = "family">
-
-	<datalist id = "families-datalist">
+	<datalist id="families-datalist">
 		{% for family in families.values() %}
-			<option value = "{{ family.name }}">
+			<option value="{{ family.name }}">
 		{% endfor %}
 	</datalist>
 
+	<form method="post">
+		<label for="family">
+		<input list="families-datalist" id="family" name="famille" required>
+		<input type="date" value="jj/mm/aaaa" name="date" min="{{min_date}}" max="{{max_date}}" required>
+		<input type="submit">
+	</form>
+
 	<h2>Familles</h2>
 
+	<!--
 	{% for family in families.values() %}
 		<p>{{ family.name }} {{ family.count }}</p>
 	{% endfor %}
+	-->
+
+	<h2>Pâturage</h2>
+
+	<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
+
+	<canvas width = "200px" height = "100px" id = "paturage">
+
+	</canvas>
 </body>
 {% endblock %}
