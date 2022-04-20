@@ -2,7 +2,12 @@
 // and are initialized as the identity matrix
 
 class Matrix {
-	constructor() {
+	constructor(template) {
+		if (template) {
+			this.data = JSON.parse(JSON.stringify(template.data)) // I hate javascript 🙂
+			return
+		}
+
 		this.data = [
 			[1.0, 0.0, 0.0, 0.0],
 			[0.0, 1.0, 0.0, 0.0],
@@ -12,7 +17,7 @@ class Matrix {
 	}
 
 	multiply(left) {
-		let right = JSON.parse(JSON.stringify(this)) // I hate javascript 🙂
+		let right = new Matrix(this)
 
 		for (let i = 0; i < 4; i++) {
 			for (let j = 0; j < 4; j++) {
@@ -23,8 +28,6 @@ class Matrix {
 					left.data[3][j] * right.data[i][3]
 			}
 		}
-
-		this.data = right.data
 	}
 
 	scale(x, y, z) {
@@ -56,8 +59,8 @@ class Matrix {
 		y /= mag
 		z /= mag
 
-		let s = Math.sin(angle)
-		let c = Math.cos(angle)
+		let s = Math.sin(theta)
+		let c = Math.cos(theta)
 		let one_minus_c = 1 - c
 
 		let xx = x * x, yy = y * y, zz = z * z
@@ -81,12 +84,14 @@ class Matrix {
 		rotation.data[3][3] = 1
 
 		rotation.multiply(this)
-		matrix.data = rotation.data
+		this.data = rotation.data
+
+		//this.multiply(rotation)
 	}
 
 	rotate_2d(yaw, pitch) {
 		this.rotate(yaw, 0, 1, 0)
-		this.rotate(-y, Math.cos(x), 0, Math.sin(x))
+		this.rotate(-pitch, Math.cos(yaw), 0, Math.sin(yaw))
 	}
 
 	frustum(left, right, bottom, top, near, far) {
@@ -177,9 +182,20 @@ window.addEventListener("load", function(e) {
 		error.hidden = false
 	}
 
+	let mvp_uniform = gl.getUniformLocation(program, "mvp")
+
 	// matrices
 
-	// TODO
+	let p_matrix = new Matrix()
+	p_matrix.perspective(6.28 / 4, y_res / x_res, 0.1, 500)
+
+	let mv_matrix = new Matrix()
+
+	mv_matrix.rotate_2d(0.0, 0.0)
+	mv_matrix.translate(0, 0, 0)
+
+	let mvp_matrix = new Matrix(/* p_matrix */)
+	mvp_matrix.multiply(mv_matrix)
 
 	gl.enableVertexAttribArray(0)
 	let buffer = gl.createBuffer()
@@ -187,5 +203,7 @@ window.addEventListener("load", function(e) {
 	gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0)
 
 	gl.useProgram(program)
+	gl.uniformMatrix4fv(mvp_uniform, false, mvp_matrix.data.flat())
+
 	gl.drawArrays(gl.POINTS, 0, 1)
 }, false)
