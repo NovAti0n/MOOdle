@@ -12,17 +12,30 @@
 		{% endfor %}
 	</datalist>
 
+	<datalist id="chart-type">
+		{% for i in chart_types %}
+			<option value="{{i}}">
+		{% endfor %}
+	</datalist>
+
 	<form method="post">
+		<input list= "chart-type" id="chart" name="chart" required>
+		<input type="submit">
+	</form>
+
+	<!--<form method="post">
 		<label for="family">
 		<input list="families-datalist" id="family" name="famille" required>
 		<input type="date" value="jj/mm/aaaa" name="date" min="{{min_date}}" max="{{max_date}}" required>
 		<input type="submit">
-	</form>
+		</form> -->
 
-	<h2>Familles</h2>
+	<!--<h2>Familles</h2>
 
 	{% for family in families.values() %}
 		<p>{{ family.name }} {{ family.count }}</p>
-	{% endfor %}
+	{% endfor %}-->
+
+
 </body>
 {% endblock %}
