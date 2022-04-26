@@ -191,11 +191,11 @@ window.addEventListener("load", function(e) {
 
 	let mv_matrix = new Matrix()
 
-	mv_matrix.rotate_2d(0.0, 0.0)
-	mv_matrix.translate(0, 0, 0)
+	mv_matrix.translate(0, 0, -49)
+	// mv_matrix.rotate_2d(0.0, 0.0)
 
-	let mvp_matrix = new Matrix(/* p_matrix */)
-	mvp_matrix.multiply(mv_matrix)
+	let mvp_matrix = new Matrix(mv_matrix)
+	mvp_matrix.multiply(p_matrix)
 
 	gl.enableVertexAttribArray(0)
 	let buffer = gl.createBuffer()
