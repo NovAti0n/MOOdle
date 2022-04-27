@@ -9,3 +9,6 @@ __pycache__/
 
 # All SQLite files (journals, dabatase, ...)
 db.sqlite3*
+
+# Vim
+*.sw[nop]
