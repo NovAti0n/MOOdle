@@ -7,14 +7,20 @@
 		<meta name = "viewport" content = "width=device-width,initial-scale=1">
 		<meta name = "robots" content = "index,follow">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<link rel="stylesheet" href="/css/style.css">
+
+		<style>
+			{{ static_include("css/style.css") | safe }}
+		</style>
+
 		<title>{{ title + " - Statify" if title else "Statify" }}</title>
 	</head>
 
 	<body>
 		{% block content %}{% endblock %}
-		<script src="/js/chart.min.js"></script>
-		<script src="/js/main.js"></script>
 
+		<script>
+			{{ static_include("js/chart.min.js") | safe }}
+			{{ static_include("js/main.js") | safe }}
+		</script>
 	</body>
 </html>
