@@ -1,6 +1,6 @@
-from datetime import date
-from flask import render_template, request, request_finished
+from flask import render_template, request
 from src.db import query
+from src.utils import validate_dates
 
 from collections import defaultdict, OrderedDict
 
@@ -19,12 +19,11 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
-	if request.method == "GET":
-		print("GET METHOD")
-		if request.args.get("chart", False):
-			chart_type = ...
+	error = data = None
 
-
+	if request.args:
+		if not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to",  "1990-01-02")) :
+			error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -63,6 +62,8 @@ def index():
 		families=families,
 		min_date=min_date,
 		max_date=max_date,
+		data=data,
+		error=error
 	)
 
 def route_handler(app):

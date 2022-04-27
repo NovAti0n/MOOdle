@@ -69,3 +69,13 @@ b {
 	-webkit-text-fill-color: transparent;
 	font-weight: bold;
 }
+
+/* hide stuff in form we don't need */
+
+#chart3_input {
+	display: none;
+}
+
+#chart + #chart3_input {
+	display: none;
+}

@@ -5,6 +5,9 @@
 
 <body>
 	<h1><b>Vaches</b>!</h1>
+	{% if error %}
+	<h2>{{error}}</h2>
+	{% endif %}
 
 	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
 
@@ -14,29 +17,30 @@
 		{% endfor %}
 	</datalist>
 
-	<datalist>
-		{% for i in chart_type %}
+	<datalist id="chart-type">
+		{% for i in chart_types %}
 			<option value="{{i}}">
 		{% endfor %}
 	</datalist>
 
-	<form method="get">
-		<input list= "chart-type" id="chart" name="chart" required>
-	</form>
-
-
 	<form method="post">
-		<label for="family">
+		<label for="family">Chart type</label>
+		<input list="chart-type" id="chart" name="chart" required>
+
+		<label for="family">Family</label>
 		<input list="families-datalist" id="family" name="famille" required>
+
 		<label form="date_from">from</label>
 		<input type="month" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+
 		<label form="date_to">to</label>
 		<input type="month" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required>
-		<label for="family">
-		<input list="families-datalist" id="race" name="race" required>
-		<label for="family">
-		<input type="number" id="percentage" name="percentage" required>
-		<input type="submit">
+
+		<div id="chart3_input">
+			<input list="families-datalist" id="race" name="race" required>
+			<input type="number" id="percentage" name="percentage" required>
+			<input type="submit">
+		</div>
 	</form>
 
 	<!--<h2>Familles</h2>
