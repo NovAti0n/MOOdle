@@ -19,8 +19,12 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
-	if request.form.get("date", False):
-		"pass"
+	if request.method == "GET":
+		print("GET METHOD")
+		if request.args.get("chart", False):
+			chart_type = ...
+
+
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -51,6 +55,7 @@ def index():
 	dates = [_[0] for _ in query("SELECT date FROM velages")]
 	min_date = "-".join(dates[0].split("/")[::-1])
 	max_date = "-".join(dates[-1].split("/")[::-1])
+
 
 	return render_template(
 		"index.html",
