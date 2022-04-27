@@ -22,19 +22,36 @@
 		{% endfor %}
 	</datalist>
 
-	<form>
-		<input list="chart-type" id="chart" name="chart" required>
-		<input type="submit">
-	</form>
-
 	<form method="post">
+		<label for="chart-type">Chart type</label><br>
+
+		<input type="radio" id="chart1" name="chart">
+		<label for="chart1">Nombre de velages par jour</label><br>
+
+		<input type="radio" id="chart2" name="chart">
+		<label for="chart2">Animaux nez en periode de pleine lune</label><br>
+
+		<input type="radio" id="chart3" name="chart">
+		<label for="chart3">Distribution des races</label><br>
+
+		<!-- family selection -->
+
 		<label for="family">Family</label>
 		<input list="families-datalist" id="family" name="famille" required>
-		<label form="date_from">from</label>
-		<input type="month" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
-		<label form="date_to">to</label>
-		<input type="month" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required>
-		<input type="submit">
+
+		<div id="date-selection">
+			<label form="date_from">from</label>
+			<input type="month" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+
+			<label form="date_to">to</label>
+			<input type="month" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required>
+		</div>
+
+		<div id="breed-selection">
+			<input list="families-datalist" id="race" name="race">
+			<input type="number" id="percentage" name="percentage">
+			<input type="submit">
+		</div>
 	</form>
 
 	<!--<h2>Familles</h2>

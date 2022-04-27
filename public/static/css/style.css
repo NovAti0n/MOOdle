@@ -69,3 +69,9 @@ b {
 	-webkit-text-fill-color: transparent;
 	font-weight: bold;
 }
+
+/* hide stuff in form we don't need */
+
+#breed-selection, #chart3:checked ~ #date-selection { display: none; }
+#date-selection, #chart3:checked ~ #breed-selection { display: initial; }
+

@@ -55,6 +55,7 @@ def index():
 	min_date = "-".join(dates[0].split("/")[::-1])
 	max_date = "-".join(dates[-1].split("/")[::-1])
 
+
 	return render_template(
 		"index.html",
 		title="Home",
