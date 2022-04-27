@@ -79,3 +79,8 @@ b {
 #chart + #chart3_input {
 	display: none;
 }
+
+canvas{
+	display: block;
+    margin: 0 auto;
+}

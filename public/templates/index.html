@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<script src="/js/main.js"></script>
 
 <body>
 	<h1><b>Vaches</b>!</h1>
@@ -48,6 +47,8 @@
 	{% for family in families.values() %}
 		<p>{{ family.name }} {{ family.count }}</p>
 	{% endfor %}-->
+
+<canvas id="graph" height="500"  width="500" ></canvas>
 
 
 </body>
