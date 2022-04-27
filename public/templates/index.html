@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <body>
 	<h1><b>Vaches</b>!</h1>
+	{% if error %}
+	<h2>{{error}}</h2>
+	{% endif %}
 
 	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
 
@@ -12,17 +16,33 @@
 		{% endfor %}
 	</datalist>
 
-	<form method="post">
-		<label for="family">
-		<input list="families-datalist" id="family" name="famille" required>
-		<input type="date" value="jj/mm/aaaa" name="date" min="{{min_date}}" max="{{max_date}}" required>
+	<datalist id="chart-type">
+		{% for i in chart_types %}
+			<option value="{{i}}">
+		{% endfor %}
+	</datalist>
+
+	<form>
+		<input list="chart-type" id="chart" name="chart" required>
 		<input type="submit">
 	</form>
 
-	<h2>Familles</h2>
+	<form method="post">
+		<label for="family">Family</label>
+		<input list="families-datalist" id="family" name="famille" required>
+		<label form="date_from">from</label>
+		<input type="month" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+		<label form="date_to">to</label>
+		<input type="month" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required>
+		<input type="submit">
+	</form>
+
+	<!--<h2>Familles</h2>
 
 	{% for family in families.values() %}
 		<p>{{ family.name }} {{ family.count }}</p>
-	{% endfor %}
+	{% endfor %}-->
+
+
 </body>
 {% endblock %}

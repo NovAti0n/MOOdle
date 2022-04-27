@@ -18,10 +18,6 @@ if test $(git diff --cached --name-only --diff-filter=A -z $against | LC_ALL=C t
 	exit 1
 fi
 
-# make sure '.flaskenv' was not accidentally staged (e.g. by running 'git add .')
-
-git reset -- .flaskenv
-
 # if there are terminating whitespaces, print the offending file names and fail
 
 git diff-index --check --cached $against --
