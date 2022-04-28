@@ -35,15 +35,13 @@ def gen_request(chart_type: ChartType, family=None, race=None, percentage=None, 
 	match chart_type:
 		case ChartType.CALVING:
 			sql = f"SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+			sql += f"{args} GROUP BY velages.date"
 
 		case ChartType.FULL_MOON:
 			sql = ""
 
 		case ChartType.RACE:
 			sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
-
-	sql += args
+			sql += args
 
 	return sql
-
-print(gen_request(ChartType.RACE, race="Holstein"))
