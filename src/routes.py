@@ -2,6 +2,8 @@ from flask import render_template, request
 from src.db import query
 from src.utils import validate_dates
 
+from src.utils import gen_request,ChartType
+
 from collections import defaultdict, OrderedDict
 
 class Family:
@@ -55,6 +57,10 @@ def index():
 	min_date = "-".join(dates[0].split("/")[::-1])
 	max_date = "-".join(dates[-1].split("/")[::-1])
 
+	print("oulalalalalalalalalal")
+	my_data = query(gen_request(ChartType.CALVING))
+
+
 
 	return render_template(
 		"index.html",
@@ -63,7 +69,9 @@ def index():
 		min_date=min_date,
 		max_date=max_date,
 		data=data,
-		error=error
+		error=error,
+		my_data = my_data,
+		chart_id = ChartType.CALVING.value
 	)
 
 def route_handler(app):

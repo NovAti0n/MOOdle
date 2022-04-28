@@ -1,10 +1,10 @@
 from datetime import date
-from enum import Enum, auto
+from enum import IntEnum, auto
 
-class ChartType(Enum):
-	CALVING = auto()
-	FULL_MOON = auto()
-	RACE = auto()
+class ChartType(IntEnum):
+	CALVING = 0
+	FULL_MOON = 1
+	RACE = 2
 
 def validate_dates(date1: str, date2: str) -> bool:
 	ldate1, ldate2 = date1.split("-"), date2.split("-")
@@ -45,5 +45,3 @@ def gen_request(chart_type: ChartType, family=None, race=None, percentage=None, 
 	sql += args
 
 	return sql
-
-print(gen_request(ChartType.RACE, race="Holstein"))
