@@ -6,12 +6,13 @@ var ctx = document.getElementById('graph').getContext('2d');
 
 
 console.log(chart_id)
-
+console.log(data)
 
 //reaplace character encoding
 
 
 //TODO use regex
+
 
 const regex = /(\[\(|\)\]|&#39;| |\)|\()/g
 n_data = data.replace(regex, '')
@@ -37,6 +38,8 @@ switch(chart_id)
 			labels.push(n_data[i])
 			chart_data.push(parseInt(n_data[i+1]))
 		}
+	case '1':
+
 		break;
 
 }

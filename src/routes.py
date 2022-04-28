@@ -58,7 +58,7 @@ def index():
 	max_date = "-".join(dates[-1].split("/")[::-1])
 
 	print("oulalalalalalalalalal")
-	my_data = query(gen_request(ChartType.CALVING))
+	my_data = query(gen_request(ChartType.RACE))
 
 
 
