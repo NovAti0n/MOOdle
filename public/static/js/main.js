@@ -13,34 +13,42 @@ console.log(chart_id)
 
 //TODO use regex
 
-const regex = /(\[\(|\)\]|&#39;| )/g
+const regex = /(\[\(|\)\]|&#39;| |\)|\()/g
 n_data = data.replace(regex, '')
-console.log(n_data)
-console.log(n_data.split(','))
+n_data = n_data.split(',')
 chart_opt = {responsive: false};
 
-
+let  labels = [];
+let chart_data = []
 
 /*
 Id:
 0 - Nombre de velages par jour
+1 -
+2 -
+3 -
 */
 
 switch(chart_id)
 {
 	case '0':
-			break;
+		for(var i = 0 ; i < n_data.length;i+=2)
+		{
+			labels.push(n_data[i])
+			chart_data.push(parseInt(n_data[i+1]))
+		}
+		break;
 
 }
 
 
-const labels = ["pouet"];
+
 
 const _data = {
 labels: labels,
 datasets: [{
-	label: 'My First Dataset',
-	data: [65, 59, 80, 81, 56, 55, 40],
+	label: 'Nombre de vêlages par jour sur une période',
+	data: chart_data,
 	fill: false,
 	borderColor: 'rgb(75, 192, 192)',
 	tension: 0.1
