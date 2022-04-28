@@ -4,6 +4,9 @@ venv/
 .env/
 .venv/
 
+# vim stuff
+*.sw[nop]
+
 # Python cache
 __pycache__/
 
