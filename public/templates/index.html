@@ -22,42 +22,38 @@
 		{% endfor %}
 	</datalist>
 
-	<form method="post">
+	<form method="get" action="/">
 		<label for="chart-type">Chart type</label><br>
 
-		<input type="radio" id="chart1" name="chart">
+		<input type="radio" id="chart1" name="chart" value = "0" required>
 		<label for="chart1">Nombre de velages par jour</label><br>
 
-		<input type="radio" id="chart2" name="chart">
+		<input type="radio" id="chart2" name="chart" value = "1">
 		<label for="chart2">Animaux nez en periode de pleine lune</label><br>
 
-		<input type="radio" id="chart3" name="chart">
+		<input type="radio" id="chart3" name="chart" value = "2">
 		<label for="chart3">Distribution des races</label><br>
 
 		<!-- family selection -->
 
 		<label for="family">Family</label>
-		<input list="families-datalist" id="family" name="famille" required>
+		<input list="families-datalist" id="family" name="famille">
 
 		<div id="date-selection">
 			<label form="date_from">from</label>
-			<input type="month" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+			<input type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
 			<label form="date_to">to</label>
-			<input type="month" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required>
+			<input type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}">
 		</div>
 
 		<div id="breed-selection">
-			<input list="families-datalist" id="race" name="race">
-			<input type="number" id="percentage" name="percentage">
-			<input type="submit">
+			<input list="families-datalist" id="race" name="race" required>
+			<input type="number" id="percentage" name="percentage" required>
 		</div>
+		<input type="submit" value="Afficher">
 	</form>
 
-	<!--<h2>Familles</h2>
-	{% for family in families.values() %}
-		<p>{{ family.name }} {{ family.count }}</p>
-	{% endfor %}-->
 
 <canvas id="graph" height="500"  width="1000" ></canvas>
 <script>

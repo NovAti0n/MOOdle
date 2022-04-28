@@ -72,6 +72,6 @@ b {
 
 /* hide stuff in form we don't need */
 
-#breed-selection, #chart3:checked ~ #date-selection { display: none; }
-#date-selection, #chart3:checked ~ #breed-selection { display: initial; }
+#breed-selection, #chart3:checked ~ #date-selection { display: none; visibility:hidden;}
+#date-selection, #chart3:checked ~ #breed-selection { display: initial; visibility:visible;}
 

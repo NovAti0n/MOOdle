@@ -5,6 +5,7 @@ class ChartType(IntEnum):
 	CALVING = 0
 	FULL_MOON = 1
 	RACE = 2
+	UNDEFINED = 3
 
 def validate_dates(date1: str, date2: str) -> bool:
 	ldate1, ldate2 = date1.split("-"), date2.split("-")

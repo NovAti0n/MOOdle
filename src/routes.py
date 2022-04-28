@@ -1,8 +1,7 @@
+from cgitb import reset
 from flask import render_template, request
 from src.db import query
-from src.utils import validate_dates
-
-from src.utils import gen_request,ChartType
+from src.utils import validate_dates,gen_request,ChartType,is_full_moon
 
 from collections import defaultdict, OrderedDict
 
@@ -21,11 +20,60 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
+
 	error = data = None
+	family = None
+	date_from = None
+	date_to = None
+	pourcentage = None
+	race = None
+	alexis_data = None
+
+	chart_type = ChartType.UNDEFINED
 
 	if request.args:
-		if not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to",  "1990-01-02")) :
-			error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
+
+		if request.args.get("date_from", None) and request.args.get("date_to",  None):
+
+			if not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to",  "1990-01-02")) :
+
+				error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
+
+		if(len(request.args.getlist("chart")) > 0):
+			print(request.args.getlist("chart"))
+			radio = request.args.getlist("chart")[0]
+			family = request.args.get("famille",None)
+			date_from = request.args.get("date_from",None)
+			date_to = request.args.get("date_to",None)
+
+
+			if radio.isnumeric():
+				chart_type = ChartType(int(radio))
+
+				if chart_type == ChartType.CALVING:
+					alexis_data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+
+
+				if chart_type == ChartType.FULL_MOON:
+					alexis_data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+
+					n_full_moon = 0
+					for i in alexis_data:
+						n_full_moon += 1 if is_full_moon(i[0]) else 0
+
+					alexis_data = [n_full_moon,len(alexis_data) - n_full_moon]
+
+
+				if chart_type == ChartType.RACE:
+					pourcentage = request.args.get("percentage",None)
+					race = request.args.get("race",None)
+
+					if int(pourcentage) < 0:
+						error = "Le pourcentage ne peux pas être négatif !"
+
+					alexis_data = query(gen_request(chart_type, family=family, race=race, percentage=pourcentage))
+
+
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -57,10 +105,6 @@ def index():
 	min_date = "-".join(dates[0].split("/")[::-1])
 	max_date = "-".join(dates[-1].split("/")[::-1])
 
-	print("oulalalalalalalalalal")
-	my_data = query(gen_request(ChartType.RACE))
-
-
 
 	return render_template(
 		"index.html",
@@ -70,8 +114,8 @@ def index():
 		max_date=max_date,
 		data=data,
 		error=error,
-		my_data = my_data,
-		chart_id = ChartType.CALVING.value
+		my_data = alexis_data,
+		chart_id = chart_type.value
 	)
 
 def route_handler(app):
