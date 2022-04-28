@@ -23,7 +23,7 @@ def query(statement: str, *args) -> list:
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
-	result = list(cursor.execute(statement, args))
+	result = list(cursor.execute(statement, args).fetchall())
 	db.close()
 
 	return result
