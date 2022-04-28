@@ -1,4 +1,4 @@
-from datetime import date
+import math, decimal, datetime
 from enum import Enum, auto
 
 class ChartType(Enum):
@@ -10,7 +10,7 @@ def validate_dates(date1: str, date2: str) -> bool:
 	ldate1, ldate2 = date1.split("-"), date2.split("-")
 	print(ldate1, ldate2)
 
-	return date(int(ldate1[0]), int(ldate1[1]), int(ldate1[2])) < date(int(ldate2[0]), int(ldate2[1]), int(ldate2[2]))
+	return datetime.date(int(ldate1[0]), int(ldate1[1]), int(ldate1[2])) < datetime.date(int(ldate2[0]), int(ldate2[1]), int(ldate2[2]))
 
 def gen_request(chart_type: ChartType, family=None, race=None, percentage=None, date_from=None, date_to=None):
 	args = []
@@ -45,3 +45,18 @@ def gen_request(chart_type: ChartType, family=None, race=None, percentage=None, 
 			sql += args
 
 	return sql
+
+# Based of a script by Sean B. Palmer (inamidst.com)
+# Source: https://gist.github.com/miklb/ed145757971096565723
+
+def is_full_moon(time):
+	(year, month, day) = time.split("-")
+	dec = decimal.Decimal
+
+	diff = datetime.datetime(int(year), int(month), int(day)) - datetime.datetime(2001, 1, 1)
+	days = dec(diff.days) + (dec(diff.seconds) / dec(86400))
+	lunations = dec("0.20439731") + (days * dec("0.03386319269"))
+
+	index = (lunations % dec(1) * dec(8)) + dec("0.5")
+	index = math.floor(index)
+	return (int(index) & 7) == 4
