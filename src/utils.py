@@ -8,7 +8,6 @@ class ChartType(IntEnum):
 
 def validate_dates(date1: str, date2: str) -> bool:
 	ldate1, ldate2 = date1.split("-"), date2.split("-")
-	print(ldate1, ldate2)
 
 	return datetime.date(int(ldate1[0]), int(ldate1[1]), int(ldate1[2])) < datetime.date(int(ldate2[0]), int(ldate2[1]), int(ldate2[2]))
 
@@ -38,7 +37,8 @@ def gen_request(chart_type: ChartType, family=None, race=None, percentage=None, 
 			sql += f"{args} GROUP BY velages.date"
 
 		case ChartType.FULL_MOON:
-			sql = ""
+			sql = "SELECT velages.date FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+			sql += args
 
 		case ChartType.RACE:
 			sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
