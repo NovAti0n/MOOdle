@@ -14,6 +14,9 @@ class Family:
 
 		self.breeds = defaultdict(float)
 
+	def __repr__(self):
+		return self.name
+
 	@property
 	def count(self):
 		return int(sum(self.breeds.values()))
@@ -30,7 +33,7 @@ def index():
 
 	families = OrderedDict()
 
-	for family_id, name in families_sql:
+	for family_id, name in families_sql[1:]:
 		family = Family(name)
 
 		animals = query(f"SELECT id FROM animaux WHERE famille_id = {family_id}")
@@ -48,9 +51,10 @@ def index():
 
 		families[family_id] = family
 
-	dates = [_[0] for _ in query("SELECT date FROM velages")]
-	min_date = "-".join(dates[0].split("/")[::-1])
-	max_date = "-".join(dates[-1].split("/")[::-1])
+	dates = ["-".join(date[0].split('/')[::-1]) for date in query("SELECT date FROM velages")]
+
+	min_date = dates[0]
+	max_date = dates[-1]
 
 	return render_template(
 		"index.html",
