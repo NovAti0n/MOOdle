@@ -55,12 +55,22 @@
 	</form>
 
 
-<canvas id="graph" height="500"  width="1000" ></canvas>
-<script>
-	var data = '{{my_data}}'
-	var chart_id = '{{chart_id}}'
-</script>
+	<canvas id="graph" height="500" width="1000"></canvas>
 
+	<script>
+		var data = '{{my_data}}'
+		var chart_id = '{{chart_id}}'
+	</script>
 
+	<!--
+	<h2>Familles</h2>
+
+	{% for family in families.values() %}
+		<p>{{ family.name }} {{ family.count }}</p>
+	{% endfor %}
+	-->
+
+	<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
+	<canvas width = "800px" height = "480px" id = "paturage"></canvas>
 </body>
 {% endblock %}

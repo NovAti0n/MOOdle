@@ -4,9 +4,6 @@ venv/
 .env/
 .venv/
 
-# vim stuff
-*.sw[nop]
-
 # Python cache
 __pycache__/
 
@@ -15,3 +12,9 @@ db.sqlite3*
 
 # Vim
 *.sw[nop]
+
+# Blender
+*.blend[0-9]
+
+# obj-conv
+work/obj-conv
