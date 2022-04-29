@@ -126,6 +126,8 @@ class Matrix {
 	}
 }
 
+var identity = new Matrix()
+
 class Model {
 	constructor(gl, model, tex_path) {
 		// load model
@@ -161,12 +163,16 @@ class Model {
 		}
 	}
 
-	draw(gl, sampler_uniform) {
+	draw(gl, render_state, model_matrix) {
 		// bind texture
 
 		gl.activeTexture(gl.TEXTURE0)
 		gl.bindTexture(gl.TEXTURE_2D, this.tex)
-		gl.uniform1i(sampler_uniform, 0)
+		gl.uniform1i(render_state.sampler_uniform, 0)
+
+		// set uniforms
+
+		gl.uniformMatrix4fv(render_state.model_uniform, false, model_matrix.data.flat())
 
 		// draw buffers
 
@@ -175,30 +181,116 @@ class Model {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
 
-		gl.enableVertexAttribArray(0)
-		gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 0)
+		gl.enableVertexAttribArray(render_state.pos_attr)
+		gl.enableVertexAttribArray(render_state.tex_coord_attr)
+		gl.enableVertexAttribArray(render_state.normal_attr)
 
-		gl.enableVertexAttribArray(1)
-		gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 3)
-
-		gl.enableVertexAttribArray(2)
-		gl.vertexAttribPointer(2, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 5)
+		gl.vertexAttribPointer(render_state.pos_attr,       3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 0)
+		gl.vertexAttribPointer(render_state.tex_coord_attr, 2, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 3)
+		gl.vertexAttribPointer(render_state.normal_attr,    3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 5)
 
 		gl.drawElements(gl.TRIANGLES, this.model.indices.length, gl.UNSIGNED_SHORT, 0)
 	}
 }
 
+const GRAVITY = -32
+const JUMP_HEIGHT = 0.7
+const BOUNDS = 2
+
+function abs_min(x, y) {
+	if (Math.abs(x) < Math.abs(y)) {
+		return x;
+	}
+
+	return y;
+}
+
+class Cow {
+	constructor (model, age) {
+		this.model = model
+		this.age = age // controls the size of the cow
+
+		this.target_rot = Math.random() * 6.28
+
+		this.rot = this.target_rot
+		this.pos = [Math.random() * 4 - 2, 0, Math.random() * 4 - 2]
+
+		this.vel = [0, 0, 0]
+		this.grounded = false
+	}
+
+	jump() {
+		if (!this.grounded) {
+			return
+		}
+
+		console.log("jump")
+		this.vel[1] = Math.sqrt(-2 * GRAVITY * JUMP_HEIGHT)
+	}
+
+	draw(gl, sampler_uniform, dt) {
+		// "AI" computation
+
+		if (Math.random() < 0.5 * dt) {
+			this.jump()
+		}
+
+		this.rot += (this.target_rot - this.rot) * dt * 5
+
+		// physics computation
+		// really nothing complicated here, formulas come from a video of mine: https://www.youtube.com/watch?v=YG3Gd7Vr93o
+		// first, calculate friction/drag coefficients
+
+		let friction = [1.8, this.vel[1] > 0 ? 0 : 0.4, 1.8]
+
+		if (this.grounded) {
+			friction = [3, 3, 3]
+		}
+
+		// apply input acceleration & adjust for friction/drag
+		// here, we want our cow moving in its rotation direction at all times
+
+		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt
+		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt
+
+		// apply velocity, gravity acceleration, and friction/drag
+
+		this.pos = this.pos.map((pos, i) => (pos + this.vel[i] * dt))
+		this.vel[1] += GRAVITY * dt
+		this.vel = this.vel.map((vel, i) => (vel - abs_min(vel * friction[i] * dt, vel)))
+
+		// check collisions (nothing complicated, just check if we're past ground/boundaries and reset on respective axes)
+
+		this.grounded = false
+
+		if (this.pos[1] < 0) {
+			this.grounded = true
+			this.pos[1] = 0
+		}
+
+		if (this.pos[0] > BOUNDS || this.pos[2] > BOUNDS || this.pos[0] < -BOUNDS || this.pos[2] < -BOUNDS) {
+			this.target_rot = Math.random() * 6.28
+
+			this.pos[0] = Math.max(Math.min(this.pos[0], BOUNDS), -BOUNDS)
+			this.pos[2] = Math.max(Math.min(this.pos[2], BOUNDS), -BOUNDS)
+
+			this.vel = [0, 0, 0]
+		}
+
+		// render
+
+		let model_matrix = new Matrix()
+		let scale = 0.1 + this.age / 100
+
+		model_matrix.translate(...this.pos)
+		model_matrix.rotate(this.rot, 0, 1, 0)
+		model_matrix.scale(scale, scale, scale)
+
+		this.model.draw(gl, sampler_uniform, model_matrix)
+	}
+}
+
 // actual rendering code
-
-var gl
-var program
-
-var mvp_matrix
-
-var mvp_uniform
-var sampler_uniform
-
-var paturage
 
 class Paturage {
 	constructor() {
@@ -257,17 +349,28 @@ class Paturage {
 		// get attribute & uniform locations from program
 		// we have to do this for attributes too, because WebGL 1.0 limits us to older shader models
 
-		let pos_attr = this.gl.getAttribLocation(this.program, "a_pos")
-		let tex_coord_attr = this.gl.getAttribLocation(this.program, "a_tex_coord")
-		let normal_attr = this.gl.getAttribLocation(this.program, "a_normal")
+		this.render_state = {
+			pos_attr:        0, // this.gl.getAttribLocation (this.program, "a_pos"),
+			tex_coord_attr:  1, // this.gl.getAttribLocation (this.program, "a_tex_coord"),
+			normal_attr:     2, // this.gl.getAttribLocation (this.program, "a_normal"),
 
-		this.mvp_uniform = this.gl.getUniformLocation(this.program, "u_mvp")
-		this.sampler_uniform = this.gl.getUniformLocation(this.program, "u_sampler")
+			model_uniform:   this.gl.getUniformLocation(this.program, "u_model"),
+			vp_uniform:      this.gl.getUniformLocation(this.program, "u_vp"),
+			sampler_uniform: this.gl.getUniformLocation(this.program, "u_sampler"),
+		}
 
 		// models
 
 		this.paturage = new Model(this.gl, paturage_model, "/textures/paturage.png")
 		this.holstein = new Model(this.gl, holstein_model, "/textures/holstein.png")
+
+		// cows
+
+		this.cows = []
+
+		for (let i = 0; i < 100; i++) {
+			this.cows.push(new Cow(this.holstein, Math.random() * 20))
+		}
 
 		// loop
 
@@ -285,16 +388,16 @@ class Paturage {
 
 		// create matrices
 
-		let p_matrix = new Matrix()
-		p_matrix.perspective(6.28 / 4, this.y_res / this.x_res, 0.1, 500)
+		let proj_matrix = new Matrix()
+		proj_matrix.perspective(6.28 / 4, this.y_res / this.x_res, 0.1, 500)
 
-		let mv_matrix = new Matrix()
+		let view_matrix = new Matrix()
 
-		mv_matrix.translate(0, 0, -6)
-		mv_matrix.rotate_2d(time, -0.5)
+		view_matrix.translate(0, 0, -6)
+		view_matrix.rotate_2d(time / 3, -0.5)
 
-		mvp_matrix = new Matrix(mv_matrix)
-		mvp_matrix.multiply(p_matrix)
+		let vp_matrix = new Matrix(view_matrix)
+		vp_matrix.multiply(proj_matrix)
 
 		// actually render
 
@@ -302,10 +405,13 @@ class Paturage {
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
 
 		this.gl.useProgram(this.program)
-		this.gl.uniformMatrix4fv(this.mvp_uniform, false, mvp_matrix.data.flat())
+		this.gl.uniformMatrix4fv(this.render_state.vp_uniform, false, vp_matrix.data.flat())
 
-		this.paturage.draw(this.gl, this.sampler_uniform)
-		this.holstein.draw(this.gl, this.sampler_uniform)
+		this.paturage.draw(this.gl, this.render_state, identity /* no special transformation for paturage */)
+
+		for (let cow of this.cows) {
+			cow.draw(this.gl, this.render_state, dt)
+		}
 
 		requestAnimationFrame((now) => this.render(now))
 	}
