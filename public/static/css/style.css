@@ -180,5 +180,11 @@ input[type="radio"]:checked::before {
 
 /* hide stuff in form we don't need */
 
-#breed-selection, #chart3:checked ~ #date-selection { display: none }
-#date-selection, #chart3:checked ~ #breed-selection { display: initial }
+#calving-selector, #moon-selector, #breed-selector, #paturage-selector {
+	display: none;
+}
+
+#chart1:checked ~ #calving-selector  { display: initial }
+#chart2:checked ~ #moon-selector     { display: initial }
+#chart3:checked ~ #breed-selector    { display: initial }
+#chart4:checked ~ #paturage-selector { display: initial }

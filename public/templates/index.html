@@ -20,24 +20,25 @@
 
 		<p class = "form-divider">Chart type</p>
 
-		<input type="radio" id="chart1" name="chart" value="0">
+		<input type="radio" id="chart1" name="chart-selector">
 		<label for="chart1">Nombre de velages par jour</label><br>
 
-		<input type="radio" id="chart2" name="chart" value="1">
-		<label for="chart2">Animaux nés en periode de pleine lune</label><br>
+		<input type="radio" id="chart2" name="chart-selector">
+		<label for="chart2">Animaux nés en période de pleine lune</label><br>
 
-		<input type="radio" id="chart3" name="chart" value="2">
+		<input type="radio" id="chart3" name="chart-selector">
 		<label for="chart3">Distribution des races</label><br>
 
-		<input type="radio" id="chart4" name="chart" value="3" checked><span></span></input>
+		<input type="radio" id="chart4" name="chart-selector" checked><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage</label><br>
 
-		<!-- date selection -->
+		<!-- nombre de velages par jour -->
 
-		<form method="get" action="/" id="date-selection">
-			<p class = "form-divider">Date selection</p>
+		<form method="get" action="/" id="calving-selector">
+			<p class = "form-divider">Family & date selection</p>
+			<input name="chart" value="0" hidden>
 
-			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille" required><br>
+			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille"><br>
 
 			<label form="date_from">From</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
@@ -48,34 +49,63 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- breed selection -->
+		<!-- animaux nés en période de pleine lune  -->
 
-		<form method="get" action="/" id="breed-selection">
+		<form method="get" action="/" id="moon-selector">
+			<p class = "form-divider">Family & date selection</p>
+			<input name="chart" value="1" hidden>
+
+			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille"><br>
+
+			<label form="date_from">From</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+
+			<label form="date_to">to</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required><br>
+
+			<input class="button" type="submit" value="Afficher">
+		</form>
+
+		<!-- distribution des races -->
+
+		<form method="get" action="/" id="breed-selector">
 			<p class = "form-divider">Breed selection</p>
+			<input name="chart" value="2" hidden>
 
 			<input placeholder="Breed" class="input" list="families-datalist" id="breed" name="breed" required><br>
 			<input placeholder="Percentage" class="input" type="number" id="percentage" name="percentage" required><br>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
-	</section>
 
-	<!-- <canvas class="graph" id="graph" width="800px" height="600px"></canvas> -->
+		<!-- paturage  -->
+
+		<form method="get" action="/" id="paturage-selector">
+			<p class = "form-divider">Family & date selection</p>
+			<input name="chart" value="3" hidden>
+
+			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille"><br>
+
+			<label form="date_from">From</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+
+			<label form="date_to">to</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required><br>
+
+			<input class="button" type="submit" value="Afficher">
+		</form>
+	</section>
 
 	<script>
 		var data = '{{my_data}}'
 		var chart_id = '{{chart_id}}'
 	</script>
 
-	<!--
-	<h2>Familles</h2>
-
-	{% for family in families.values() %}
-		<p>{{ family.name }} {{ family.count }}</p>
-	{% endfor %}
-	-->
-
-	<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
-	<canvas width = "800px" height = "600px" class = "card graph" id = "paturage"></canvas>
+	{% if chart_id == 3 %}
+		<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
+		<canvas width = "800px" height = "600px" class = "card graph" id = "paturage"></canvas>
+	{% else %}
+		<canvas class="graph" id="graph" width="800px" height="600px"></canvas>
+	{% endif %}
 </body>
 {% endblock %}

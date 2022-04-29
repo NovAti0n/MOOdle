@@ -43,7 +43,7 @@ def index():
 
 				error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
 
-		if(len(request.args.getlist("chart")) > 0):
+		if len(request.args.getlist("chart")) > 0:
 			print(request.args.getlist("chart"))
 			radio = request.args.getlist("chart")[0]
 			family = request.args.get("famille",None)
