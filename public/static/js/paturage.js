@@ -362,14 +362,16 @@ class Paturage {
 		// models
 
 		this.paturage = new Model(this.gl, paturage_model, "/textures/paturage.png")
+
 		this.holstein = new Model(this.gl, holstein_model, "/textures/holstein.png")
+		this.jersey = new Model(this.gl, jersey_model, "/textures/jersey.png")
 
 		// cows
 
 		this.cows = []
 
 		for (let i = 0; i < 100; i++) {
-			this.cows.push(new Cow(this.holstein, Math.random() * 20))
+			this.cows.push(new Cow(Math.random() < 0.5 ? this.jersey : this.holstein, Math.random() * 20))
 		}
 
 		// loop
