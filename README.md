@@ -1,5 +1,7 @@
 # Statify
 
+![Workflow status](https://github.com/NovAti0n/Statify/actions/workflows/main.yml/badge.svg)
+
 Website for LINFO1002-P2
 
 [Commit guidelines](https://github.com/obsproject/obs-studio/blob/master/CONTRIBUTING.rst#commit-guidelines)

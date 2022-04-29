@@ -82,13 +82,11 @@ if(chart_type)
 		}]
 	};
 
-		var myChart = new Chart(ctx,
-		{
-			type: chart_type,   // le type du graphique
-			options:chart_opt,
-			data: _data,
+	var myChart = new Chart(ctx,
+	{
+		type: chart_type,   // le type du graphique
+		options:chart_opt,
+		data: _data,
 
-		});
-
+	});
 }
-

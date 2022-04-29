@@ -2,7 +2,7 @@
 #
 # File based on the "Deploy a Python app to an Azure Web App" action by Microsoft
 
-name: 'Build and deploy Python app to Azure Web App'
+name: 'Build, test and deploy to Azure'
 
 env:
   AZURE_WEBAPP_NAME: statify-sinf
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: 'Set up Python version'
         uses: actions/setup-python@v3
@@ -37,16 +37,31 @@ jobs:
       - name: 'Generate database'
         run: flask init-db
 
-      - name: 'Upload artifact for deployment jobs'
+      - name: 'Upload artifact for following jobs'
         uses: actions/upload-artifact@v3
         with:
           name: python-app
           path: |
             .
             !env/
-  deploy:
+
+  test:
     runs-on: ubuntu-latest
     needs: build
+
+    steps:
+      - name: 'Download artifact from build job'
+        uses: actions/download-artifact@v3
+        with:
+          name: python-app
+          path: .
+
+      - name: 'Run PyTest'
+        run: pytest tests
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
     environment:
       name: 'Deployment'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
