@@ -102,6 +102,17 @@
 	{% if chart_id == 3 %}
 		<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
 		<canvas width = "800px" height = "600px" class = "card graph" id = "paturage"></canvas>
+
+		<!-- we don't need to load this straight away, -->
+		<!-- so we can defer it to after the page has rendered -->
+
+		<script src="/models/paturage.js" defer></script>
+
+		<script src="/models/holstein.js" defer></script>
+		<script src="/models/jersey.js" defer></script>
+		<script src="/models/bbb.js" defer></script>
+
+		<script src="/js/paturage.js" defer></script>
 	{% else %}
 		<canvas class="graph" id="graph" width="800px" height="600px"></canvas>
 	{% endif %}
