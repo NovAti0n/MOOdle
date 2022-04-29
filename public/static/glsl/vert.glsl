@@ -25,12 +25,12 @@ void main(void) {
 	// lighting
 
 	vec3 adjusted_normal = (vec4(normal, 1.0) * u_model).xyz;
-	vec3 sunlight = vec3(0.0, 0.0, 1.0);
+	vec3 sunlight = vec3(-1.0, 0.0, 1.0);
 
 	vec3 normalized_normal = normalize(adjusted_normal);
 	vec3 normalized_sunlight = normalize(sunlight);
 
 	float product = dot(normalized_normal, normalized_sunlight);
 
-	shading = 1.0 - 0.4 * abs(product);
+	shading = 1.0 - 0.6 * abs(product);
 }
