@@ -24,7 +24,8 @@ class Family:
 
 def index():
 
-	error = data = None
+	error = None
+	data = None
 	family = None
 	date_from = None
 	date_to = None
@@ -36,9 +37,9 @@ def index():
 
 	if request.args:
 
-		if request.args.get("date_from", None) and request.args.get("date_to",  None):
+		if request.args.get("date_from", None) and request.args.get("date_to", None):
 
-			if not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to",  "1990-01-02")) :
+			if not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")) :
 
 				error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
 
@@ -48,7 +49,6 @@ def index():
 			family = request.args.get("famille",None)
 			date_from = request.args.get("date_from",None)
 			date_to = request.args.get("date_to",None)
-
 
 			if radio.isnumeric():
 				chart_type = ChartType(int(radio))
@@ -64,8 +64,7 @@ def index():
 					for i in alexis_data:
 						n_full_moon += 1 if is_full_moon(i[0]) else 0
 
-					alexis_data = [n_full_moon,len(alexis_data) - n_full_moon]
-
+					alexis_data = [n_full_moon, len(alexis_data) - n_full_moon]
 
 				if chart_type == ChartType.RACE:
 					pourcentage = request.args.get("percentage",None)
@@ -75,8 +74,6 @@ def index():
 						error = "Le pourcentage ne peux pas être négatif !"
 
 					alexis_data = query(gen_request(chart_type, family=family, race=race, percentage=pourcentage))
-
-
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -88,27 +85,27 @@ def index():
 
 	for family_id, name in families_sql[1:]:
 		family = Family(name)
+		families[family_id] = family
 
 		animals = query(f"SELECT id FROM animaux WHERE famille_id = {family_id}")
 
-		if animals:
-			for animal, in animals:
-				type_ids = query(f"SELECT type_id FROM animaux_types WHERE animal_id = {animal}")
+		if not animals:
+			continue
 
-				if not type_ids:
-					family.breeds[-1] += 1
-					break
+		for animal, in animals:
+			breed_ids = query(f"SELECT type_id FROM animaux_types WHERE animal_id = {animal}")
 
-				for type_id, in type_ids:
-					family.breeds[type_id] += 1 / len(type_ids)
+			if not breed_ids:
+				family.breeds[-1] += 1
+				break
 
-		families[family_id] = family
+			for breed_id, in breed_ids:
+				family.breeds[breed_id] += 1 / len(breed_ids)
 
 	dates = ["-".join(date[0].split('/')[::-1]) for date in query("SELECT date FROM velages")]
 
 	min_date = dates[0]
 	max_date = dates[-1]
-
 
 	return render_template(
 		"index.html",

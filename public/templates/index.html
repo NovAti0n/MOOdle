@@ -3,59 +3,64 @@
 {% block content %}
 
 <body>
-	<h1><b>Vaches</b>!</h1>
 	{% if error %}
 	<h2>{{error}}</h2>
 	{% endif %}
 
-	<!-- TODO breed selector (polish cow easteregg?) with the icons in './graphics' -->
+	<section class="card">
+		<h1><b>Statify</b></h1>
 
-	<datalist id="families-datalist">
-		{% for family in families.values() %}
-			<option value="{{ family.name }}">
-		{% endfor %}
-	</datalist>
+		<datalist id="families-datalist">
+			{% for family in families.values() %}
+				<option value="{{ family.name }}">
+			{% endfor %}
+		</datalist>
 
-	<datalist id="chart-type">
-		{% for i in chart_types %}
-			<option value="{{i}}">
-		{% endfor %}
-	</datalist>
+		<!-- chart type selector -->
 
-	<form method="get" action="/">
-		<label for="chart-type">Chart type</label><br>
+		<p class = "form-divider">Chart type</p>
 
-		<input type="radio" id="chart1" name="chart" value = "0" required>
+		<input type="radio" id="chart1" name="chart" value="0">
 		<label for="chart1">Nombre de velages par jour</label><br>
 
-		<input type="radio" id="chart2" name="chart" value = "1">
-		<label for="chart2">Animaux nez en periode de pleine lune</label><br>
+		<input type="radio" id="chart2" name="chart" value="1">
+		<label for="chart2">Animaux nés en periode de pleine lune</label><br>
 
-		<input type="radio" id="chart3" name="chart" value = "2">
+		<input type="radio" id="chart3" name="chart" value="2">
 		<label for="chart3">Distribution des races</label><br>
 
-		<!-- family selection -->
+		<input type="radio" id="chart4" name="chart" value="3" checked><span></span></input>
+		<label class="radio-label" for="chart4">Pâturage</label><br>
 
-		<label for="family">Family</label>
-		<input list="families-datalist" id="family" name="famille">
+		<!-- date selection -->
 
-		<div id="date-selection">
-			<label form="date_from">from</label>
-			<input type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
+		<form method="get" action="/" id="date-selection">
+			<p class = "form-divider">Date selection</p>
+
+			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille" required><br>
+
+			<label form="date_from">From</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
 
 			<label form="date_to">to</label>
-			<input type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}">
-		</div>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required><br>
 
-		<div id="breed-selection">
-			<input list="families-datalist" id="race" name="race" required>
-			<input type="number" id="percentage" name="percentage" required>
-		</div>
-		<input type="submit" value="Afficher">
-	</form>
+			<input class="button" type="submit" value="Afficher">
+		</form>
 
+		<!-- breed selection -->
 
-	<canvas id="graph" height="500" width="1000"></canvas>
+		<form method="get" action="/" id="breed-selection">
+			<p class = "form-divider">Breed selection</p>
+
+			<input placeholder="Breed" class="input" list="families-datalist" id="breed" name="breed" required><br>
+			<input placeholder="Percentage" class="input" type="number" id="percentage" name="percentage" required><br>
+
+			<input class="button" type="submit" value="Afficher">
+		</form>
+	</section>
+
+	<!-- <canvas class="graph" id="graph" width="800px" height="600px"></canvas> -->
 
 	<script>
 		var data = '{{my_data}}'
@@ -71,6 +76,6 @@
 	-->
 
 	<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
-	<canvas width = "800px" height = "480px" id = "paturage"></canvas>
+	<canvas width = "800px" height = "600px" class = "card graph" id = "paturage"></canvas>
 </body>
 {% endblock %}
