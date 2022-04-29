@@ -196,6 +196,7 @@ class Model {
 const GRAVITY = -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
+const SHADOW_SIZE = 2
 
 function abs_min(x, y) {
 	if (Math.abs(x) < Math.abs(y)) {
@@ -206,9 +207,10 @@ function abs_min(x, y) {
 }
 
 class Cow {
-	constructor (model, age) {
+	constructor (model, age, shadow) {
 		this.model = model
 		this.age = age // controls the size of the cow
+		this.shadow = shadow
 
 		this.target_rot = Math.random() * 6.28
 
@@ -217,6 +219,8 @@ class Cow {
 
 		this.vel = [0, 0, 0]
 		this.grounded = false
+
+		this.jump_height = JUMP_HEIGHT
 	}
 
 	jump() {
@@ -224,11 +228,10 @@ class Cow {
 			return
 		}
 
-		console.log("jump")
-		this.vel[1] = Math.sqrt(-2 * GRAVITY * JUMP_HEIGHT)
+		this.vel[1] = Math.sqrt(-2 * GRAVITY * this.jump_height)
 	}
 
-	draw(gl, sampler_uniform, dt) {
+	draw(gl, render_state, dt) {
 		// "AI" computation
 
 		if (Math.random() < 0.5 * dt) {
@@ -255,9 +258,9 @@ class Cow {
 
 		// apply velocity, gravity acceleration, and friction/drag
 
-		this.pos = this.pos.map((pos, i) => (pos + this.vel[i] * dt))
+		this.pos = this.pos.map((pos, i) => pos + this.vel[i] * dt)
 		this.vel[1] += GRAVITY * dt
-		this.vel = this.vel.map((vel, i) => (vel - abs_min(vel * friction[i] * dt, vel)))
+		this.vel = this.vel.map((vel, i) => vel - abs_min(vel * friction[i] * dt, vel))
 
 		// check collisions (nothing complicated, just check if we're past ground/boundaries and reset on respective axes)
 
@@ -286,7 +289,16 @@ class Cow {
 		model_matrix.rotate(this.rot, 0, 1, 0)
 		model_matrix.scale(scale, scale, scale)
 
-		this.model.draw(gl, sampler_uniform, model_matrix)
+		this.model.draw(gl, render_state, model_matrix)
+
+		gl.uniform1f(render_state.shadow_uniform, 1 - this.pos[1] / this.jump_height * scale)
+		gl.enable(gl.BLEND)
+
+		model_matrix.translate(0, (-this.pos[1] + ++render_state.shadow_layer / 1000) / scale, 0)
+		this.shadow.draw(gl, render_state, model_matrix)
+
+		gl.uniform1f(render_state.shadow_uniform, -1)
+		gl.disable(gl.BLEND)
 	}
 }
 
@@ -314,6 +326,7 @@ class Paturage {
 
 		this.gl.viewport(0, 0, this.x_res, this.y_res)
 		this.gl.enable(this.gl.DEPTH_TEST)
+		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
 
 		// load shader program
 
@@ -357,11 +370,23 @@ class Paturage {
 			model_uniform:   this.gl.getUniformLocation(this.program, "u_model"),
 			vp_uniform:      this.gl.getUniformLocation(this.program, "u_vp"),
 			sampler_uniform: this.gl.getUniformLocation(this.program, "u_sampler"),
+			shadow_uniform:  this.gl.getUniformLocation(this.program, "u_shadow")
 		}
 
 		// models
 
+		const quad_model = {
+			indices: new Uint16Array([0, 1, 2, 2, 3, 0]),
+			vertices: new Float32Array([
+				-SHADOW_SIZE, 0, -SHADOW_SIZE, 0, 0, 0, 1, 0, // 0
+				 SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
+				 SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
+				-SHADOW_SIZE, 0,  SHADOW_SIZE, 0, 1, 0, 1, 0, // 3
+			])
+		}
+
 		this.paturage = new Model(this.gl, paturage_model, "/textures/paturage.png")
+		this.shadow = new Model(this.gl, quad_model, "/textures/shadow.png")
 
 		this.holstein = new Model(this.gl, holstein_model, "/textures/holstein.png")
 		this.jersey = new Model(this.gl, jersey_model, "/textures/jersey.png")
@@ -371,8 +396,8 @@ class Paturage {
 
 		this.cows = []
 
-		for (let i = 0; i < 100; i++) {
-			this.cows.push(new Cow(Math.random() < 0.5 ? this.jersey : this.bbb, Math.random() * 20))
+		for (let i = 0; i < 50; i++) {
+			this.cows.push(new Cow([this.jersey, this.holstein, this.bbb][(Math.random() * 3) | 0], Math.random() * 20, this.shadow))
 		}
 
 		// loop
@@ -403,6 +428,8 @@ class Paturage {
 		vp_matrix.multiply(proj_matrix)
 
 		// actually render
+
+		this.render_state.shadow_layer = 0
 
 		this.gl.clearColor(0.0, 0.0, 0.0, 0.0)
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)

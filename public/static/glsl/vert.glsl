@@ -1,6 +1,6 @@
 #version 100
 
-precision lowp float;
+precision mediump float;
 
 attribute vec3 a_pos;
 attribute vec2 a_tex_coord;
@@ -13,6 +13,7 @@ varying vec3 pos;
 varying vec2 tex_coord;
 varying vec3 normal;
 
+varying vec4 world_pos;
 varying float shading;
 
 void main(void) {
@@ -20,7 +21,9 @@ void main(void) {
 	normal = a_normal;
 
 	pos = a_pos;
-	gl_Position = u_vp * u_model * vec4(a_pos, 1.0);
+	world_pos = u_model * vec4(a_pos, 1.0);
+
+	gl_Position = u_vp * world_pos;
 
 	// lighting
 
