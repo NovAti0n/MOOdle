@@ -55,9 +55,9 @@ class Matrix {
 
 		let mag = Math.sqrt(x * x + y * y + z * z)
 
-		x /= mag
-		y /= mag
-		z /= mag
+		x /= -mag
+		y /= -mag
+		z /= -mag
 
 		let s = Math.sin(theta)
 		let c = Math.cos(theta)
@@ -120,14 +120,16 @@ class Matrix {
 
 	perspective(fovy, aspect, near, far) {
 		let y = Math.tan(fovy / 2) / 2
-		let x = y * aspect
+		let x = y / aspect
 
 		this.frustum(-x * near, x * near, -y * near, y * near, near, far)
 	}
 }
 
 class Model {
-	constructor(gl, model) {
+	constructor(gl, model, tex_path) {
+		// load model
+
 		this.index_count = model.indices.length
 		let float_size = model.vertices.BYTES_PER_ELEMENT
 
@@ -147,9 +149,34 @@ class Model {
 		this.ibo = gl.createBuffer()
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indices, gl.STATIC_DRAW)
+
+		// load texture
+
+		let tex = gl.createTexture()
+		this.tex = tex
+
+		const image = new Image()
+		image.src = tex_path
+
+		image.onload = function() {
+			gl.bindTexture(gl.TEXTURE_2D, tex)
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image)
+
+			// WebGL 1.0 can be picky about non-POT textures, but here, all our textures are guaranteed POT
+
+			gl.generateMipmap(gl.TEXTURE_2D)
+		}
 	}
 
-	draw(gl) {
+	draw(gl, sampler_uniform) {
+		// bind texture
+
+		gl.activeTexture(gl.TEXTURE0)
+		gl.bindTexture(gl.TEXTURE_2D, this.tex)
+		gl.uniform1i(sampler_uniform, 0)
+
+		// draw buffers
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
 
@@ -159,88 +186,123 @@ class Model {
 
 // actual rendering code
 
+var gl
+var program
+
+var mvp_matrix
+
+var mvp_uniform
+var sampler_uniform
+
+var paturage
+
+class Paturage {
+	constructor() {
+		// webgl setup
+
+		let canvas = document.getElementById("paturage")
+		let error = document.getElementById("paturage-error")
+
+		this.gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+		if (!this.gl || !(this.gl instanceof WebGLRenderingContext)) {
+
+			error.hidden = false
+			canvas.hidden = true
+
+			return
+		}
+
+		this.x_res = this.gl.drawingBufferWidth
+		this.y_res = this.gl.drawingBufferHeight
+
+		this.gl.viewport(0, 0, this.x_res, this.y_res)
+		this.gl.enable(this.gl.DEPTH_TEST)
+
+		// load shader program
+
+		let vert_shader = this.gl.createShader(this.gl.VERTEX_SHADER)
+		let frag_shader = this.gl.createShader(this.gl.FRAGMENT_SHADER)
+
+		this.gl.shaderSource(vert_shader, document.getElementById("vert-shader").innerHTML)
+		this.gl.shaderSource(frag_shader, document.getElementById("frag-shader").innerHTML)
+
+		this.gl.compileShader(vert_shader)
+		this.gl.compileShader(frag_shader)
+
+		this.program = this.gl.createProgram()
+
+		this.gl.attachShader(this.program, vert_shader)
+		this.gl.attachShader(this.program, frag_shader)
+
+		this.gl.linkProgram(this.program)
+
+		// MDN detaches the shaders first with 'gl.detachShader'
+		// I'm not really sure what purpose this serves
+
+		this.gl.deleteShader(vert_shader)
+		this.gl.deleteShader(frag_shader)
+
+		if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
+			let log = this.gl.getProgramInfoLog(this.program)
+
+			error.innerHTML = `Shader error: ${log}`
+			error.hidden = false
+		}
+
+		// get attribute & uniform locations from program
+		// we have to do this for attributes too, because WebGL 1.0 limits us to older shader models
+
+		let pos_attr = this.gl.getAttribLocation(this.program, "a_pos")
+		let tex_coord_attr = this.gl.getAttribLocation(this.program, "a_tex_coord")
+		let normal_attr = this.gl.getAttribLocation(this.program, "a_normal")
+
+		this.mvp_uniform = this.gl.getUniformLocation(this.program, "u_mvp")
+		this.sampler_uniform = this.gl.getUniformLocation(this.program, "u_sampler")
+
+		// models
+
+		this.paturage = new Model(this.gl, paturage_model, "/textures/paturage.png")
+
+		// loop
+
+		this.prev = 0
+		requestAnimationFrame((now) => this.render(now))
+	}
+
+	render(now) {
+		// timing
+
+		const dt = (now - this.prev) / 1000
+		this.prev = now
+
+		// create matrices
+
+		let p_matrix = new Matrix()
+		p_matrix.perspective(6.28 / 4, this.y_res / this.x_res, 0.1, 500)
+
+		let mv_matrix = new Matrix()
+
+		mv_matrix.translate(0, 0, -6)
+		mv_matrix.rotate_2d(now / 1000, -0.5)
+
+		mvp_matrix = new Matrix(mv_matrix)
+		mvp_matrix.multiply(p_matrix)
+
+		// actually render
+
+		this.gl.clearColor(0.0, 0.0, 0.0, 0.0)
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
+
+		this.gl.useProgram(this.program)
+		this.gl.uniformMatrix4fv(this.mvp_uniform, false, mvp_matrix.data.flat())
+
+		this.paturage.draw(this.gl, this.sampler_uniform)
+
+		requestAnimationFrame((now) => this.render(now))
+	}
+}
+
 window.addEventListener("load", function(e) {
-	// webgl setup
-
-	let canvas = document.getElementById("paturage")
-	let error = document.getElementById("paturage-error")
-
-	let gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-
-	if (!gl || !(gl instanceof WebGLRenderingContext)) {
-
-		error.hidden = false
-		canvas.hidden = true
-
-		return
-	}
-
-	let x_res = gl.drawingBufferWidth
-	let y_res = gl.drawingBufferHeight
-
-	gl.viewport(0, 0, x_res, y_res)
-	gl.clearColor(0.0, 0.5, 0.0, 1.0)
-	gl.clear(gl.COLOR_BUFFER_BIT)
-
-	// load shader program
-
-	let vert_shader = gl.createShader(gl.VERTEX_SHADER)
-	let frag_shader = gl.createShader(gl.FRAGMENT_SHADER)
-
-	gl.shaderSource(vert_shader, document.getElementById("vert-shader").innerHTML)
-	gl.shaderSource(frag_shader, document.getElementById("frag-shader").innerHTML)
-
-	gl.compileShader(vert_shader)
-	gl.compileShader(frag_shader)
-
-	let program = gl.createProgram()
-
-	gl.attachShader(program, vert_shader)
-	gl.attachShader(program, frag_shader)
-
-	gl.linkProgram(program)
-
-	// MDN detaches the shaders first with 'gl.detachShader'
-	// I'm not really sure what purpose this serves
-
-	gl.deleteShader(vert_shader)
-	gl.deleteShader(frag_shader)
-
-	if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-		let log = gl.getProgramInfoLog(program)
-
-		error.innerHTML = `Shader error: ${log}`
-		error.hidden = false
-	}
-
-	// get attribute & uniform locations from program
-	// we have to do this for attributes too, because WebGL 1.0 limits us to older shader models
-
-	let pos_attr = gl.getAttribLocation(program, "a_pos")
-	let tex_coord_attr = gl.getAttribLocation(program, "a_tex_coord")
-	let normal_attr = gl.getAttribLocation(program, "a_normal")
-
-	let mvp_uniform = gl.getUniformLocation(program, "u_mvp")
-
-	// matrices
-
-	let p_matrix = new Matrix()
-	p_matrix.perspective(6.28 / 4, y_res / x_res, 0.1, 500)
-
-	let mv_matrix = new Matrix()
-
-	mv_matrix.translate(0, -1, -5)
-	mv_matrix.rotate_2d(0.0, 0.0)
-
-	let mvp_matrix = new Matrix(mv_matrix)
-	mvp_matrix.multiply(p_matrix)
-
-	// models
-
-	let paturage = new Model(gl, paturage_model)
-
-	gl.useProgram(program)
-	gl.uniformMatrix4fv(mvp_uniform, false, mvp_matrix.data.flat())
-
-	paturage.draw(gl)
+	new Paturage()
 }, false)
