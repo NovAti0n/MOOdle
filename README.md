@@ -10,7 +10,7 @@ Website for LINFO1002-P2
 
 Create a Python virtual environment and activate it.
 
-On Linux:
+On realOS:
 
 ```sh
 % python3 -m venv env
@@ -42,7 +42,7 @@ You can deactivate the virtual environment by issuing:
 
 Make sure your virtual environment is still activated.
 
-On Linux:
+On realOS:
 
 ```sh
 % source env/bin/activate
@@ -73,7 +73,7 @@ Start the server:
 
 If you need Flask to run in development mode (enables live reload among other things), define an environment variable called `FLASK_ENV` with the value `development`.
 
-On Linux:
+On realOS:
 
 ```sh
 % export FLASK_ENV="development"
