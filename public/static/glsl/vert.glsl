@@ -1,8 +1,11 @@
 #version 100
 
-uniform mat4 mvp;
+attribute vec3 a_pos;
+attribute vec2 a_tex_coord;
+attribute vec3 a_normal;
+
+uniform mat4 u_mvp;
 
 void main(void) {
-	gl_Position = mvp * vec4(0.0, 0.0, 0.0, 1.0);
-	gl_PointSize = gl_Position.w;
+	gl_Position = u_mvp * vec4(a_pos, 1.0);
 }

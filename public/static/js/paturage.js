@@ -127,60 +127,33 @@ class Matrix {
 }
 
 class Model {
-	constructor(gl, obj_id) {
-		console.log(obj_id)
-		let obj_src = document.getElementById(obj_id).innerHTML
-
-		// read OBJ source
-		// we do as few checks here as possible, because all this needs to be parsed client-side (if JS was a less horrible language, we could've used something like IVX instead of OBJ)
-
-		let verts = new Float32Array()
-		let tex_coords = new Float32Array()
-		let normals = new Float32Array()
-		let indices = new Float32Array()
-
-		for (let line in obj_src.split('\n')) {
-			let bits = line.split()
-
-			let cmd = bits[0]
-			let args = bits.slice(1).map(parseFloat)
-
-			if (cmd == 'v') {
-				verts.push(...args)
-			}
-
-			else if (cmd == 'vt') {
-				tex_coords.push(...args)
-			}
-
-			else if (cmd == 'vn') {
-				normals.push(...args)
-			}
-
-			else if (cmd == 'f') {
-
-			}
-		}
-
-		// create positions vertex buffer object
-		// the reason we're using multiple VBO's instead of a single one and multiple attribute pointers is that it makes reading OBJ's faster & simpler, *maybe* at the expense of driver overhead (I haven't profiled it, so there's a chance it may actually not change anything and the driver will lay things out optimally itself in video memory)
+	constructor(gl, model) {
+		this.index_count = model.indices.length
+		let float_size = model.vertices.BYTES_PER_ELEMENT
 
 		this.vbo = gl.createBuffer()
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
-		gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW)
+		gl.bufferData(gl.ARRAY_BUFFER, model.vertices, gl.STATIC_DRAW)
 
 		gl.enableVertexAttribArray(0)
-		gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, verts.BYTES_PER_ELEMENT * 8, verts.BYTES_PER_ELEMENT * 0)
+		gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 0)
 
 		gl.enableVertexAttribArray(1)
-		gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, verts.BYTES_PER_ELEMENT * 8, verts.BYTES_PER_ELEMENT * 3)
+		gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 3)
 
 		gl.enableVertexAttribArray(2)
-		gl.vertexAttribPointer(2, 3, gl.FLOAT, gl.FALSE, verts.BYTES_PER_ELEMENT * 8, verts.BYTES_PER_ELEMENT * 5)
+		gl.vertexAttribPointer(2, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 5)
 
 		this.ibo = gl.createBuffer()
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indices, gl.STATIC_DRAW)
+	}
+
+	draw(gl) {
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
+
+		gl.drawElements(gl.TRIANGLES, this.index_count, gl.UNSIGNED_SHORT, 0)
 	}
 }
 
@@ -240,7 +213,14 @@ window.addEventListener("load", function(e) {
 		error.hidden = false
 	}
 
-	let mvp_uniform = gl.getUniformLocation(program, "mvp")
+	// get attribute & uniform locations from program
+	// we have to do this for attributes too, because WebGL 1.0 limits us to older shader models
+
+	let pos_attr = gl.getAttribLocation(program, "a_pos")
+	let tex_coord_attr = gl.getAttribLocation(program, "a_tex_coord")
+	let normal_attr = gl.getAttribLocation(program, "a_normal")
+
+	let mvp_uniform = gl.getUniformLocation(program, "u_mvp")
 
 	// matrices
 
@@ -249,23 +229,18 @@ window.addEventListener("load", function(e) {
 
 	let mv_matrix = new Matrix()
 
-	mv_matrix.translate(0, 0, -49)
-	// mv_matrix.rotate_2d(0.0, 0.0)
+	mv_matrix.translate(0, -1, -5)
+	mv_matrix.rotate_2d(0.0, 0.0)
 
 	let mvp_matrix = new Matrix(mv_matrix)
 	mvp_matrix.multiply(p_matrix)
 
 	// models
 
-	let paturage = new Model(gl, "paturage-obj")
-
-	gl.enableVertexAttribArray(0)
-	let buffer = gl.createBuffer()
-	gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-	gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0)
+	let paturage = new Model(gl, paturage_model)
 
 	gl.useProgram(program)
 	gl.uniformMatrix4fv(mvp_uniform, false, mvp_matrix.data.flat())
 
-	gl.drawArrays(gl.POINTS, 0, 1)
+	paturage.draw(gl)
 }, false)

@@ -15,3 +15,6 @@ db.sqlite3*
 
 # Blender
 *.blend[0-9]
+
+# obj-conv
+work/obj-conv
