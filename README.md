@@ -80,12 +80,12 @@ If you need to bypass this hook, such as when modifying the contents of the exam
 |Path|Description|
 |-|-|
 |`.github/workflows`|GitHub CI/CD workflows.|
-|`public/static`|Resources used by the webapp. This includes CSS stylesheets, GLSL vertex & fragment shaders, Javascript code (notably for chart rendering) and, finally, images and other graphics.|
+|`public/static`|Resources used by the webapp. This includes CSS stylesheets, GLSL vertex & fragment shaders, Javascript code (notably for chart rendering) and, finally, textures, images, models, and other graphics.|
 |`public/templates`|HTML code for all the different route templates.|
 |`src`|Server code.|
 |`work`|Working files, e.g. Blender projects for 3D models.|
 
 ## To do
 
-- [x] Favicon
+- [ ] Favicon
 - [ ] Toggle for 3D cow view (store user preferences server-side?)

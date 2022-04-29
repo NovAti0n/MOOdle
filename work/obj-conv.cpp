@@ -191,7 +191,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	fprintf(out_fp, "var model = {\n\tindices: new Uint16Array([", indices.size(), indexed_vertices.size());
+	fprintf(out_fp, "var model = {\n\tindices: new Uint16Array([");
 
 	// write indices
 

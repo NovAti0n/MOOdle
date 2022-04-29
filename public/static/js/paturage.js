@@ -130,25 +130,15 @@ class Model {
 	constructor(gl, model, tex_path) {
 		// load model
 
-		this.index_count = model.indices.length
-		let float_size = model.vertices.BYTES_PER_ELEMENT
+		this.model = model
 
 		this.vbo = gl.createBuffer()
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
-		gl.bufferData(gl.ARRAY_BUFFER, model.vertices, gl.STATIC_DRAW)
-
-		gl.enableVertexAttribArray(0)
-		gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 0)
-
-		gl.enableVertexAttribArray(1)
-		gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 3)
-
-		gl.enableVertexAttribArray(2)
-		gl.vertexAttribPointer(2, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 5)
+		gl.bufferData(gl.ARRAY_BUFFER, this.model.vertices, gl.STATIC_DRAW)
 
 		this.ibo = gl.createBuffer()
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indices, gl.STATIC_DRAW)
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.model.indices, gl.STATIC_DRAW)
 
 		// load texture
 
@@ -161,6 +151,9 @@ class Model {
 		image.onload = function() {
 			gl.bindTexture(gl.TEXTURE_2D, tex)
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image)
+
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
 			// WebGL 1.0 can be picky about non-POT textures, but here, all our textures are guaranteed POT
 
@@ -177,10 +170,21 @@ class Model {
 
 		// draw buffers
 
+		let float_size = this.model.vertices.BYTES_PER_ELEMENT
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
 
-		gl.drawElements(gl.TRIANGLES, this.index_count, gl.UNSIGNED_SHORT, 0)
+		gl.enableVertexAttribArray(0)
+		gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 0)
+
+		gl.enableVertexAttribArray(1)
+		gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 3)
+
+		gl.enableVertexAttribArray(2)
+		gl.vertexAttribPointer(2, 3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 5)
+
+		gl.drawElements(gl.TRIANGLES, this.model.indices.length, gl.UNSIGNED_SHORT, 0)
 	}
 }
 
@@ -263,6 +267,7 @@ class Paturage {
 		// models
 
 		this.paturage = new Model(this.gl, paturage_model, "/textures/paturage.png")
+		this.holstein = new Model(this.gl, holstein_model, "/textures/holstein.png")
 
 		// loop
 
@@ -276,6 +281,8 @@ class Paturage {
 		const dt = (now - this.prev) / 1000
 		this.prev = now
 
+		const time = now / 1000
+
 		// create matrices
 
 		let p_matrix = new Matrix()
@@ -284,7 +291,7 @@ class Paturage {
 		let mv_matrix = new Matrix()
 
 		mv_matrix.translate(0, 0, -6)
-		mv_matrix.rotate_2d(now / 1000, -0.5)
+		mv_matrix.rotate_2d(time, -0.5)
 
 		mvp_matrix = new Matrix(mv_matrix)
 		mvp_matrix.multiply(p_matrix)
@@ -298,6 +305,7 @@ class Paturage {
 		this.gl.uniformMatrix4fv(this.mvp_uniform, false, mvp_matrix.data.flat())
 
 		this.paturage.draw(this.gl, this.sampler_uniform)
+		this.holstein.draw(this.gl, this.sampler_uniform)
 
 		requestAnimationFrame((now) => this.render(now))
 	}
