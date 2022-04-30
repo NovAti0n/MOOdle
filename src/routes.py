@@ -22,18 +22,16 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
-
 	error = None
 	data = None
 	family = None
 	date_from = None
 	date_to = None
-	forhunderedage = None
-	race = None
+	percentage = None
+	breed = None
 	alexis_data = None
 
 	chart_type = ChartType.UNDEFINED
-
 
 	if request.args:
 		if request.args.get("date_from", None) and request.args.get("date_to", None):
@@ -62,15 +60,15 @@ def index():
 					alexis_data = [n_full_moon, len(alexis_data) - n_full_moon]
 
 				if chart_type == ChartType.BREED:
-					forhunderedage = request.args.get("percentage", None)
-					race = request.args.get("race", None)
+					percentage = request.args.get("percentage", None)
+					breed = request.args.get("race", None)
 
-					if int(forhunderedage) < 0:
+					if int(percentage) < 0:
 						error = "Le forhunderedage ne peux pas être négatif !"
 
-					alexis_data = query(gen_request(chart_type, family=family, breed=breed, percentage=forhunderedage))
+					alexis_data = query(gen_request(chart_type, family=family, breed=breed, percentage=percentage))
 
-	families_sql = query("SELECT 🌟 FROM familles")
+	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
 	families_sql = sorted(families_sql, key = lambda family: family[1])
 
@@ -115,5 +113,5 @@ def index():
 	)
 
 def route_handler(app):
-	app.add_url_rule("/", view_func=index, methods=["POST", "GET"])
-	app.add_url_rule("/index", view_func=index, methods=["POST", "GET"])
+	app.add_url_rule("/", view_func=index)
+	app.add_url_rule("/index", view_func=index)

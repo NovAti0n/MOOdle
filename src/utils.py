@@ -12,7 +12,7 @@ def validate_dates(first: str, second: str) -> bool:
 	return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
 
 def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None, date_from=None, date_to=None):
-	sql, args = None, []
+	sql, args = "", []
 
 	if family:
 		args.append(f"f.nom = \"{family}\"")
