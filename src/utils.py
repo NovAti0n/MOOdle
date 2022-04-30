@@ -11,7 +11,7 @@ def validate_dates(first: str, second: str) -> bool:
 	first_bits, second_bits = first.split("-"), second.split("-")
 	return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
 
-def gen_request(chart_type: ChartType, family=None, breed=None, forhunderedage=None, date_from=None, date_to=None):
+def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None, date_from=None, date_to=None):
 	sql, args = None, []
 
 	if family:
@@ -26,22 +26,23 @@ def gen_request(chart_type: ChartType, family=None, breed=None, forhunderedage=N
 	if breed:
 		args.append(f"t.type = \"{breed}\"")
 
-	if forhunderedage:
-		args.append(f"at.pourcentage >= \"{forhunderedage}\"")
+	if percentage:
+		args.append(f"at.pourcentage >= \"{percentage}\"")
 
 	args = f" WHERE {' AND '.join(args)}" if args else ""
 
-	if chart_type == ChartType.CALVING:
-		sql = "SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
-		sql += f"{args} GROUP BY velages.date"
+	match chart_type:
+		case ChartType.CALVING:
+			sql = "SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+			sql += f"{args} GROUP BY velages.date"
 
-	elif chart_type == ChartType.FULL_MOON:
-		sql = "SELECT velages.date FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
-		sql += args
+		case ChartType.FULL_MOON:
+			sql = "SELECT velages.date FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+			sql += args
 
-	elif chart_type == ChartType.BREED:
-		sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
-		sql += args
+		case ChartType.BREED:
+			sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
+			sql += args
 
 	return sql
 
