@@ -1,17 +1,11 @@
 var ctx = document.getElementById('graph').getContext('2d');
 
-
-
-
-const regex = /(\[\(|\)\]|&#39;| |\)|\(|,\)|\[|\])/g
-let n_data = data.replace(regex, '')
-n_data = n_data.split(',')
+data = data.split(',')
 
 let  labels = [];
 let graph_name = ""
 let chart_data = []
 let chart_type
-
 
 switch(chart_id)
 {
@@ -20,26 +14,26 @@ switch(chart_id)
 		graph_name = "Nombre de vêlages par jour sur une période"
 		chart_type = "bar"
 
-		for(let i = 0 ; i < n_data.length; i+=2)
+		for(let i = 0 ; i < data.length; i+=2)
 		{
-			labels.push(n_data[i])
-			chart_data.push(parseInt(n_data[i+1]))
+			labels.push(data[i])
+			chart_data.push(parseInt(data[i+1]))
 		}
 
 		break;
 	case '1':
-		graph_name = "animaux nés en période de pleine lune"
+		graph_name = "Animaux nés en période de pleine lune"
 		chart_type = "doughnut"
 
 		labels.push("Full moon")
 		labels.push("Not full moon")
 
-		chart_data.push(parseInt(n_data[0]))
-		chart_data.push(parseInt(n_data[1]))
+		chart_data.push(parseInt(data[0]))
+		chart_data.push(parseInt(data[1]))
 		break;
 
 	case '2':
-		graph_name = "distribution des races dans la ferme"
+		graph_name = "Distribution des races dans la ferme"
 		chart_type = "bar"
 		//TODO ajouter la data
 		break;

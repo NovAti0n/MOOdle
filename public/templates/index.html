@@ -95,8 +95,8 @@
 	</section>
 
 	<script>
-		var data = '{{my_data}}'
-		var chart_id = '{{chart_id}}'
+		var data = "{{my_data | safe}}"
+		var chart_id = "{{chart_id}}"
 	</script>
 
 	{% if chart_id == 3 %}
