@@ -47,11 +47,12 @@ body {
 	font-size: 22px;
 	font-display: optional;
 	font-family: "Montserrat", sans-serif;
-	overflow-y: hidden;
+	/* overflow-y: hidden; */
 
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-wrap: wrap;
 }
 
 h1 {
@@ -94,6 +95,15 @@ label {
 	max-width: 100vw;
 }
 
+@media only screen and (max-width: 600px) {
+	.card {
+		box-shadow: none;
+		border-radius: 0;
+		background: var(--bg-colour);
+		margin: 0;
+	}
+}
+
 section {
 	padding: 32px;
 	width: 400px;
@@ -101,6 +111,8 @@ section {
 
 .graph {
 	width: 600px;
+	height: 480px;
+	aspect-ratio: 600/480;
 }
 
 .form-divider {
