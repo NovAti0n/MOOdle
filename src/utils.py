@@ -1,6 +1,8 @@
 import math, decimal, datetime
 from enum import IntEnum
 
+from pyparsing import Char
+
 class ChartType(IntEnum):
 	CALVING = 0
 	FULL_MOON = 1
@@ -12,7 +14,7 @@ def validate_dates(first: str, second: str) -> bool:
 	return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
 
 def gen_request(chart_type: ChartType, family=None, breed=None, forhunderedage=None, date_from=None, date_to=None):
-	args = []
+	sql, args = None, []
 
 	if family:
 		args.append(f"f.nom = \"{family}\"")
@@ -31,18 +33,17 @@ def gen_request(chart_type: ChartType, family=None, breed=None, forhunderedage=N
 
 	args = f" WHERE {' AND '.join(args)}" if args else ""
 
-	match chart_type:
-		case ChartType.CALVING:
-			sql = f"SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
-			sql += f"{args} GROUP BY velages.date"
+	if chart_type == ChartType.CALVING:
+		sql = "SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+		sql += f"{args} GROUP BY velages.date"
 
-		case ChartType.FULL_MOON:
-			sql = "SELECT velages.date FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
-			sql += args
+	elif chart_type == ChartType.FULL_MOON:
+		sql = "SELECT velages.date FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+		sql += args
 
-		case ChartType.BREED:
-			sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
-			sql += args
+	elif chart_type == ChartType.BREED:
+		sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
+		sql += args
 
 	return sql
 
