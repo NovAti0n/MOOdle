@@ -1,8 +1,6 @@
 import math, decimal, datetime
 from enum import IntEnum
 
-from pyparsing import Char
-
 class ChartType(IntEnum):
 	CALVING = 0
 	FULL_MOON = 1
