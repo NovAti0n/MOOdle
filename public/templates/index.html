@@ -94,11 +94,6 @@
 		</form>
 	</section>
 
-	<script>
-		var data = "{{my_data | safe}}"
-		var chart_id = "{{chart_id}}"
-	</script>
-
 	{% if chart_id == 3 %}
 		<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
 		<canvas width = "600px" height = "480px" class = "card graph" id = "paturage"></canvas>
@@ -115,6 +110,14 @@
 		<script src="/js/paturage.js" defer></script>
 	{% else %}
 		<canvas style="padding:32px" class="card graph" id="graph" width="600px" height="480px"></canvas>
+
+		<script>
+			var data = "{{my_data | safe}}"
+			var chart_id = "{{chart_id}}"
+
+			{{ static_include("js/chart.min.js") | safe }}
+			{{ static_include("js/main.js") | safe }}
+		</script>
 	{% endif %}
 </body>
 {% endblock %}

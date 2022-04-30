@@ -18,11 +18,6 @@
 	<body>
 		{% block content %}{% endblock %}
 
-		<script>
-			{{ static_include("js/chart.min.js") | safe }}
-			{{ static_include("js/main.js") | safe }}
-		</script>
-
 		<script id="vert-shader" type="x-shader/x-vertex">
 			{{ static_include("glsl/vert.glsl") | safe }}
 		</script>
