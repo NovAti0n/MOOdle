@@ -123,4 +123,4 @@ If you need to bypass this hook, use the `--no-verify` option:
 
 - [ ] Favicon
 - [ ] Toggle for 3D cow view (store user preferences server-side?)
-- [ ] Force Montserrat font (perhaps inline in CSS in order to prevent a separate request?)
+- [x] Force Montserrat font (perhaps inline in CSS in order to prevent a separate request?)

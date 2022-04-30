@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 :root {
 	/* default colourscheme is light because accessibility */
 
@@ -88,6 +90,8 @@ label {
 	background: var(--section-colour);
 	border-radius: 32px;
 	margin: 32px;
+
+	max-width: 100vw;
 }
 
 section {
