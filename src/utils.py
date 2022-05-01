@@ -25,12 +25,7 @@ def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None,
 		args.append(f"velages.date <= \"{escape(date_to)}\"")
 
 	if breed:
-		subargs = []
-
-		for i in breed:
-			subargs.append(f"type = \"{escape(i)}\"")
-
-		args.append(" OR ".join(subargs))
+		args.append(" OR ".join([f"type = \"{escape(i)}\"" for i in breed]))
 
 	if percentage:
 		args.append(f"animaux_types.pourcentage >= {escape(percentage)}")
