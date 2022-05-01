@@ -25,10 +25,10 @@ def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None,
 		args.append(f"velages.date <= \"{escape(date_to)}\"")
 
 	if breed:
-		args.append(f"t.type = \"{escape(breed)}\"")
+		args.append(f"type = \"{escape(breed)}\"")
 
 	if percentage:
-		args.append(f"at.pourcentage >= \"{escape(percentage)}\"")
+		args.append(f"animaux_types.pourcentage >= \"{escape(percentage)}\"")
 
 	args = f" WHERE {' AND '.join(args)}" if args else ""
 
@@ -42,8 +42,8 @@ def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None,
 			sql += args
 
 		case ChartType.BREED:
-			sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
-			sql += args
+			sql = "SELECT type, COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
+			sql += f"{args} GROUP BY type"
 
 	return sql
 
@@ -62,6 +62,3 @@ def is_full_moon(time):
 	index = math.floor(index)
 
 	return int(index) & 7 == 4
-
-
-
