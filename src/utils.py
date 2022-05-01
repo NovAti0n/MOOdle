@@ -1,5 +1,6 @@
 import math, decimal, datetime
 from enum import IntEnum
+from markupsafe import escape
 
 class ChartType(IntEnum):
 	CALVING = 0
@@ -15,19 +16,19 @@ def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None,
 	sql, args = "", []
 
 	if family:
-		args.append(f"f.nom = \"{family}\"")
+		args.append(f"f.nom = \"{escape(family)}\"")
 
 	if date_from:
-		args.append(f"velages.date >= \"{date_from}\"")
+		args.append(f"velages.date >= \"{escape(date_from)}\"")
 
 	if date_to:
-		args.append(f"velages.date <= \"{date_to}\"")
+		args.append(f"velages.date <= \"{escape(date_to)}\"")
 
 	if breed:
-		args.append(f"t.type = \"{breed}\"")
+		args.append(f"t.type = \"{escape(breed)}\"")
 
 	if percentage:
-		args.append(f"at.pourcentage >= \"{percentage}\"")
+		args.append(f"at.pourcentage >= \"{escape(percentage)}\"")
 
 	args = f" WHERE {' AND '.join(args)}" if args else ""
 
