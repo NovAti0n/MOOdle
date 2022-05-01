@@ -1,7 +1,7 @@
 var ctx = document.getElementById('graph').getContext('2d');
 
 
-let  labels = [];
+let labels = [];
 let graph_name = ""
 let chart_data = []
 let chart_type
@@ -45,7 +45,26 @@ switch(chart_id)
 }
 
 
-chart_opt = {responsive: false};
+chart_opt =
+{
+	responsive: false,
+	plugins:
+	{
+		zoom:
+		{
+			pan:{enabled:true},
+			zoom:
+			{
+				wheel:{enabled:true},
+				pinch : {enabled:true},
+				mode:"xy"
+			},
+			limits: {
+				y : {min: 0, max: 10}
+			}
+		}
+	}
+};
 
 
 if(chart_type)
@@ -85,7 +104,6 @@ if(chart_type)
 			type: chart_type,   // le type du graphique
 			options:chart_opt,
 			data: _data,
-
 		});
 
 }

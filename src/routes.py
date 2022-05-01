@@ -65,14 +65,18 @@ def index():
 
 				if chart_type == ChartType.BREED:
 					percentage = request.args.get("percentage", 0)
+					percentage = 0 if not percentage else percentage
 					breed = request.args.get("breed", None)
 
 					h = "Holstein" if request.args.get("h", None) else None
 					j = "Jersey" if request.args.get("j", None) else None
 					bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
 
+					if h is None and j is None and bbb is None:
+						error = "Vous devez sélectionner au moins une race !"
+
 					if int(percentage) < 0:
-						error = "Le forhunderedage ne peux pas être négatif !"
+						error = "Hehe petit filou le pourcentage ne peux pas être négatif !"
 
 					alexis_data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
 
