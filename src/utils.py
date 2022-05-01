@@ -6,7 +6,8 @@ class ChartType(IntEnum):
 	CALVING = 0
 	FULL_MOON = 1
 	BREED = 2
-	UNDEFINED = 3
+	PASTURE = 3
+	UNDEFINED = 4
 
 def validate_dates(first: str, second: str) -> bool:
 	first_bits, second_bits = first.split("-"), second.split("-")
@@ -44,6 +45,9 @@ def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None,
 		case ChartType.BREED:
 			sql = "SELECT type, COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
 			sql += f"{args} GROUP BY type"
+
+		case ChartType.PASTURE:
+			sql = "SELECT type, COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id LEFT JOIN animaux a on a.id = animaux_types.animal_id WHERE presence = 1 GROUP BY type"
 
 	return sql
 

@@ -180,6 +180,37 @@ input[type="radio"]:checked {
 	background: var(--accent-colour);
 }
 
+
+/* checkbox buttons */
+
+input[type="checkbox"] {
+	appearance: none;
+	margin: 0;
+
+	color: var(--accent-colour);
+	width: 1.15em;
+	height: 1.15em;
+	border: 0.15em solid var(--accent-colour);
+	border-radius: 50%;
+
+	transform: translateY(0.15em);
+	transition: background 120ms ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+	background: var(--accent-colour);
+}
+
+.error {
+	color: #721c24;
+	padding: 10px;
+	border: 1px solid #f7b1b7;
+	border-radius: 16px;
+	background-color: #f8d7da;
+	font-size: 60%;
+}
+
+
 /* input[type="radio"]::before {
 	content: "";
 	width: 1em;

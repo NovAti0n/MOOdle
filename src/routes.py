@@ -27,9 +27,13 @@ def index():
 	family = None
 	date_from = None
 	date_to = None
-	percentage = None
+	percentage = 0
 	breed = None
 	alexis_data = None
+	size = 10
+	cow_speed = 1
+	invert_gravity = 0
+
 
 	chart_type = ChartType.UNDEFINED
 
@@ -60,13 +64,33 @@ def index():
 					alexis_data = [n_full_moon, len(alexis_data) - n_full_moon]
 
 				if chart_type == ChartType.BREED:
-					percentage = request.args.get("percentage", None)
-					breed = request.args.get("race", None)
+					percentage = request.args.get("percentage", 0)
+					breed = request.args.get("breed", None)
+
+					h = "Holstein" if request.args.get("h", None) else None
+					j = "Jersey" if request.args.get("j", None) else None
+					bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
 
 					if int(percentage) < 0:
 						error = "Le forhunderedage ne peux pas être négatif !"
 
-					alexis_data = query(gen_request(chart_type, family=family, breed=breed, percentage=percentage))
+					alexis_data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
+
+				if chart_type == ChartType.PASTURE:
+					alexis_data = query(gen_request(chart_type))
+
+				if chart_type == ChartType.PASTURE:
+
+					size = request.args.get("cow_size",'10')
+					if size.isdigit():
+						size = int(size)
+					else:
+						error = "Cow size must be an number !"
+
+					cow_speed = request.args.get("cow_speed",1)
+					invert_gravity = 1 if request.args.get("invert_gravity",None) else 0
+
+
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -109,7 +133,10 @@ def index():
 		data=data,
 		error=error,
 		my_data = alexis_data,
-		chart_id = chart_type.value
+		chart_id = chart_type.value,
+		cow_size = size,
+		invert_gravity = invert_gravity,
+		cow_speed  = cow_speed
 	)
 
 def route_handler(app):

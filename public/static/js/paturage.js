@@ -1,6 +1,9 @@
 // matrices are all 4x4,
 // and are initialized as the identity matrix
 
+const COW_RATIO = 200 // this mean 1 cow is equal to ...
+
+
 class Matrix {
 	constructor(template) {
 		if (template) {
@@ -193,10 +196,11 @@ class Model {
 	}
 }
 
-const GRAVITY = -32
+const GRAVITY = invert_gravity == '1' ? 1 :-32 //-32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
 const SHADOW_SIZE = 2
+const SPEED = cow_speed
 
 function abs_min(x, y) {
 	if (Math.abs(x) < Math.abs(y)) {
@@ -253,8 +257,8 @@ class Cow {
 		// apply input acceleration & adjust for friction/drag
 		// here, we want our cow moving in its rotation direction at all times
 
-		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt
-		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt
+		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt * SPEED
+		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt * SPEED
 
 		// apply velocity, gravity acceleration, and friction/drag
 
@@ -396,8 +400,21 @@ class Paturage {
 
 		this.cows = []
 
-		for (let i = 0; i < 50; i++) {
-			this.cows.push(new Cow([this.jersey, this.holstein, this.bbb][(Math.random() * 3) | 0], Math.random() * 20, this.shadow))
+		console.log(data);
+
+		//TODO
+
+		for(let i = 0 ; i < data.length ; i+=2)
+		{
+			//Get the number of cow
+			let n_cow = data[i] == "Holstein" ? parseInt(data[i+1]) / 10: parseInt(data[i+1])
+			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
+
+			for(let j = 0 ; j < n_cow;j++)
+			{
+				this.cows.push(new Cow(breed, parseInt(cow_size), this.shadow))
+
+			}
 		}
 
 		// loop

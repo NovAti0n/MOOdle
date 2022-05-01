@@ -1,6 +1,5 @@
 var ctx = document.getElementById('graph').getContext('2d');
 
-data = data.split(',')
 
 let  labels = [];
 let graph_name = ""
@@ -34,9 +33,14 @@ switch(chart_id)
 
 	case '2':
 		graph_name = "Distribution des races dans la ferme"
-		chart_type = "bar"
-		//TODO ajouter la data
+		chart_type = "doughnut"
+		for(let i = 0 ; i < data.length ; i+=2)
+		{
+			labels.push(data[i])
+			chart_data.push(parseInt(data[i+1]))
+		}
 		break;
+
 
 }
 
