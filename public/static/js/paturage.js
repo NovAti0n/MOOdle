@@ -1,8 +1,12 @@
-// matrices are all 4x4,
-// and are initialized as the identity matrix
 
 class Matrix {
+	// matrices are all 4x4, and are initialized as the identity matrix
+	// I won't comment on the code here all that much because it's pretty much just computations
+
 	constructor(template) {
+		// if we pass a template matrix, copy it
+		// otherwise, initialize it to the 4x4 identity matrix
+
 		if (template) {
 			this.data = JSON.parse(JSON.stringify(template.data)) // I hate javascript 🙂
 			return
@@ -129,14 +133,22 @@ class Matrix {
 var identity = new Matrix()
 
 class Model {
+	// this class handles the buffer creation, rendering, and texturing of models
+
 	constructor(gl, model, tex_path) {
-		// load model
+		// gl:       instance of WebGLRenderingContext
+		// model:    the model we wanna load (these are simple JS objects located in public/static/models)
+		// tex_path: the path to the image we want to use as a texture (these are found in public/static/textures)
 
 		this.model = model
+
+		// create vertex buffer
 
 		this.vbo = gl.createBuffer()
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo)
 		gl.bufferData(gl.ARRAY_BUFFER, this.model.vertices, gl.STATIC_DRAW)
+
+		// create index buffer
 
 		this.ibo = gl.createBuffer()
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo)
@@ -151,30 +163,47 @@ class Model {
 		image.src = tex_path
 
 		image.onload = function() {
+			// set the contents of the texture object to our loaded image data
+
 			gl.bindTexture(gl.TEXTURE_2D, tex)
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image)
+
+			// set the minification/magnification filtering of our texture
+			// we want to bilinearly interpolate between mipmap levels when minifying, and bilinearly interpolate between textures when magnifying
 
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR)
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-			// WebGL 1.0 can be picky about non-POT textures, but here, all our textures are guaranteed POT
+			// WebGL 1.0 can be picky about non-POT textures, but here, all our textures are guaranteed POT, so we can generate mipmaps with no issue
 
 			gl.generateMipmap(gl.TEXTURE_2D)
 		}
 	}
 
 	draw(gl, render_state, model_matrix) {
+		// gl:           instance of WebGLRenderingContext
+		// render_state: the render_state object
+		// model_matrix: the model matrix to use to transform the model
+
 		// bind texture
+		// simply, set the active texture slot, pass it to the sampler uniform, and then bind the texture to that slot
 
-		gl.activeTexture(gl.TEXTURE0)
+		const slot = 0
+
+		gl.activeTexture(gl.TEXTURE0 + slot)
+		gl.uniform1i(render_state.sampler_uniform, slot)
+
 		gl.bindTexture(gl.TEXTURE_2D, this.tex)
-		gl.uniform1i(render_state.sampler_uniform, 0)
 
-		// set uniforms
+		// pass the model matrix of our model (so that's like its own translation/rotation/scale) to the model uniform
 
 		gl.uniformMatrix4fv(render_state.model_uniform, false, model_matrix.data.flat())
 
-		// draw buffers
+		// set buffers up for drawing
+		// the attribute layout here is as follows (in total, we use 8 32-bit floats per attribute so 32 bytes total):
+		// 0: 3 32-bit floats at offset 0 for the vertex positions
+		// 1: 2 32-bit floats at offset 12 for the texture coordinates
+		// 2: 3 32-bit floats at offset 20 for the normal vectors
 
 		let float_size = this.model.vertices.BYTES_PER_ELEMENT
 
@@ -189,10 +218,15 @@ class Model {
 		gl.vertexAttribPointer(render_state.tex_coord_attr, 2, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 3)
 		gl.vertexAttribPointer(render_state.normal_attr,    3, gl.FLOAT, gl.FALSE, float_size * 8, float_size * 5)
 
+		// finally, actually draw the model
+
 		gl.drawElements(gl.TRIANGLES, this.model.indices.length, gl.UNSIGNED_SHORT, 0)
 	}
 }
 
+// a few constants and a helper function
+
+const TAU = TAU
 const GRAVITY = -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
@@ -207,15 +241,25 @@ function abs_min(x, y) {
 }
 
 class Cow {
+	// an instance of a cow is an individual who kind of jumps around the place aimlessly
+
 	constructor (model, age, shadow) {
+		// model:  designated cow model (either this.holstein, this.jersey, or this.bbb)
+		// age:    the age of the cow (this controls its size; smaller cows are younger obviously)
+		// shadow: the shadow model (simply this.shadow in all cases)
+
 		this.model = model
 		this.age = age // controls the size of the cow
 		this.shadow = shadow
 
-		this.target_rot = Math.random() * 6.28
+		// give random inital rotation and position
+
+		this.target_rot = Math.random() * TAU
 
 		this.rot = this.target_rot
-		this.pos = [Math.random() * 4 - 2, 0, Math.random() * 4 - 2]
+		this.pos = [Math.random() * BOUNDS * 2 - BOUNDS, 0, Math.random() * BOUNDS * 2 - BOUNDS]
+
+		// a few physics values
 
 		this.vel = [0, 0, 0]
 		this.grounded = false
@@ -224,6 +268,8 @@ class Cow {
 	}
 
 	jump() {
+		// jump if not grounded
+
 		if (!this.grounded) {
 			return
 		}
@@ -232,6 +278,10 @@ class Cow {
 	}
 
 	draw(gl, render_state, dt) {
+		// gl:           instance of WebGLRenderingContext
+		// render_state: the render_state object
+		// dt:           time delta between frames (in seconds)
+
 		// "AI" computation
 
 		if (Math.random() < 0.5 * dt) {
@@ -253,8 +303,8 @@ class Cow {
 		// apply input acceleration & adjust for friction/drag
 		// here, we want our cow moving in its rotation direction at all times
 
-		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt
-		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt
+		this.vel[0] -= Math.cos(this.target_rot + TAU / 4) * friction[0] * dt
+		this.vel[2] += Math.sin(this.target_rot + TAU / 4) * friction[2] * dt
 
 		// apply velocity, gravity acceleration, and friction/drag
 
@@ -272,7 +322,7 @@ class Cow {
 		}
 
 		if (this.pos[0] > BOUNDS || this.pos[2] > BOUNDS || this.pos[0] < -BOUNDS || this.pos[2] < -BOUNDS) {
-			this.target_rot = Math.random() * 6.28
+			this.target_rot = Math.random() * TAU
 
 			this.pos[0] = Math.max(Math.min(this.pos[0], BOUNDS), -BOUNDS)
 			this.pos[2] = Math.max(Math.min(this.pos[2], BOUNDS), -BOUNDS)
@@ -280,7 +330,9 @@ class Cow {
 			this.vel = [0, 0, 0]
 		}
 
-		// render
+		// render cow
+		// create a model matrix for it depending on its position/age/rotation
+		// then, draw it
 
 		let model_matrix = new Matrix()
 		let scale = 0.1 + this.age / 100
@@ -290,6 +342,10 @@ class Cow {
 		model_matrix.scale(scale, scale, scale)
 
 		this.model.draw(gl, render_state, model_matrix)
+
+		// enable blending and reset the Y axis of the model matrix to render the shadow
+		// we also need to set the shadow uniform depending on the height of the cow (higher means smaller shadow)
+		// yeah this is a bit of a hacky way to do shadows, but it works okay!
 
 		gl.uniform1f(render_state.shadow_uniform, 1 - this.pos[1] / this.jump_height * scale)
 		gl.enable(gl.BLEND)
@@ -302,11 +358,13 @@ class Cow {
 	}
 }
 
-// actual rendering code
-
 class Paturage {
+	// actual rendering code
+	// Paturage does all the WebGL setup and handles the main loop/cows
+
 	constructor() {
 		// webgl setup
+		// this is all quite boilerplate-y stuff
 
 		let canvas = document.getElementById("paturage")
 		let error = document.getElementById("paturage-error")
@@ -329,6 +387,7 @@ class Paturage {
 		this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
 
 		// load shader program
+		// again, nothing interesting to comment on, this is all basically boilerplate
 
 		let vert_shader = this.gl.createShader(this.gl.VERTEX_SHADER)
 		let frag_shader = this.gl.createShader(this.gl.FRAGMENT_SHADER)
@@ -373,7 +432,7 @@ class Paturage {
 			shadow_uniform:  this.gl.getUniformLocation(this.program, "u_shadow")
 		}
 
-		// models
+		// load models
 
 		const quad_model = {
 			indices: new Uint16Array([0, 1, 2, 2, 3, 0]),
@@ -417,7 +476,7 @@ class Paturage {
 		// create matrices
 
 		let proj_matrix = new Matrix()
-		proj_matrix.perspective(6.28 / 4, this.y_res / this.x_res, 0.1, 500)
+		proj_matrix.perspective(TAU / 4, this.y_res / this.x_res, 0.1, 500)
 
 		let view_matrix = new Matrix()
 
@@ -446,6 +505,8 @@ class Paturage {
 		requestAnimationFrame((now) => this.render(now))
 	}
 }
+
+// create a new instance of Paturage when the page loads
 
 window.addEventListener("load", function(e) {
 	new Paturage()
