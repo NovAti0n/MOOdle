@@ -32,7 +32,7 @@
 		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '3' else "" }}><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage 🌱</label><br>
 
-		<!-- nombre de velages par jour -->
+		<!-- calvings per day -->
 
 		<form method="get" action="/" id="calving-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
@@ -49,7 +49,7 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- animaux nés en période de pleine lune  -->
+		<!-- full moon births per day  -->
 
 		<form method="get" action="/" id="moon-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
@@ -66,7 +66,7 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- distribution des races -->
+		<!-- breed distribution -->
 
 		<form method="get" action="/" id="breed-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Sélection de la race</p>
@@ -90,7 +90,7 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- paturage  -->
+		<!-- pasture  -->
 
 		<form method="get" action="/" id="paturage-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
@@ -118,9 +118,9 @@
 
 	{% if not error and request.args.get("chart", None) %}
 		<script>
-			var data = "{{ data | safe }}"
-			var chart_id = "{{ chart_id }}"
-			var cow_size = "{{ cow_size }}"
+			let data = "{{ data | safe }}"
+			let chart_id = "{{ chart_id }}"
+			let cow_size = "{{ cow_size }}"
 			let cow_speed = "{{ cow_speed }}"
 			let invert_gravity = "{{ invert_gravity }}"
 

@@ -31,9 +31,11 @@ def index():
 
 	if request.args:
 		if request.args.get("date_from", None) and request.args.get("date_to", None) and not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
+			# Dates are present in URL but not valid
 			error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
 
 		if len(request.args.getlist("chart")) > 0:
+			# Get all URL parameters
 			radio = request.args.getlist("chart")[0]
 			family = request.args.get("family", None)
 			date_from = request.args.get("date_from", None)
@@ -49,6 +51,7 @@ def index():
 					case ChartType.FULL_MOON:
 						data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
+						# Check if day is full moon or not
 						n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
 						data = [n_full_moon, len(data) - n_full_moon]
 

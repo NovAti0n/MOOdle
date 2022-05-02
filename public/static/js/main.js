@@ -68,6 +68,7 @@ if (chart_type) {
 				fill: false,
 				borderColor: "rgb(75, 192, 192)",
 				tension: 0.1,
+				// Sets rainbow colors for graphs
 				backgroundColor: [
 					"rgba(255, 99, 132, 0.4)",
 					"rgba(255, 159, 64, 0.4)",
