@@ -10,7 +10,7 @@ Website for LINFO1002-P2
 
 Create a Python virtual environment and activate it.
 
-On realOS:
+On Linux:
 
 ```sh
 % python3 -m venv env
@@ -42,7 +42,7 @@ You can deactivate the virtual environment by issuing:
 
 Make sure your virtual environment is still activated.
 
-On realOS:
+On Linux:
 
 ```sh
 % source env/bin/activate
@@ -73,7 +73,7 @@ Start the server:
 
 If you need Flask to run in development mode (enables live reload among other things), define an environment variable called `FLASK_ENV` with the value `development`.
 
-On realOS:
+On Linux:
 
 ```sh
 % export FLASK_ENV="development"
@@ -118,9 +118,3 @@ If you need to bypass this hook, use the `--no-verify` option:
 |`public/templates`|HTML code for all the different route templates.|
 |`src`|Server code.|
 |`work`|Working files, e.g. Blender projects for 3D models.|
-
-## To do
-
-- [ ] Favicon
-- [ ] Toggle for 3D cow view (store user preferences server-side?)
-- [x] Force Montserrat font (perhaps inline in CSS in order to prevent a separate request?)

@@ -4,7 +4,7 @@
 
 <body>
 	<section class="card">
-		<h1><b>Vasholog</b></h1>
+		<h1><b>MOOdle</b></h1>
 
 		{% if error %}
 		<p class="error">{{error}}</p>
@@ -18,7 +18,7 @@
 
 		<!-- chart type selector -->
 
-		<p class="form-divider">Chart type</p>
+		<p class="form-divider">Type de graphique</p>
 
 		<input type="radio" id="chart1" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '0' else "" }}>
 		<label for="chart1">Nombre de velages par jour 🐮</label><br>
@@ -35,15 +35,15 @@
 		<!-- nombre de velages par jour -->
 
 		<form method="get" action="/" id="calving-selector">
-			<p class = "form-divider">Family & date selection</p>
+			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="0" hidden>
 
-			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille" value={{request.args.get("famille", "")}}><br>
+			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
-			<label form="date_from">From</label>
+			<label form="date_from">De</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
-			<label form="date_to">to</label>
+			<label form="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
@@ -52,15 +52,15 @@
 		<!-- animaux nés en période de pleine lune  -->
 
 		<form method="get" action="/" id="moon-selector">
-			<p class = "form-divider">Family & date selection</p>
+			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="1" hidden>
 
-			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille"><br>
+			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family"><br>
 
-			<label form="date_from">From</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}} {{request.args.get("famille", "")}}">
+			<label form="date_from">De</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}} {{request.args.get("family", "")}}">
 
-			<label form="date_to">to</label>
+			<label form="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
@@ -69,65 +69,64 @@
 		<!-- distribution des races -->
 
 		<form method="get" action="/" id="breed-selector">
-			<p class = "form-divider">Breed selection</p>
+			<p class = "form-divider">Sélection de la race</p>
 			<input name="chart" value="2" hidden>
 
 			<div>
-				<input type="checkbox" id="h" name="h">
+				<input type="checkbox" id="h" name="h" {{ "checked" if request.args.get("h", None) else "" }}>
 				<label form="h">Holstein</label>
 			</div>
 
 			<div>
-				<input type="checkbox" id="j" name="j">
+				<input type="checkbox" id="j" name="j" {{ "checked" if request.args.get("j", None) else "" }}>
 				<label form="j">Jersey</label>
 			</div>
 
 			<div>
-				<input type="checkbox" id="bbb" name="bbb">
+				<input type="checkbox" id="bbb" name="bbb" {{ "checked" if request.args.get("bbb", None) else "" }}>
 				<label form="bbb²">Blanc Bleu Belge</label>
 			</div>
-			<input placeholder="Percentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100"><br>
+			<input placeholder="Pourcentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}"><br>
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
 		<!-- paturage  -->
 
 		<form method="get" action="/" id="paturage-selector">
-			<p class = "form-divider">Cow settings</p>
+			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
 
 
 			<div class="slidecontainer">
-				<label form="cow_size">Cow Size</label>
-				<input type="range" min="1" max="100" value="{{cow_size}}" name="cow_size" class="slider" id="cow_size">
+				<label form="cow_size">Taille des vaches</label>
+				<input type="range" min="1" max="100" value="{{ cow_size }}" name="cow_size" class="slider" id="cow_size">
 			</div>
 
 			<div class="slidecontainer">
-				<label form="cow_size">Cow Speed</label>
-				<input type="range" min="1" max="10" value="{{cow_speed}}" name="cow_speed" class="slider" id="cow_speed">
+				<label form="cow_size">Vitesse des vaches</label>
+				<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" class="slider" id="cow_speed">
 			</div>
 
 			<div>
 				<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if request.args.get("invert_gravity", None) else "" }}>
-				<label form="j">Invert gravity</label>
+				<label form="j">Inverser gravité</label>
 			</div>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
 	</section>
 
-	{% if not error %}
+	{% if not error and request.args.get("chart", None) %}
 		<script>
-			var data = "{{my_data | safe}}"
-			var chart_id = "{{chart_id}}"
-			var cow_size = "{{cow_size}}"
-			let cow_speed = "{{cow_speed}}"
-			let invert_gravity = "{{invert_gravity}}"
+			var data = "{{ data | safe }}"
+			var chart_id = "{{ chart_id }}"
+			var cow_size = "{{ cow_size }}"
+			let cow_speed = "{{ cow_speed }}"
+			let invert_gravity = "{{ invert_gravity }}"
 
 
 			const regex = /(\[\(|\)\]|\)|\(|,\)|\[|\]|\')/g
-			data = data.replace(regex,'')
-			data = data.split(',')
+			data = data.replace(regex, '').split(',')
 		</script>
 
 		{% if chart_id == 3 %}

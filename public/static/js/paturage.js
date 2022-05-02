@@ -1,9 +1,6 @@
 // matrices are all 4x4,
 // and are initialized as the identity matrix
 
-const COW_RATIO = 200 // this mean 1 cow is equal to ...
-
-
 class Matrix {
 	constructor(template) {
 		if (template) {
@@ -196,7 +193,7 @@ class Model {
 	}
 }
 
-const GRAVITY = invert_gravity == '1' ? 1 :-32 //-32
+const GRAVITY = invert_gravity === '1' ? 1 : -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
 const SHADOW_SIZE = 2
@@ -247,6 +244,9 @@ class Cow {
 		// physics computation
 		// really nothing complicated here, formulas come from a video of mine: https://www.youtube.com/watch?v=YG3Gd7Vr93o
 		// first, calculate friction/drag coefficients
+
+		// No advertising allowed Mr. Wibo
+		// - The FBI & CIA & NSA
 
 		let friction = [1.8, this.vel[1] > 0 ? 0 : 0.4, 1.8]
 
@@ -400,20 +400,13 @@ class Paturage {
 
 		this.cows = []
 
-		console.log(data);
-
-		//TODO
-
-		for(let i = 0 ; i < data.length ; i+=2)
-		{
-			//Get the number of cow
-			let n_cow = data[i] == "Holstein" ? parseInt(data[i+1]) / 10: parseInt(data[i+1])
+		for(let i = 0; i < data.length; i += 2) {
+			// Get the number of cow
+			let n_cow = data[i] == "Holstein" ? parseInt(data[i + 1]) / 10 : parseInt(data[i + 1])
 			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
 
-			for(let j = 0 ; j < n_cow;j++)
-			{
+			for(let j = 0; j < n_cow; j++) {
 				this.cows.push(new Cow(breed, parseInt(cow_size), this.shadow))
-
 			}
 		}
 
@@ -464,6 +457,6 @@ class Paturage {
 	}
 }
 
-window.addEventListener("load", function(e) {
+window.addEventListener("load", () => {
 	new Paturage()
 }, false)
