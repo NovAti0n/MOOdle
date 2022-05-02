@@ -7,6 +7,9 @@ venv/
 # Python cache
 __pycache__/
 
+# PyTest cache
+.pytest_cache/
+
 # All SQLite files (journals, dabatase, ...)
 db.sqlite3*
 
