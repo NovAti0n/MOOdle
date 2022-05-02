@@ -13,10 +13,10 @@ def init_db() -> None:
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
-	with click.progressbar(sorted(os.listdir("./src/sql/init")), label="Generating database...") as files:
+	with click.progressbar(sorted(os.listdir("./src/sql")), label="Generating database...") as files:
 		# Generate the database with files in sql/init
 		for i in files:
-			script = pathlib.Path(f"./src/sql/init/{i}").read_text()
+			script = pathlib.Path(f"./src/sql/{i}").read_text()
 			cursor.executescript(script)
 			db.commit()
 
