@@ -24,7 +24,7 @@ class Family:
 def index():
 	error = family = date_from = date_to = data = None
 	percentage = invert_gravity = 0
-	size = 10
+	cow_size = 10
 	cow_speed = 1
 
 	chart_type = ChartType.UNDEFINED
@@ -32,7 +32,7 @@ def index():
 	if request.args:
 		if request.args.get("date_from", None) and request.args.get("date_to", None) and not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
 			# Dates are present in URL but not valid
-			error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
+			error = "Les dates ne sont pas valides !"
 
 		if len(request.args.getlist("chart")) > 0:
 			# Get all URL parameters
@@ -41,46 +41,50 @@ def index():
 			date_from = request.args.get("date_from", None)
 			date_to = request.args.get("date_to", None)
 
-			if radio.isnumeric():
+			try:
 				chart_type = ChartType(int(radio))
 
-				match chart_type:
-					case ChartType.CALVING:
-						data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+			except ValueError:
+				error = "Ce type de graphique n'est pas valide !"
 
-					case ChartType.FULL_MOON:
-						data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+			match chart_type:
+				case ChartType.CALVING:
+					data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
-						# Check if day is full moon or not
-						n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
-						data = [n_full_moon, len(data) - n_full_moon]
+				case ChartType.FULL_MOON:
+					data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
-					case ChartType.BREED:
-						percentage = request.args.get("percentage", 0) or 0
+					# Check if day is full moon or not
+					n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
+					data = [n_full_moon, len(data) - n_full_moon]
 
-						h = "Holstein" if request.args.get("h", None) else None
-						j = "Jersey" if request.args.get("j", None) else None
-						bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
+				case ChartType.BREED:
+					percentage = request.args.get("percentage", 0) or 0
 
-						if h is None and j is None and bbb is None:
-							error = "Vous devez sélectionner au moins une race !"
+					h = "Holstein" if request.args.get("h", None) else None
+					j = "Jersey" if request.args.get("j", None) else None
+					bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
 
-						if int(percentage) < 0:
-							error = "Le pourcentage ne peux pas être négatif !"
+					if h is None and j is None and bbb is None:
+						error = "Vous devez sélectionner au moins une race !"
 
-						data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
+					if int(percentage) < 0 or int(percentage) > 100:
+						error = "Le pourcentage est invalide !"
 
-					case ChartType.PASTURE:
-						data = query(gen_request(chart_type))
-						size = request.args.get("cow_size", "10")
+					data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
 
-						if size.isdigit():
-							size = int(size)
-						else:
-							error = "Cow size must be an number !"
+				case ChartType.PASTURE:
+					data = query(gen_request(chart_type))
+					cow_size = request.args.get("cow_size", 10)
+					cow_speed = request.args.get("cow_speed", 1)
+					invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
 
-						cow_speed = request.args.get("cow_speed", 1)
-						invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
+					try:
+						if not (1 <= int(cow_size) <= 100) or not (1 <= int(cow_speed) <= 10):
+							raise ValueError
+
+					except ValueError:
+						error = "Certains paramètres sont invalides"
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -123,7 +127,7 @@ def index():
 		error=error,
 		data=data,
 		chart_id=chart_type.value,
-		cow_size=size,
+		cow_size=cow_size,
 		invert_gravity=invert_gravity,
 		cow_speed=cow_speed
 	)

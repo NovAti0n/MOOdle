@@ -22,7 +22,12 @@ def validate_dates(first: str, second: str) -> bool:
 		- bool: True if dates are correct, False otherwise
 	"""
 	first_bits, second_bits = first.split("-"), second.split("-")
-	return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
+
+	try:
+		return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
+
+	except ValueError:
+		return False
 
 def gen_request(chart_type: ChartType, family: None | str = None, breed: None | list[str | None] = None, percentage: None | str | int = None, date_from: None | str = None, date_to: None | str = None) -> str:
 	"""

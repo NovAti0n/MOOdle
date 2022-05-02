@@ -55,10 +55,10 @@
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="1" hidden>
 
-			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family"><br>
+			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
 			<label form="date_from">De</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}} {{request.args.get("family", "")}}">
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
 			<label form="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
