@@ -13,14 +13,18 @@
 		</style>
 
 		<title>{{ title + " - Statify" if title else "Statify" }}</title>
+		<link rel="icon" type="image/x-icon" href="/res/favico.png">
 	</head>
 
 	<body>
 		{% block content %}{% endblock %}
 
-		<script>
-			{{ static_include("js/chart.min.js") | safe }}
-			{{ static_include("js/main.js") | safe }}
+		<script id="vert-shader" type="x-shader/x-vertex">
+			{{ static_include("glsl/vert.glsl") | safe }}
+		</script>
+
+		<script id="frag-shader" type="x-shader/x-fragment">
+			{{ static_include("glsl/frag.glsl") | safe }}
 		</script>
 	</body>
 </html>
