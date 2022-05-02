@@ -1,5 +1,3 @@
-console.log("OK")
-
 class Matrix {
 	// matrices are all 4x4, and are initialized as the identity matrix
 	// I won't comment on the code here all that much because it's pretty much just computations
@@ -459,7 +457,7 @@ class Paturage {
 
 		for(let i = 0; i < data.length; i += 2) {
 			// Get the number of cow
-			let n_cow = data[i] == "Holstein" ? parseInt(data[i + 1]) / 10 : parseInt(data[i + 1])
+			let n_cow = parseInt(data[i + 1]) / 5
 			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
 
 			for(let j = 0; j < n_cow; j++) {
