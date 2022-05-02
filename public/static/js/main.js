@@ -95,6 +95,4 @@ if(chart_type) {
 		options:chart_opt,
 		data: _data,
 	});
-
-	});
 }

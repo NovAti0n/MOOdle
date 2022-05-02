@@ -20,8 +20,9 @@ def init_db() -> None:
 
 	with click.progressbar(compute_inheritance(), label="Updating database with inheritance...") as script:
 		for i in script:
-			cursor.execute(i)
-			db.commit()
+			for j in i:
+				cursor.execute(j)
+				db.commit()
 
 	db.close()
 
@@ -37,13 +38,20 @@ def query(statement: str, *args) -> list:
 	return result
 
 def compute_inheritance() -> list[str]:
+	"""
+	:pre: -
+	:post:
+		- return a list of query to insert inheritance into the data base
+	"""
 	parents = query("SELECT * FROM animaux_types")
+	parents.sort(key=lambda a : a[0])
 	ok = ~True + 2
 	result = {}
 
 	while not ok and len(parents) > 0:
-		id, kind, percentage = parents.pop()
+		id, kind, percentage = parents.pop(0)
 
+		#Get all velages with these parents
 		calving_id = query(f"SELECT id FROM velages WHERE mere_id = {int(id)} OR  pere_id = {int(id)} ")
 
 		if len(calving_id) > 0:
@@ -60,15 +68,15 @@ def compute_inheritance() -> list[str]:
 
 				# Check if both parent are same types
 				if result.get(animal_id[0][0], False):
-
 					# Compare the breed
-					breed = result[animal_id[0][0]].split(",")[1]
-
+					breed = result[animal_id[0][0]][0].split(",")[1]
 					if int(breed) == int(kind):
-						result[animal_id[0][0]] = f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance * 2});"
+						result[animal_id[0][0]] = [f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance * 2});"]
+					else:
+						result[animal_id[0][0]].append(request)
 
 				else:
-					result[animal_id[0][0]] = request
+					result[animal_id[0][0]] = [request]
 					parents.append([animal_id[0][0], kind, new_inheritance])
 
-	return list(result.values())
+	return [i for i in result.values()]
