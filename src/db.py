@@ -28,8 +28,6 @@ def init_db() -> None:
 	click.echo(f"Database generated in {round(time.time() - start, 2)}s")
 
 def query(statement: str, *args) -> list:
-	statement = statement.replace('🌟', '*')
-
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 

@@ -1,39 +1,41 @@
 import math, decimal, datetime
 from enum import IntEnum
+from markupsafe import escape
 
 class ChartType(IntEnum):
 	CALVING = 0
 	FULL_MOON = 1
 	BREED = 2
-	UNDEFINED = 3
+	PASTURE = 3
+	UNDEFINED = 4
 
 def validate_dates(first: str, second: str) -> bool:
 	first_bits, second_bits = first.split("-"), second.split("-")
 	return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
 
-def gen_request(chart_type: ChartType, family=None, breed=None, forhunderedage=None, date_from=None, date_to=None):
-	args = []
+def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None, date_from=None, date_to=None):
+	sql, args = "", []
 
 	if family:
-		args.append(f"f.nom = \"{family}\"")
+		args.append(f"f.nom = \"{escape(family)}\"")
 
 	if date_from:
-		args.append(f"velages.date >= \"{date_from}\"")
+		args.append(f"velages.date >= \"{escape(date_from)}\"")
 
 	if date_to:
-		args.append(f"velages.date <= \"{date_to}\"")
+		args.append(f"velages.date <= \"{escape(date_to)}\"")
 
 	if breed:
-		args.append(f"t.type = \"{breed}\"")
+		args.append(" OR ".join([f"type = \"{escape(i)}\"" for i in breed]))
 
-	if forhunderedage:
-		args.append(f"at.pourcentage >= \"{forhunderedage}\"")
+	if percentage:
+		args.append(f"animaux_types.pourcentage >= {escape(percentage)}")
 
 	args = f" WHERE {' AND '.join(args)}" if args else ""
 
 	match chart_type:
 		case ChartType.CALVING:
-			sql = f"SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
+			sql = "SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
 			sql += f"{args} GROUP BY velages.date"
 
 		case ChartType.FULL_MOON:
@@ -41,8 +43,11 @@ def gen_request(chart_type: ChartType, family=None, breed=None, forhunderedage=N
 			sql += args
 
 		case ChartType.BREED:
-			sql = "SELECT COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
-			sql += args
+			sql = "SELECT type, COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id"
+			sql += f"{args} GROUP BY type"
+
+		case ChartType.PASTURE:
+			sql = "SELECT type, COUNT(animal_id) FROM animaux_types LEFT JOIN types t on animaux_types.type_id = t.id LEFT JOIN animaux a on a.id = animaux_types.animal_id WHERE presence = 1 GROUP BY type"
 
 	return sql
 
@@ -61,6 +66,3 @@ def is_full_moon(time):
 	index = math.floor(index)
 
 	return int(index) & 7 == 4
-
-
-

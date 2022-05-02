@@ -3,12 +3,12 @@
 {% block content %}
 
 <body>
-	{% if error %}
-	<h2>{{error}}</h2>
-	{% endif %}
-
 	<section class="card">
-		<h1><b>Vasholog</b></h1>
+		<h1><b>MOOdle</b></h1>
+
+		{% if error %}
+		<p class="error">{{error}}</p>
+		{% endif %}
 
 		<datalist id="families-datalist">
 			{% for family in families.values() %}
@@ -18,33 +18,33 @@
 
 		<!-- chart type selector -->
 
-		<p class = "form-divider">Chart type</p>
+		<p class="form-divider">Type de graphique</p>
 
-		<input type="radio" id="chart1" name="chart-selector">
+		<input type="radio" id="chart1" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '0' else "" }}>
 		<label for="chart1">Nombre de velages par jour 🐮</label><br>
 
-		<input type="radio" id="chart2" name="chart-selector">
+		<input type="radio" id="chart2" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '1' else "" }}>
 		<label for="chart2">Animaux nés en période de pleine lune 🌙</label><br>
 
-		<input type="radio" id="chart3" name="chart-selector">
+		<input type="radio" id="chart3" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '2' else "" }}>
 		<label for="chart3">Distribution des races 📊</label><br>
 
-		<input type="radio" id="chart4" name="chart-selector" checked><span></span></input>
+		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '3' else "" }}><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage 🌱</label><br>
 
 		<!-- nombre de velages par jour -->
 
 		<form method="get" action="/" id="calving-selector">
-			<p class = "form-divider">Family & date selection</p>
+			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="0" hidden>
 
-			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille"><br>
+			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
-			<label form="date_from">From</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+			<label form="date_from">De</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
-			<label form="date_to">to</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required><br>
+			<label form="date_to">à</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
@@ -52,16 +52,16 @@
 		<!-- animaux nés en période de pleine lune  -->
 
 		<form method="get" action="/" id="moon-selector">
-			<p class = "form-divider">Family & date selection</p>
+			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="1" hidden>
 
-			<input class="input" placeholder="Family" list="families-datalist" id="family" name="famille"><br>
+			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family"><br>
 
-			<label form="date_from">From</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
+			<label form="date_from">De</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}} {{request.args.get("family", "")}}">
 
-			<label form="date_to">to</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required><br>
+			<label form="date_to">à</label>
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
@@ -69,55 +69,89 @@
 		<!-- distribution des races -->
 
 		<form method="get" action="/" id="breed-selector">
-			<p class = "form-divider">Breed selection</p>
+			<p class = "form-divider">Sélection de la race</p>
 			<input name="chart" value="2" hidden>
 
-			<input placeholder="Breed" class="input" list="families-datalist" id="breed" name="breed" required><br>
-			<input placeholder="Percentage" class="input" type="number" id="percentage" name="percentage" required><br>
+			<div>
+				<input type="checkbox" id="h" name="h" {{ "checked" if request.args.get("h", None) else "" }}>
+				<label form="h">Holstein</label>
+			</div>
 
+			<div>
+				<input type="checkbox" id="j" name="j" {{ "checked" if request.args.get("j", None) else "" }}>
+				<label form="j">Jersey</label>
+			</div>
+
+			<div>
+				<input type="checkbox" id="bbb" name="bbb" {{ "checked" if request.args.get("bbb", None) else "" }}>
+				<label form="bbb²">Blanc Bleu Belge</label>
+			</div>
+			<input placeholder="Pourcentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}"><br>
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
 		<!-- paturage  -->
 
 		<form method="get" action="/" id="paturage-selector">
-			<p class = "form-divider">Date selection</p>
+			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
 
-			<label form="date_from">From</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}" required>
 
-			<label form="date_to">to</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}" required><br>
+			<div class="slidecontainer">
+				<label form="cow_size">Taille des vaches</label>
+				<input type="range" min="1" max="100" value="{{ cow_size }}" name="cow_size" class="slider" id="cow_size">
+			</div>
+
+			<div class="slidecontainer">
+				<label form="cow_size">Vitesse des vaches</label>
+				<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" class="slider" id="cow_speed">
+			</div>
+
+			<div>
+				<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if request.args.get("invert_gravity", None) else "" }}>
+				<label form="j">Inverser gravité</label>
+			</div>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
 	</section>
 
-	{% if chart_id == 3 %}
-		<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
-		<canvas width = "600px" height = "480px" class = "card graph" id = "paturage"></canvas>
-
-		<!-- we don't need to load this straight away, -->
-		<!-- so we can defer it to after the page has rendered -->
-
-		<script src="/models/paturage.js" defer></script>
-
-		<script src="/models/holstein.js" defer></script>
-		<script src="/models/jersey.js" defer></script>
-		<script src="/models/bbb.js" defer></script>
-
-		<script src="/js/paturage.js" defer></script>
-	{% else %}
-		<canvas style="padding:32px" class="card graph" id="graph" width="600px" height="480px"></canvas>
-
+	{% if not error and request.args.get("chart", None) %}
 		<script>
-			var data = "{{my_data | safe}}"
-			var chart_id = "{{chart_id}}"
+			var data = "{{ data | safe }}"
+			var chart_id = "{{ chart_id }}"
+			var cow_size = "{{ cow_size }}"
+			let cow_speed = "{{ cow_speed }}"
+			let invert_gravity = "{{ invert_gravity }}"
 
-			{{ static_include("js/chart.min.js") | safe }}
-			{{ static_include("js/main.js") | safe }}
+
+			const regex = /(\[\(|\)\]|\)|\(|,\)|\[|\]|\')/g
+			data = data.replace(regex, '').split(',')
 		</script>
+
+		{% if chart_id == 3 %}
+			<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
+			<canvas width = "600px" height = "480px" class = "card graph" id = "paturage"></canvas>
+
+			<!-- we don't need to load this straight away, -->
+			<!-- so we can defer it to after the page has rendered -->
+
+
+			<script src="/models/paturage.js" defer></script>
+
+			<script src="/models/holstein.js" defer></script>
+			<script src="/models/jersey.js" defer></script>
+			<script src="/models/bbb.js" defer></script>
+
+			<script src="/js/paturage.js" defer></script>
+		{% else %}
+			<canvas style="padding:32px" class="card graph" id="graph" width="600px" height="480px"></canvas>
+
+			<script src="/js/chart.min.js"></script>
+			<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+			<script src="https://unpkg.com/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
+			<script src="/js/main.js"></script>
+		{% endif %}
 	{% endif %}
 </body>
 {% endblock %}

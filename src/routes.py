@@ -22,55 +22,64 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
-
-	error = None
-	data = None
-	family = None
-	date_from = None
-	date_to = None
-	forhunderedage = None
-	race = None
-	alexis_data = None
+	error = family = date_from = date_to = data = None
+	percentage = invert_gravity = 0
+	size = 10
+	cow_speed = 1
 
 	chart_type = ChartType.UNDEFINED
 
-
 	if request.args:
-		if request.args.get("date_from", None) and request.args.get("date_to", None):
-			if not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
-				error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
+		if request.args.get("date_from", None) and request.args.get("date_to", None) and not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
+			error = "Les dates ne sont pas valides (Date de fin inférieure à la date de début)"
 
 		if len(request.args.getlist("chart")) > 0:
 			radio = request.args.getlist("chart")[0]
-			family = request.args.get("famille", None)
+			family = request.args.get("family", None)
 			date_from = request.args.get("date_from", None)
 			date_to = request.args.get("date_to", None)
 
 			if radio.isnumeric():
 				chart_type = ChartType(int(radio))
 
-				if chart_type == ChartType.CALVING:
-					alexis_data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+				match chart_type:
+					case ChartType.CALVING:
+						data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
-				if chart_type == ChartType.FULL_MOON:
-					alexis_data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+					case ChartType.FULL_MOON:
+						data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
-					n_full_moon = 0
-					for i in alexis_data:
-						n_full_moon += 1 if is_full_moon(i[0]) else 0
+						n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
+						data = [n_full_moon, len(data) - n_full_moon]
 
-					alexis_data = [n_full_moon, len(alexis_data) - n_full_moon]
+					case ChartType.BREED:
+						percentage = request.args.get("percentage", 0) or 0
 
-				if chart_type == ChartType.BREED:
-					forhunderedage = request.args.get("percentage", None)
-					race = request.args.get("race", None)
+						h = "Holstein" if request.args.get("h", None) else None
+						j = "Jersey" if request.args.get("j", None) else None
+						bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
 
-					if int(forhunderedage) < 0:
-						error = "Le forhunderedage ne peux pas être négatif !"
+						if h is None and j is None and bbb is None:
+							error = "Vous devez sélectionner au moins une race !"
 
-					alexis_data = query(gen_request(chart_type, family=family, breed=breed, percentage=forhunderedage))
+						if int(percentage) < 0:
+							error = "Le pourcentage ne peux pas être négatif !"
 
-	families_sql = query("SELECT 🌟 FROM familles")
+						data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
+
+					case ChartType.PASTURE:
+						data = query(gen_request(chart_type))
+						size = request.args.get("cow_size", "10")
+
+						if size.isdigit():
+							size = int(size)
+						else:
+							error = "Cow size must be an number !"
+
+						cow_speed = request.args.get("cow_speed", 1)
+						invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
+
+	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
 	families_sql = sorted(families_sql, key = lambda family: family[1])
 
@@ -108,12 +117,14 @@ def index():
 		families=families,
 		min_date=min_date,
 		max_date=max_date,
-		data=data,
 		error=error,
-		my_data = alexis_data,
-		chart_id = chart_type.value
+		data=data,
+		chart_id=chart_type.value,
+		cow_size=size,
+		invert_gravity=invert_gravity,
+		cow_speed=cow_speed
 	)
 
 def route_handler(app):
-	app.add_url_rule("/", view_func=index, methods=["POST", "GET"])
-	app.add_url_rule("/index", view_func=index, methods=["POST", "GET"])
+	app.add_url_rule("/", view_func=index)
+	app.add_url_rule("/index", view_func=index)

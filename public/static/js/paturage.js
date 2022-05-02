@@ -224,13 +224,12 @@ class Model {
 	}
 }
 
-// a few constants and a helper function
-
 const TAU = TAU
-const GRAVITY = -32
+const GRAVITY = invert_gravity === '1' ? 1 : -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
 const SHADOW_SIZE = 2
+const SPEED = cow_speed
 
 function abs_min(x, y) {
 	if (Math.abs(x) < Math.abs(y)) {
@@ -294,6 +293,9 @@ class Cow {
 		// really nothing complicated here, formulas come from a video of mine: https://www.youtube.com/watch?v=YG3Gd7Vr93o
 		// first, calculate friction/drag coefficients
 
+		// No advertising allowed Mr. Wibo
+		// - The FBI & CIA & NSA
+
 		let friction = [1.8, this.vel[1] > 0 ? 0 : 0.4, 1.8]
 
 		if (this.grounded) {
@@ -303,8 +305,8 @@ class Cow {
 		// apply input acceleration & adjust for friction/drag
 		// here, we want our cow moving in its rotation direction at all times
 
-		this.vel[0] -= Math.cos(this.target_rot + TAU / 4) * friction[0] * dt
-		this.vel[2] += Math.sin(this.target_rot + TAU / 4) * friction[2] * dt
+		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt * SPEED
+		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt * SPEED
 
 		// apply velocity, gravity acceleration, and friction/drag
 
@@ -438,8 +440,8 @@ class Paturage {
 			indices: new Uint16Array([0, 1, 2, 2, 3, 0]),
 			vertices: new Float32Array([
 				-SHADOW_SIZE, 0, -SHADOW_SIZE, 0, 0, 0, 1, 0, // 0
-				 SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
-				 SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
+				SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
+				SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
 				-SHADOW_SIZE, 0,  SHADOW_SIZE, 0, 1, 0, 1, 0, // 3
 			])
 		}
@@ -455,8 +457,14 @@ class Paturage {
 
 		this.cows = []
 
-		for (let i = 0; i < 50; i++) {
-			this.cows.push(new Cow([this.jersey, this.holstein, this.bbb][(Math.random() * 3) | 0], Math.random() * 20, this.shadow))
+		for(let i = 0; i < data.length; i += 2) {
+			// Get the number of cow
+			let n_cow = data[i] == "Holstein" ? parseInt(data[i + 1]) / 10 : parseInt(data[i + 1])
+			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
+
+			for(let j = 0; j < n_cow; j++) {
+				this.cows.push(new Cow(breed, parseInt(cow_size), this.shadow))
+			}
 		}
 
 		// loop
@@ -507,7 +515,6 @@ class Paturage {
 }
 
 // create a new instance of Paturage when the page loads
-
-window.addEventListener("load", function(e) {
+window.addEventListener("load", () => {
 	new Paturage()
 }, false)
