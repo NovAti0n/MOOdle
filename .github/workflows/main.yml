@@ -26,5 +26,8 @@ jobs:
       - name: Test with editorconfig-checker
         run: ec -config .editorconfig
 
+      - name: Generate database
+        run: flask init-db
+
       - name: Test with pytest
         run: pytest tests
