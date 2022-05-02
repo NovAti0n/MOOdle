@@ -1,3 +1,4 @@
+console.log("OK")
 
 class Matrix {
 	// matrices are all 4x4, and are initialized as the identity matrix
@@ -224,7 +225,6 @@ class Model {
 	}
 }
 
-const TAU = TAU
 const GRAVITY = invert_gravity === '1' ? 1 : -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
@@ -253,7 +253,7 @@ class Cow {
 
 		// give random inital rotation and position
 
-		this.target_rot = Math.random() * TAU
+		this.target_rot = Math.random() * Math.PI * 2
 
 		this.rot = this.target_rot
 		this.pos = [Math.random() * BOUNDS * 2 - BOUNDS, 0, Math.random() * BOUNDS * 2 - BOUNDS]
@@ -324,7 +324,7 @@ class Cow {
 		}
 
 		if (this.pos[0] > BOUNDS || this.pos[2] > BOUNDS || this.pos[0] < -BOUNDS || this.pos[2] < -BOUNDS) {
-			this.target_rot = Math.random() * TAU
+			this.target_rot = Math.random() * Math.PI * 2
 
 			this.pos[0] = Math.max(Math.min(this.pos[0], BOUNDS), -BOUNDS)
 			this.pos[2] = Math.max(Math.min(this.pos[2], BOUNDS), -BOUNDS)
@@ -484,7 +484,7 @@ class Paturage {
 		// create matrices
 
 		let proj_matrix = new Matrix()
-		proj_matrix.perspective(TAU / 4, this.y_res / this.x_res, 0.1, 500)
+		proj_matrix.perspective(Math.PI / 2, this.y_res / this.x_res, 0.1, 500)
 
 		let view_matrix = new Matrix()
 
