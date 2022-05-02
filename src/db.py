@@ -70,8 +70,9 @@ def compute_inheritance() -> list[str]:
 				if result.get(animal_id[0][0], False):
 					# Compare the breed
 					breed = result[animal_id[0][0]][0].split(",")[1]
+					herithance = int(float(result[animal_id[0][0]][0].split(",")[2].replace(");","")))
 					if int(breed) == int(kind):
-						result[animal_id[0][0]] = [f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance * 2});"]
+						result[animal_id[0][0]] = [f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance  + herithance});"]
 					else:
 						result[animal_id[0][0]].append(request)
 

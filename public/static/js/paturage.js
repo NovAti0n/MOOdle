@@ -224,7 +224,7 @@ class Model {
 	}
 }
 
-const TAU = TAU
+const TAU = Math.TAU
 const GRAVITY = invert_gravity === '1' ? 1 : -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2
