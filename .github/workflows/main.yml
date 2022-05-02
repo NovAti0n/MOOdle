@@ -5,8 +5,9 @@ name: Tests
 on: [push]
 
 jobs:
-  build:
+  test:
 
+	name: Test application
     runs-on: ubuntu-latest
 
     steps:
