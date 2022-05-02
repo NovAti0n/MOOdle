@@ -96,13 +96,3 @@ if (chart_type) {
 		data: _data,
 	});
 }
-
-const disableNullFields = () => {
-	let inputs = document.getElementsByClassName("input")
-
-	for (let i = 0; i < inputs.length; i++) {
-		if (inputs.item(i).value == "") {
-			inputs.item(i).setAttribute("disabled", "")
-		}
-	}
-};
