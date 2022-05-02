@@ -34,7 +34,7 @@
 
 		<!-- nombre de velages par jour -->
 
-		<form method="get" action="/" id="calving-selector">
+		<form method="get" action="/" id="calving-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="0" hidden>
 
@@ -51,7 +51,7 @@
 
 		<!-- animaux nés en période de pleine lune  -->
 
-		<form method="get" action="/" id="moon-selector">
+		<form method="get" action="/" id="moon-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="1" hidden>
 
@@ -68,7 +68,7 @@
 
 		<!-- distribution des races -->
 
-		<form method="get" action="/" id="breed-selector">
+		<form method="get" action="/" id="breed-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Sélection de la race</p>
 			<input name="chart" value="2" hidden>
 
@@ -92,7 +92,7 @@
 
 		<!-- paturage  -->
 
-		<form method="get" action="/" id="paturage-selector">
+		<form method="get" action="/" id="paturage-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
 
