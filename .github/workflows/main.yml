@@ -1,3 +1,5 @@
+# editorconfig-checker-disable-file
+
 name: Tests
 
 on: [push]
