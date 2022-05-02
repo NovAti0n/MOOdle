@@ -7,7 +7,7 @@ on: [push]
 jobs:
   test:
 
-	name: Test application
+    name: Test application
     runs-on: ubuntu-latest
 
     steps:
