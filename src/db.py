@@ -6,11 +6,15 @@ import time
 
 @click.command("init-db")
 def init_db() -> None:
-	start = time.time()
+	"""
+	Initializes the database by executing every file in sql/init
+	"""
+	start = time.time() # Get current time
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
 	with click.progressbar(sorted(os.listdir("./src/sql/init")), label="Generating database...") as files:
+		# Generate the database with files in sql/init
 		for i in files:
 			script = pathlib.Path(f"./src/sql/init/{i}").read_text()
 			cursor.executescript(script)
@@ -19,6 +23,7 @@ def init_db() -> None:
 	click.echo("Computing inheritance... This may take a while...")
 
 	with click.progressbar(compute_inheritance(), label="Updating database with inheritance...") as script:
+		# Insert inheritance data
 		for i in script:
 			for j in i:
 				cursor.execute(j)
@@ -28,7 +33,17 @@ def init_db() -> None:
 
 	click.echo(f"Database generated in {round(time.time() - start, 2)}s")
 
-def query(statement: str, *args) -> list:
+def query(statement: str, *args: str) -> list:
+	"""
+	Queries the database
+
+	Args:
+		- statement (str): SQL query
+		- *args (str): Potential arguments to prevent SQL injection
+
+	Returns:
+		- list: Results of the query
+	"""
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 

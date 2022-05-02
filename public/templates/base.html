@@ -26,5 +26,17 @@
 		<script id="frag-shader" type="x-shader/x-fragment">
 			{{ static_include("glsl/frag.glsl") | safe }}
 		</script>
+
+		<script>
+			const disableNullFields = () => {
+				let inputs = document.getElementsByClassName("input")
+
+				for (let i = 0; i < inputs.length; i++) {
+					if (inputs.item(i).value == "") {
+						inputs.item(i).setAttribute("disabled", "")
+					}
+				}
+			};
+		</script>
 	</body>
 </html>

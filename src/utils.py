@@ -3,6 +3,7 @@ from enum import IntEnum
 from markupsafe import escape
 
 class ChartType(IntEnum):
+	# Yay! Enums in Python
 	CALVING = 0
 	FULL_MOON = 1
 	BREED = 2
@@ -10,10 +11,39 @@ class ChartType(IntEnum):
 	UNDEFINED = 4
 
 def validate_dates(first: str, second: str) -> bool:
-	first_bits, second_bits = first.split("-"), second.split("-")
-	return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
+	"""
+	Checks if dates are in a valid format (first date is before second date)
 
-def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None, date_from=None, date_to=None):
+	Args:
+		- first (str): First date to check
+		- second (str): Second date to check
+
+	Returns:
+		- bool: True if dates are correct, False otherwise
+	"""
+	first_bits, second_bits = first.split("-"), second.split("-")
+
+	try:
+		return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
+
+	except ValueError:
+		return False
+
+def gen_request(chart_type: ChartType, family: None | str = None, breed: None | list[str | None] = None, percentage: None | str | int = None, date_from: None | str = None, date_to: None | str = None) -> str:
+	"""
+	Generates a request based of arguments passed to the function
+
+	Args:
+		- chart_type (ChartType): Type of chart to visualize
+		- family (None | str): Family to visualize. Defaults to None
+		- breed (None | list[None | str]): Breeds to visualize. Defaults to None
+		- percentage (None | str | int): Minimum percentage to visualize. Defaults to None
+		- date_from (None | str): Minimum date from which to view. Defaults to None
+		- date_to (None | str): Maximum date until which to view. Defaults to None
+
+	Returns:
+		- str: SQL query
+	"""
 	sql, args = "", []
 
 	if family:
@@ -54,7 +84,16 @@ def gen_request(chart_type: ChartType, family=None, breed=None, percentage=None,
 # Based of a script by Sean B. Palmer (inamidst.com)
 # Source: https://gist.github.com/miklb/ed145757971096565723
 
-def is_full_moon(time):
+def is_full_moon(time: str) -> bool:
+	"""
+	Checks if a date is during a full moon period
+
+	Args:
+		- time (str): Date to check
+
+	Returns:
+		- bool: True if full moon period, False otherwise
+	"""
 	year, month, day = time.split("-")
 	dec = decimal.Decimal
 

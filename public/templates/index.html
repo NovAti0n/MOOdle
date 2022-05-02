@@ -32,9 +32,9 @@
 		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '3' else "" }}><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage 🌱</label><br>
 
-		<!-- nombre de velages par jour -->
+		<!-- calvings per day -->
 
-		<form method="get" action="/" id="calving-selector">
+		<form method="get" action="/" id="calving-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="0" hidden>
 
@@ -49,16 +49,16 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- animaux nés en période de pleine lune  -->
+		<!-- full moon births per day  -->
 
-		<form method="get" action="/" id="moon-selector">
+		<form method="get" action="/" id="moon-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="1" hidden>
 
-			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family"><br>
+			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
 			<label form="date_from">De</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}} {{request.args.get("family", "")}}">
+			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
 			<label form="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
@@ -66,9 +66,9 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- distribution des races -->
+		<!-- breed distribution -->
 
-		<form method="get" action="/" id="breed-selector">
+		<form method="get" action="/" id="breed-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Sélection de la race</p>
 			<input name="chart" value="2" hidden>
 
@@ -90,9 +90,9 @@
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
-		<!-- paturage  -->
+		<!-- pasture  -->
 
-		<form method="get" action="/" id="paturage-selector">
+		<form method="get" action="/" id="paturage-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
 
@@ -118,9 +118,9 @@
 
 	{% if not error and request.args.get("chart", None) %}
 		<script>
-			var data = "{{ data | safe }}"
-			var chart_id = "{{ chart_id }}"
-			var cow_size = "{{ cow_size }}"
+			let data = "{{ data | safe }}"
+			let chart_id = "{{ chart_id }}"
+			let cow_size = "{{ cow_size }}"
 			let cow_speed = "{{ cow_speed }}"
 			let invert_gravity = "{{ invert_gravity }}"
 
@@ -148,8 +148,8 @@
 			<canvas style="padding:32px" class="card graph" id="graph" width="600px" height="480px"></canvas>
 
 			<script src="/js/chart.min.js"></script>
-			<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
-			<script src="https://unpkg.com/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
+			<script src="js/hammer.min.js"></script>
+			<script src="js/chartjs-plugin-zoom.min.js"></script>
 			<script src="/js/main.js"></script>
 		{% endif %}
 	{% endif %}
