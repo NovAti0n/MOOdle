@@ -54,9 +54,10 @@ def query(statement: str, *args: str) -> list:
 
 def compute_inheritance() -> list[str]:
 	"""
-	:pre: -
-	:post:
-		- return a list of query to insert inheritance into the data base
+	Computes the percentage of breed inheritance
+
+	Returns:
+		- list[str]: SQL queries to add to the database
 	"""
 	parents = query("SELECT * FROM animaux_types")
 	parents.sort(key=lambda a : a[0])
@@ -67,7 +68,7 @@ def compute_inheritance() -> list[str]:
 		id, kind, percentage = parents.pop(0)
 
 		#Get all velages with these parents
-		calving_id = query(f"SELECT id FROM velages WHERE mere_id = {int(id)} OR  pere_id = {int(id)} ")
+		calving_id = query(f"SELECT id FROM velages WHERE mere_id = {int(id)} OR pere_id = {int(id)}")
 
 		if len(calving_id) > 0:
 			# Get the animal id
@@ -85,7 +86,8 @@ def compute_inheritance() -> list[str]:
 				if result.get(animal_id[0][0], False):
 					# Compare the breed
 					breed = result[animal_id[0][0]][0].split(",")[1]
-					herithance = int(float(result[animal_id[0][0]][0].split(",")[2].replace(");","")))
+					herithance = int(float(result[animal_id[0][0]][0].split(",")[2].replace(");", "")))
+
 					if int(breed) == int(kind):
 						result[animal_id[0][0]] = [f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance  + herithance});"]
 					else:
@@ -95,4 +97,4 @@ def compute_inheritance() -> list[str]:
 					result[animal_id[0][0]] = [request]
 					parents.append([animal_id[0][0], kind, new_inheritance])
 
-	return [i for i in result.values()]
+	return list(result.values())
