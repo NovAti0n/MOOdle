@@ -15,21 +15,21 @@ Create a Python virtual environment and activate it.
 On Linux:
 
 ```sh
-% python3 -m venv env
-% source env/bin/activate
+$ python3 -m venv env
+$ source env/bin/activate
 ```
 
 On Windows:
 
 ```powershell
-% python -m venv env
-% .\env\Scripts\activate
+> python -m venv env
+> .\env\Scripts\activate
 ```
 
 Install the requirements with `pip`:
 
 ```sh
-(env) % pip install -r requirements.txt
+(env) $ pip install -r requirements.txt
 ```
 
 (If this command isn't recognized, use `python3 -m pip install -r requirements.txt` instead).
@@ -37,7 +37,7 @@ Install the requirements with `pip`:
 You can deactivate the virtual environment by issuing:
 
 ```sh
-(env) % deactivate
+(env) $ deactivate
 ```
 
 ## Running Flask app
@@ -47,20 +47,20 @@ Make sure your virtual environment is still activated.
 On Linux:
 
 ```sh
-% source env/bin/activate
+$ source env/bin/activate
 ```
 
 On Windows:
 
 ```powershell
-% python -m venv env
-% .\env\Scripts\activate
+> python -m venv env
+> .\env\Scripts\activate
 ```
 
 Generate the database:
 
 ```sh
-% flask init-db
+$ flask init-db
 ```
 
 This process can take up to 2 minutes. Be patient.
@@ -68,7 +68,7 @@ This process can take up to 2 minutes. Be patient.
 Start the server:
 
 ```sh
-% flask run
+$ flask run
 ```
 
 ### Running in development environment
@@ -78,37 +78,13 @@ If you need Flask to run in development mode (enables live reload among other th
 On Linux:
 
 ```sh
-% export FLASK_ENV="development"
+$ export FLASK_ENV="development"
 ```
 
 On Windows (PowerShell):
 
 ```powershell
-% $env:FLASK_ENV="development"
-```
-
-## `pre-commit` hook
-
-The pre-commit hook does various things such as:
-
--   Making sure there are no terminated whitespaces in staged files
--   Making sure commit message does not contain non-ASCII characters
--   Making sure that the code complies with the `.editorconfig` rules
-
-### Enabling
-
-To enable the hook (highly recommended), copy the `.git-templates/hooks/pre-commit` file to `.git/hooks/pre-commit`:
-
-```sh
-% cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
-```
-
-### Bypassing
-
-If you need to bypass this hook, use the `--no-verify` option:
-
-```sh
-% git commit -m "db: Detailed commit message" --no-verify
+> $env:FLASK_ENV="development"
 ```
 
 ## Directory structure road guide
@@ -120,3 +96,40 @@ If you need to bypass this hook, use the `--no-verify` option:
 |`public/templates`|HTML code for all the different route templates.|
 |`src`|Server code.|
 |`work`|Working files, e.g. Blender projects for 3D models.|
+
+## Contributing
+
+If you want to contribute to MOOdle, you must install a few things to ensure that your code is complying with our code-style.
+
+### `editorconfig-checker`
+
+Install `editorconfig-checker` by running the following command in your virtual environment:
+
+```sh
+$ pip install editorconfig-checker
+```
+
+### `pre-commit` hook
+
+The pre-commit hook does various things such as:
+
+-   Making sure there are no terminated whitespaces in staged files
+-   Making sure commit message does not contain non-ASCII characters
+-   Making sure that the code complies with the `.editorconfig` rules
+
+#### Enabling
+
+To enable the hook (highly recommended), copy the `.git-templates/hooks/pre-commit` file to `.git/hooks/pre-commit`:
+
+```sh
+% cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
+```
+
+#### Bypassing
+
+If you need to bypass this hook, use the `--no-verify` option:
+
+```sh
+% git commit -m "db: Detailed commit message" --no-verify
+```
+
