@@ -11,7 +11,7 @@ def test_inheritance():
 		for i in range(len(test_cases)):
 			case = test_cases[i]
 			query_result = query(f"SELECT pourcentage FROM animaux_types where animal_id = {case}")
-			assert sum(query_result[0]) == 100
+			assert sum(query_result) == 100
 
 	except IndexError as e:
 		fail(str(e))
