@@ -1,4 +1,4 @@
-# Statify
+# MOOdle
 
 ![Workflow status](https://github.com/NovAti0n/Statify/actions/workflows/main.yml/badge.svg)
 
