@@ -1,3 +1,6 @@
+/*
+animal_id , velage_id
+*/
 INSERT INTO animaux_velages VALUES (2, 1);
 INSERT INTO animaux_velages VALUES (4, 2);
 INSERT INTO animaux_velages VALUES (6, 3);

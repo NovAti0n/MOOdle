@@ -1,8 +1,11 @@
+from ipaddress import v4_int_to_packed
+from termios import VLNEXT
 import click
 import sqlite3
 import os
 import pathlib
 import time
+import copy
 
 @click.command("init-db")
 def init_db() -> None:
@@ -25,8 +28,7 @@ def init_db() -> None:
 	with click.progressbar(compute_inheritance(), label="Updating database with inheritance...") as script:
 		# Insert inheritance data
 		for i in script:
-			for j in i:
-				cursor.execute(j)
+				cursor.execute(i)
 				db.commit()
 
 	db.close()
@@ -59,42 +61,70 @@ def compute_inheritance() -> list[str]:
 	Returns:
 		- list[str]: SQL queries to add to the database
 	"""
+
 	parents = query("SELECT * FROM animaux_types")
 	parents.sort(key=lambda a : a[0])
+
 	ok = ~True + 2
-	result = {}
+	map = {}
+	to_proceed = []
 
-	while not ok and len(parents) > 0:
-		id, kind, percentage = parents.pop(0)
+	# Add all parent in map
 
-		#Get all velages with these parents
-		calving_id = query(f"SELECT id FROM velages WHERE mere_id = {int(id)} OR pere_id = {int(id)}")
+	while(len(parents) > 0):
+		animal_id, type_id, pourcentage = parents.pop(0)
+		map[animal_id] = [(type_id,pourcentage)]
 
-		if len(calving_id) > 0:
-			# Get the animal id
-			for calving in [*zip(*calving_id)][0]:
-				animal_id = query(f"SELECT animal_id FROM animaux_velages WHERE velage_id = {calving}")
+	# Get all animals in the farm
 
-				# Get the sex
-				sex = query(f"SELECT sexe FROM animaux WHERE id = {animal_id[0][0]}")
+	with open("src/sql/insert_velages.sql","r") as file:
+		for i in file:
+			i = i .replace("INSERT INTO velages VALUES (","").replace("); ","").replace("\\n","").split(",")
+			to_proceed.append((int(i[0]),int(i[1]),int(i[2])))
 
-				# Divide the inheritance by 2
-				new_inheritance = percentage / 2
-				request = f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance});"
+	# Loop until all is proceed
 
-				# Check if both parent are same types
-				if result.get(animal_id[0][0], False):
-					# Compare the breed
-					breed = result[animal_id[0][0]][0].split(",")[1]
-					herithance = int(float(result[animal_id[0][0]][0].split(",")[2].replace(");", "")))
+	while not ok and len(to_proceed) > 0:
 
-					if int(breed) == int(kind):
-						result[animal_id[0][0]] = [f"INSERT INTO animaux_types VALUES ({animal_id[0][0]}, {kind}, {new_inheritance  + herithance});"]
-					else:
-						result[animal_id[0][0]].append(request)
+		for velage_id, mere_id, pere_id in to_proceed:
 
-				else:
-					result[animal_id[0][0]] = [request]
-					parents.append([animal_id[0][0], kind, new_inheritance])
+			#Check if both parents are here for this velage
 
-	return list(result.values())
+			if map.get(mere_id, False) and map.get(pere_id, False):
+
+				# Get the animal id
+
+				animal_id = query(f"SELECT animal_id FROM animaux_velages where velage_id = {velage_id}")
+				for calving in [*zip(*animal_id)][0]:
+					repartition = {1:0, 2:0, 3:0}
+
+					# Calculate the percentage
+					mother = map.get(mere_id, None)
+					father = map.get(pere_id, None)
+
+					for i in mother:
+						type_id, pourcentage = i
+						repartition[type_id] += pourcentage / 2
+					for i in father:
+						type_id, pourcentage = i
+						repartition[type_id] += pourcentage / 2
+
+					# Add the animal as a parent
+
+					inheritance = []
+					for key, value in repartition.items():
+						if value > 0:
+							inheritance.append((key, value))
+
+					map[calving] = list(inheritance)
+
+				to_proceed.remove((velage_id, mere_id, pere_id))
+
+
+	result = ["DELETE FROM animaux_types"]
+	for key, values in map.items():
+		for value in values:
+			req = f"INSERT INTO animaux_types VALUES ({key}, {value[0]}, {value[1]});\n"
+			result.append(req)
+
+	return list(result)

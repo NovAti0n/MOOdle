@@ -1,3 +1,6 @@
+/*
+animal_id, type_id, pourcentage
+*/
 INSERT INTO animaux_types VALUES (5292, 1, 100);
 INSERT INTO animaux_types VALUES (5214, 1, 100);
 INSERT INTO animaux_types VALUES (5282, 1, 100);
