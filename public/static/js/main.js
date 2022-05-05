@@ -7,7 +7,7 @@ let chart_type
 
 switch (chart_id) {
 	case "0":
-		graph_name = "Nombre de velages par jour"
+		graph_name = "Nombre de velages"
 		chart_type = "bar"
 
 		for (let i = 0; i < data.length; i += 2) {
@@ -91,7 +91,7 @@ if (chart_type) {
 		],
 	};
 
-	let myChart = new Chart(ctx, {
+	new Chart(ctx, {
 		type: chart_type,
 		options: chart_opt,
 		data: _data,

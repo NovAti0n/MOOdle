@@ -160,6 +160,12 @@ section {
 	padding: 16px;
 }
 
+.note {
+	color: #9a9a9a;
+	font-style: italic;
+	font-size: 12px;
+}
+
 /* radio buttons */
 
 input[type="radio"] {
