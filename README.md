@@ -53,7 +53,6 @@ $ source env/bin/activate
 On Windows:
 
 ```powershell
-> python -m venv env
 > .\env\Scripts\activate
 ```
 
@@ -87,19 +86,21 @@ On Windows (PowerShell):
 > $env:FLASK_ENV="development"
 ```
 
-## Directory structure road guide
+## Directory structure
 
 |Path|Description|
 |-|-|
 |`.github/workflows`|GitHub CI/CD workflows.|
-|`public/static`|Resources used by the webapp. This includes CSS stylesheets, GLSL vertex & fragment shaders, Javascript code (notably for chart rendering) and, finally, textures, images, models, and other graphics.|
+|`public/static`|Resources used by the webapp. This includes CSS stylesheets, GLSL vertex & fragment shaders, Javascript code (notably for chart rendering) and textures, images, models, and other graphics.|
 |`public/templates`|HTML code for all the different route templates.|
 |`src`|Server code.|
 |`work`|Working files, e.g. Blender projects for 3D models.|
 
 ## Contributing
 
-If you want to contribute to MOOdle, you must install a few things to ensure that your code is complying with our code-style.
+We follow OBS commit guidelines, more info [here](https://github.com/obsproject/obs-studio/blob/master/CONTRIBUTING.rst#commit-guidelines).
+
+Before contributing to MOOdle, you need to install some tools to check that your code follows our code style.
 
 ### `editorconfig-checker`
 
@@ -122,14 +123,19 @@ The pre-commit hook does various things such as:
 To enable the hook (highly recommended), copy the `.git-templates/hooks/pre-commit` file to `.git/hooks/pre-commit`:
 
 ```sh
-% cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
+$ cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
 ```
 
 #### Bypassing
 
 If you need to bypass this hook, use the `--no-verify` option:
+Bypassing is generally a bad idea, since this hook is also run in the GitHub workflow.
 
 ```sh
-% git commit -m "db: Detailed commit message" --no-verify
+$ git commit -m "db: Detailed commit message" --no-verify
 ```
 
+## Authors
+ - Alexis Englebert ([@alexisloic21](https://github.com/alexisloic21))
+ - Noa Quenon ([@NovAti0n](https://github.com/NovAti0n))
+ - Aymeric Wibo ([@obiwac](https://github.com/obiwac))
