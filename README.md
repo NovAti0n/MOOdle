@@ -136,6 +136,6 @@ $ git commit -m "db: Detailed commit message" --no-verify
 ```
 
 ## Authors
- - Alexis Englebert ([@alexisloic21](https://github.com/alexisloic21))
- - Noa Quenon ([@NovAti0n](https://github.com/NovAti0n))
- - Aymeric Wibo ([@obiwac](https://github.com/obiwac))
+- Alexis Englebert ([@alexisloic21](https://github.com/alexisloic21))
+- Noa Quenon ([@NovAti0n](https://github.com/NovAti0n))
+- Aymeric Wibo ([@obiwac](https://github.com/obiwac))
