@@ -15,6 +15,7 @@ def init_db() -> None:
 
 	with click.progressbar(sorted(os.listdir("./src/sql")), label="Generating database...") as files:
 		# Generate the database with files in /sql
+
 		for i in files:
 			script = pathlib.Path(f"./src/sql/{i}").read_text()
 			cursor.executescript(script)
@@ -24,9 +25,10 @@ def init_db() -> None:
 
 	with click.progressbar(compute_inheritance(), label="Updating database with inheritance...") as script:
 		# Insert inheritance data
+
 		for i in script:
-				cursor.execute(i)
-				db.commit()
+			cursor.execute(i)
+			db.commit()
 
 	db.close()
 

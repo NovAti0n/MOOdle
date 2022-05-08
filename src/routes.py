@@ -33,7 +33,7 @@ def index():
 		# Dates are present in URL but not valid
 		error = "Les dates ne sont pas valides !"
 
-	if len(request.args.getlist("chart")) > 0:
+	if len(request.args.getlist("chart")) > 0: # TODO can this simply be replaced by an implicit evaluation?
 		# Get all URL parameters
 		radio = request.args.getlist("chart")[0]
 		family = request.args.get("family", None)
@@ -49,12 +49,14 @@ def index():
 		match chart_type:
 			case ChartType.CALVING:
 				data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+				data = {k: v for k, v in data}
 
 			case ChartType.FULL_MOON:
 				data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
 				# Check if day is full moon or not
-				n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
+
+				n_full_moon = sum(map(is_full_moon, [*zip(*data)][0]))
 				data = [n_full_moon, len(data) - n_full_moon]
 
 			case ChartType.BREED:
@@ -62,15 +64,16 @@ def index():
 
 				h = "Holstein" if request.args.get("h", None) else None
 				j = "Jersey" if request.args.get("j", None) else None
-				bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
+				b = "Blanc Bleu Belge" if request.args.get("b", None) else None
 
-				if h is None and j is None and bbb is None:
+				if not any((h, j, b)):
 					error = "Vous devez sélectionner au moins une race !"
 
-				if int(percentage) < 0 or int(percentage) > 100:
+				if not 1 <= int(percentage) <= 100:
 					error = "Le pourcentage est invalide !"
 
-				data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
+				data = query(gen_request(chart_type, family=family, breed=[h, j, b], percentage=percentage))
+				data = {k: v for k, v in data}
 
 			case ChartType.PASTURE:
 				data = query(gen_request(chart_type))
@@ -78,11 +81,7 @@ def index():
 				cow_speed = request.args.get("cow_speed", 1)
 				invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
 
-				try:
-					if not (1 <= int(cow_size) <= 100) or not (1 <= int(cow_speed) <= 10):
-						raise ValueError
-
-				except ValueError:
+				if not 1 <= int(cow_size) <= 100 or not 1 <= int(cow_speed) <= 10:
 					error = "Certains paramètres sont invalides"
 
 	families_sql = query("SELECT * FROM familles")

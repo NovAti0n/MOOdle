@@ -94,6 +94,9 @@ def is_full_moon(time: str) -> bool:
 	Returns:
 		- bool: True if full moon period, False otherwise
 	"""
+
+	# print(time)
+
 	year, month, day = time.split("-")
 	dec = decimal.Decimal
 

@@ -83,8 +83,8 @@
 			</div>
 
 			<div>
-				<input type="checkbox" id="bbb" name="bbb" {{ "checked" if request.args.get("bbb", None) else "" }}>
-				<label form="bbb²">Blanc Bleu Belge</label>
+				<input type="checkbox" id="b" name="b" {{ "checked" if request.args.get("b", None) else "" }}>
+				<label form="b">Blanc Bleu Belge</label>
 			</div>
 			<input placeholder="Pourcentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}"><br>
 			<input class="button" type="submit" value="Afficher">
@@ -123,7 +123,8 @@
 	{% if not error and request.args.get("chart", None) %}
 		<script>
 			let data = {{ data | safe }}
-			let chart_id = "{{ chart_id }}"
+			let chart_id = {{ chart_id | safe }}
+
 			let cow_size = "{{ cow_size }}"
 			let cow_speed = "{{ cow_speed }}"
 			let invert_gravity = "{{ invert_gravity }}"

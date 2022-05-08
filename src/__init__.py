@@ -18,12 +18,15 @@ def static_include(path: str) -> str:
 	Args:
 		- path (str): path to file
 	"""
+
 	path = os.path.join(app.static_folder, path)
 
 	with open(path) as f:
 		return f.read()
 
 app.cli.add_command(init_db) # Registers init-db command to the cli
+
+# TODO check this funk out
 
 from src import routes # Import is at the bottom because of circular imports
 routes.route_handler(app)

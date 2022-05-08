@@ -438,8 +438,8 @@ class Paturage {
 			indices: new Uint16Array([0, 1, 2, 2, 3, 0]),
 			vertices: new Float32Array([
 				-SHADOW_SIZE, 0, -SHADOW_SIZE, 0, 0, 0, 1, 0, // 0
-				SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
-				SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
+				 SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
+				 SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
 				-SHADOW_SIZE, 0,  SHADOW_SIZE, 0, 1, 0, 1, 0, // 3
 			])
 		}
@@ -455,12 +455,12 @@ class Paturage {
 
 		this.cows = []
 
-		for(let i = 0; i < data.length; i += 2) {
+		for (let i = 0; i < data.length; i += 2) {
 			// Get the number of cow
 			let n_cow = parseInt(data[i + 1]) / 5
 			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
 
-			for(let j = 0; j < n_cow; j++) {
+			for (let j = 0; j < n_cow; j++) {
 				this.cows.push(new Cow(breed, parseInt(cow_size), this.shadow))
 			}
 		}

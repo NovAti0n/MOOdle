@@ -6,36 +6,36 @@ let chart_data = []
 let chart_type
 
 switch (chart_id) {
-	case "0":
+	case 0:
 		graph_name = "Nombre de velages"
 		chart_type = "bar"
 
-		for (let i = 0; i < data.length; i += 2) {
-			labels.push(data[i])
-			chart_data.push(parseInt(data[i + 1]))
+		for (let date in data) {
+			labels.push(date)
+			chart_data.push(data[date])
 		}
 
 		break
 
-	case "1":
+	case 1:
 		graph_name = "Animaux nés en période de pleine lune"
 		chart_type = "doughnut"
 
 		labels.push("Pleine lune")
-		labels.push("Hors pleine lune")
-
 		chart_data.push(parseInt(data[0]))
+
+		labels.push("Hors pleine lune")
 		chart_data.push(parseInt(data[1]))
 
 		break
 
-	case "2":
+	case 2:
 		graph_name = "Distribution des races"
 		chart_type = "doughnut"
 
-		for (let i = 0; i < data.length; i += 2) {
-			labels.push(data[i])
-			chart_data.push(parseInt(data[i + 1]))
+		for (let breed in data) {
+			labels.push(breed)
+			chart_data.push(data[breed])
 		}
 
 		break
