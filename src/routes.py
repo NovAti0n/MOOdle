@@ -29,62 +29,61 @@ def index():
 
 	chart_type = ChartType.UNDEFINED
 
-	if request.args:
-		if request.args.get("date_from", None) and request.args.get("date_to", None) and not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
-			# Dates are present in URL but not valid
-			error = "Les dates ne sont pas valides !"
+	if request.args.get("date_from", None) and request.args.get("date_to", None) and not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
+		# Dates are present in URL but not valid
+		error = "Les dates ne sont pas valides !"
 
-		if len(request.args.getlist("chart")) > 0:
-			# Get all URL parameters
-			radio = request.args.getlist("chart")[0]
-			family = request.args.get("family", None)
-			date_from = request.args.get("date_from", None)
-			date_to = request.args.get("date_to", None)
+	if len(request.args.getlist("chart")) > 0:
+		# Get all URL parameters
+		radio = request.args.getlist("chart")[0]
+		family = request.args.get("family", None)
+		date_from = request.args.get("date_from", None)
+		date_to = request.args.get("date_to", None)
 
-			try:
-				chart_type = ChartType(int(radio))
+		try:
+			chart_type = ChartType(int(radio))
 
-			except ValueError:
-				error = "Ce type de graphique n'est pas valide !"
+		except ValueError:
+			error = "Ce type de graphique n'est pas valide !"
 
-			match chart_type:
-				case ChartType.CALVING:
-					data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+		match chart_type:
+			case ChartType.CALVING:
+				data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
-				case ChartType.FULL_MOON:
-					data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+			case ChartType.FULL_MOON:
+				data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
 
-					# Check if day is full moon or not
-					n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
-					data = [n_full_moon, len(data) - n_full_moon]
+				# Check if day is full moon or not
+				n_full_moon = sum(1 if is_full_moon(i[0]) else 0 for i in data)
+				data = [n_full_moon, len(data) - n_full_moon]
 
-				case ChartType.BREED:
-					percentage = request.args.get("percentage", 0) or 0
+			case ChartType.BREED:
+				percentage = request.args.get("percentage", 0) or 0
 
-					h = "Holstein" if request.args.get("h", None) else None
-					j = "Jersey" if request.args.get("j", None) else None
-					bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
+				h = "Holstein" if request.args.get("h", None) else None
+				j = "Jersey" if request.args.get("j", None) else None
+				bbb = "Blanc Bleu Belge" if request.args.get("bbb", None) else None
 
-					if h is None and j is None and bbb is None:
-						error = "Vous devez sélectionner au moins une race !"
+				if h is None and j is None and bbb is None:
+					error = "Vous devez sélectionner au moins une race !"
 
-					if int(percentage) < 0 or int(percentage) > 100:
-						error = "Le pourcentage est invalide !"
+				if int(percentage) < 0 or int(percentage) > 100:
+					error = "Le pourcentage est invalide !"
 
-					data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
+				data = query(gen_request(chart_type, family=family, breed=[h, j, bbb], percentage=percentage))
 
-				case ChartType.PASTURE:
-					data = query(gen_request(chart_type))
-					cow_size = request.args.get("cow_size", 10)
-					cow_speed = request.args.get("cow_speed", 1)
-					invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
+			case ChartType.PASTURE:
+				data = query(gen_request(chart_type))
+				cow_size = request.args.get("cow_size", 10)
+				cow_speed = request.args.get("cow_speed", 1)
+				invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
 
-					try:
-						if not (1 <= int(cow_size) <= 100) or not (1 <= int(cow_speed) <= 10):
-							raise ValueError
+				try:
+					if not (1 <= int(cow_size) <= 100) or not (1 <= int(cow_speed) <= 10):
+						raise ValueError
 
-					except ValueError:
-						error = "Certains paramètres sont invalides"
+				except ValueError:
+					error = "Certains paramètres sont invalides"
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
