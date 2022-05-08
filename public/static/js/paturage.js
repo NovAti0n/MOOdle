@@ -438,8 +438,8 @@ class Paturage {
 			indices: new Uint16Array([0, 1, 2, 2, 3, 0]),
 			vertices: new Float32Array([
 				-SHADOW_SIZE, 0, -SHADOW_SIZE, 0, 0, 0, 1, 0, // 0
-				SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
-				SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
+				+SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
+				+SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
 				-SHADOW_SIZE, 0,  SHADOW_SIZE, 0, 1, 0, 1, 0, // 3
 			])
 		}
