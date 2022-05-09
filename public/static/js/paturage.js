@@ -347,8 +347,6 @@ class Cow {
 		// we also need to set the shadow uniform depending on the height of the cow (higher means smaller shadow)
 		// yeah this is a bit of a hacky way to do shadows, but it works okay!
 
-		console.log(1 - this.pos[1] / this.jump_height * scale)
-
 		gl.uniform1f(render_state.shadow_uniform, Math.max(1 - this.pos[1] / this.jump_height * scale, 0.01))
 		gl.enable(gl.BLEND)
 
