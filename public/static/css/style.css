@@ -238,11 +238,13 @@ input[type="range"] {
 	background-image: var(--gradient);
 	border-radius: 0.5em;
 	outline: none;
-	transition: height .2s;
 	cursor: pointer;
+
+	transition: box-shadow .2s, height .2s;
 }
 
 input[type="range"]:active {
+	box-shadow: var(--accent-shadow-colour) 0 8px 32px;
 	height: 0.7em;
 }
 
