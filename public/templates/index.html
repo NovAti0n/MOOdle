@@ -40,10 +40,10 @@
 
 			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
-			<label form="date_from">De</label>
+			<label for="date_from">De</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
-			<label form="date_to">à</label>
+			<label for="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
@@ -57,10 +57,10 @@
 
 			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
-			<label form="date_from">De</label>
+			<label for="date_from">De</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
-			<label form="date_to">à</label>
+			<label for="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
@@ -74,18 +74,19 @@
 
 			<div>
 				<input type="checkbox" id="h" name="h" {{ "checked" if request.args.get("h", None) else "" }}>
-				<label form="h">Holstein</label>
+				<label for="h">Holstein</label>
 			</div>
 
 			<div>
 				<input type="checkbox" id="j" name="j" {{ "checked" if request.args.get("j", None) else "" }}>
-				<label form="j">Jersey</label>
+				<label for="j">Jersey</label>
 			</div>
 
 			<div>
 				<input type="checkbox" id="b" name="b" {{ "checked" if request.args.get("b", None) else "" }}>
-				<label form="b">Blanc Bleu Belge</label>
+				<label for="b">Blanc Bleu Belge</label>
 			</div>
+
 			<input placeholder="Pourcentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}"><br>
 			<input class="button" type="submit" value="Afficher">
 		</form>
@@ -96,33 +97,30 @@
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
 
-			<label form="cow_size">Taille des vaches</label>
+			<label for="cow_size">Taille des vaches</label>
 			<input type="range" min="1" max="100" value="{{ cow_size }}" name="cow_size" id="cow_size">
 
-			<label form="cow_size">Vitesse des vaches</label>
+			<label for="cow_size">Vitesse des vaches</label>
 			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed">
 
 			<div>
 				<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if request.args.get("invert_gravity", None) else "" }}>
-				<label form="j">Inverser gravité</label>
+				<label for="invert_gravity">Inverser gravité</label>
 			</div>
 
-			<div>
-				<p class="note">Attention, cette représentation est à l'échelle 1:5. Nous ne sommes en aucun cas responsable de l'explosion de PCs plus anciens suite à une trop grande surchage du GPU.</p>
-			</div>
-
+			<p class="note">Attention, cette représentation est à l'échelle 1:5. Nous ne sommes en aucun cas responsable de l'explosion de PCs plus anciens suite à une trop grande surchage du GPU.</p>
 			<input class="button" type="submit" value="Afficher">
 		</form>
 	</section>
 
 	{% if not error and request.args.get("chart", None) %}
 		<script>
-			let data = {{ data | safe }}
-			let chart_id = {{ chart_id | safe }}
+			var data = {{ data | safe }}
+			var chart_id = {{ chart_id | safe }}
 
-			let cow_size = {{ cow_size }}
-			let cow_speed = {{ cow_speed }}
-			let invert_gravity = {{ invert_gravity }}
+			var cow_size = {{ cow_size }}
+			var cow_speed = {{ cow_speed }}
+			var invert_gravity = {{ invert_gravity }}
 		</script>
 
 		{% if chart_id == 3 %}
