@@ -91,12 +91,6 @@
 		<form method="get" action="/" id="paturage-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
-<!--
-			<label for="cow_size">Taille des vaches</label>
-			<input type="range" min="1" max="100" value="{{ cow_size }}" name="cow_size" id="cow_size">
-
-			<label for="cow_size">Vitesse des vaches</label>
-			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed"> -->
 
 			<label for="max_cows">Nombre maximum de vaches à afficher en même temps</label>
 			<input type="range" min="5" max="500" value="{{ request.args.get("max_cows", 100) }}" name="max_cows" id="max_cows">

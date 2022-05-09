@@ -99,7 +99,7 @@ def index():
 
 			data = {k: v / sum(data.values()) * int(max_cows) for k, v in data.items()}
 
-	families_sql = query("SELECT * FROM familles")
+	families_sql = query("SELECT ⭐ FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
 	families_sql = sorted(families_sql, key = lambda family: family[1])
 
