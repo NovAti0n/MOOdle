@@ -227,7 +227,7 @@ const GRAVITY = invert_gravity ? 0.3 : -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2.3
 const SHADOW_SIZE = 2
-const SPEED = 3
+const SPEED = 3 * cow_speed
 
 function abs_min(x, y) {
 	if (Math.abs(x) < Math.abs(y)) {
@@ -240,7 +240,7 @@ function abs_min(x, y) {
 class Cow {
 	// an instance of a cow is an individual who kind of jumps around the place aimlessly
 
-	constructor (model, age, shadow) {
+	constructor(model, age, shadow) {
 		// model:  designated cow model (either this.holstein, this.jersey, or this.bbb)
 		// age:    the age of the cow (this controls its size; smaller cows are younger obviously)
 		// shadow: the shadow model (simply this.shadow in all cases)
@@ -303,8 +303,8 @@ class Cow {
 		// apply input acceleration & adjust for friction/drag
 		// here, we want our cow moving in its rotation direction at all times
 
-		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt * SPEED
-		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt * SPEED
+		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt * SPEED * this.age / 50
+		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt * SPEED * this.age / 50
 
 		// apply velocity, gravity acceleration, and friction/drag
 
@@ -466,7 +466,7 @@ class Paturage {
 			}[breed]
 
 			for (let j = 0; j < cow_count; j++) {
-				this.cows.push(new Cow(model, 7 + 160 / cow_sum, this.shadow))
+				this.cows.push(new Cow(model, (7 + 160 / cow_sum) * (Math.random() / 2 + 0.5), this.shadow))
 			}
 		}
 

@@ -23,31 +23,32 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
-	# TODO necessary?
-
-	error = family = date_from = date_to = data = None
-	percentage = invert_gravity = 0
+	error = None
+	data = None
+	percentage = 0
 
 	chart_type = ChartType.UNDEFINED
 
 	date_from = request.args.get("date_from", "1990-01-01")
 	date_to   = request.args.get("date_to",   "1990-01-02")
 
+	family = request.args.get("family")
+
+	h = "Holstein"         if "h" in request.args else None
+	j = "Jersey"           if "j" in request.args else None
+	b = "Blanc Bleu Belge" if "b" in request.args else None
+
+	max_cows = request.args.get("max_cows", 250)
+	cow_speed = request.args.get("cow_speed", 1)
+	invert_gravity = 1 if "invert_gravity" in request.args else 0
+	random_cows = "random_cows" in request.args
+
 	if "date_from" in request.args and "date_to" in request.args and not validate_dates(date_from, date_to):
 		# Dates are present in URL but not valid
 		error = "Les dates ne sont pas valides !"
 
 	if request.args.getlist("chart"):
-		radio  = request.args.getlist("chart")[0]
-		family = request.args.get("family")
-
-		h = "Holstein"         if "h" in request.args else None
-		j = "Jersey"           if "j" in request.args else None
-		b = "Blanc Bleu Belge" if "b" in request.args else None
-
-		max_cows = request.args.get("max_cows", 250)
-		invert_gravity = 1 if "invert_gravity" in request.args else 0
-		random_cows = "random_cows" in request.args
+		radio = request.args.getlist("chart")[0]
 
 		try:
 			chart_type = ChartType(int(radio))
@@ -139,6 +140,7 @@ def index():
 		error=error,
 		data=data,
 		chart_id=chart_type.value,
+		cow_speed=cow_speed,
 		invert_gravity=invert_gravity,
 	)
 

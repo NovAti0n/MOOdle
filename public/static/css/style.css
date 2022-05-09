@@ -290,3 +290,11 @@ input[type="radio"]:checked::before {
 #chart2:checked ~ #moon-selector     { display: initial }
 #chart3:checked ~ #breed-selector    { display: initial }
 #chart4:checked ~ #paturage-selector { display: initial }
+
+#cow-note {
+	display: block;
+}
+
+#random_cows:checked ~ #cow-note {
+	display: none;
+}

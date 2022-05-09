@@ -98,8 +98,11 @@
 			<label for="cow_size">Vitesse des vaches</label>
 			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed"> -->
 
-			<label for="max_cows">Nombre max. à afficher en même temps</label>
+			<label for="max_cows">Nombre maximum de vaches à afficher en même temps</label>
 			<input type="range" min="5" max="500" value="{{ request.args.get("max_cows", 250) }}" name="max_cows" id="max_cows">
+
+			<label for="cow_speed">Multiplicateur de vitesse des vaches</label>
+			<input type="range" min="1" max="50" value="{{ request.args.get("cow_speed", 1) }}" name="cow_speed" id="cow_speed">
 
 			<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if "invert_gravity" in request.args else "" }}>
 			<label for="invert_gravity">Vers les cieux</label><br>
@@ -107,7 +110,7 @@
 			<input type="checkbox" id="random_cows" name="random_cows" {{ "checked" if "random_cows" in request.args else "" }}>
 			<label for="random_cows">Afficher une séléction aléatoire de vaches</label>
 
-			<p class="note">Attention, cette représentation est à l'échelle 1:5. Nous ne sommes en aucun cas responsable de l'explosion de PCs plus anciens suite à une trop grande surchage du GPU.</p>
+			<p class="note" id="cow-note"><b>ATTENTION</b> cette représentation est d'une <b>distribution</b> des vaches qui sont en ce moment même dans la ferme. Vous pouvez moduler le nombre <b>maximum</b> de vaches à afficher en même temps, mais nous ne sommes en aucun cas responsable de l'<b>explosion</b> de PCs plus anciens suite à une trop grande surchage du GPU.</p>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
@@ -118,6 +121,7 @@
 			var data = {{ data | safe }}
 			var chart_id = {{ chart_id | safe }}
 
+			var cow_speed = {{ cow_speed | safe }}
 			var invert_gravity = {{ invert_gravity | safe }}
 		</script>
 
