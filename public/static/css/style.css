@@ -53,12 +53,16 @@ body {
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
+
+	transition: background .2s, color .2s;
 }
 
 h1 {
 	color: var(--title-colour);
 	font-size: 70px;
 	margin-block: 0;
+
+	transition: color .2s;
 }
 
 h2 {
@@ -66,11 +70,15 @@ h2 {
 	font-size: 24px;
 	font-display: optional;
 	font-family: "Roboto Slab", serif;
+
+	transition: color .2s;
 }
 
 a {
 	color: var(--accent-colour);
 	text-decoration: none;
+
+	transition: color .2s;
 }
 
 b {
@@ -79,6 +87,8 @@ b {
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	font-weight: bold;
+
+	transition: background .2s;
 }
 
 label {
@@ -93,6 +103,8 @@ label {
 	margin: 32px;
 
 	max-width: 100vw;
+
+	transition: background .2s, box-shadow .2s;
 }
 
 @media only screen and (max-width: 600px) {
@@ -132,7 +144,7 @@ section {
 	font-weight: bold;
 
 	opacity: 100%;
-	transition: opacity 0.2s, box-shadow 0.2s, transform 0.2s;
+	transition: background .2s, color .2s, opacity .2s, box-shadow .2s, transform .2s;
 
 	float: right;
 }
@@ -158,6 +170,8 @@ section {
 
 	margin-block: 8px;
 	padding: 16px;
+
+	transition: background .2s, color .2s, box-shadow .2s;
 }
 
 .note {
