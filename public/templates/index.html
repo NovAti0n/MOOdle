@@ -91,15 +91,18 @@
 		<form method="get" action="/" id="paturage-selector" onsubmit="disableNullFields();">
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
-
+<!--
 			<label for="cow_size">Taille des vaches</label>
 			<input type="range" min="1" max="100" value="{{ cow_size }}" name="cow_size" id="cow_size">
 
 			<label for="cow_size">Vitesse des vaches</label>
-			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed">
+			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed"> -->
 
 			<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if request.args.get("invert_gravity", None) else "" }}>
-			<label for="invert_gravity">Inverser gravité</label>
+			<label for="invert_gravity">Inverser gravité</label><br>
+
+			<input type="checkbox" id="ded_cows" name="ded_cows" {{ "checked" if request.args.get("ded_cows", None) else "" }}>
+			<label for="ded_cows">Afficher vaches historiques</label>
 
 			<p class="note">Attention, cette représentation est à l'échelle 1:5. Nous ne sommes en aucun cas responsable de l'explosion de PCs plus anciens suite à une trop grande surchage du GPU.</p>
 

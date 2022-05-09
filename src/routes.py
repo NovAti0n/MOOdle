@@ -33,7 +33,7 @@ def index():
 		# Dates are present in URL but not valid
 		error = "Les dates ne sont pas valides !"
 
-	if len(request.args.getlist("chart")) > 0: # TODO can this simply be replaced by an implicit evaluation?
+	if request.args.getlist("chart"):
 		# Get all URL parameters
 		radio = request.args.getlist("chart")[0]
 		family = request.args.get("family", None)
