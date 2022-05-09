@@ -6,10 +6,6 @@
 	<section class="card">
 		<h1><b>MOOdle</b></h1>
 
-		{% if error %}
-		<p class="error">{{error}}</p>
-		{% endif %}
-
 		<datalist id="families-datalist">
 			{% for family in families.values() %}
 				<option value="{{ family.name }}">
@@ -110,7 +106,12 @@
 		</form>
 	</section>
 
-	{% if not error %}
+	{% if error %}
+		<section class="card error">
+			<p>{{ error }}</p>
+			<img src="https://cdn.discordapp.com/emojis/960935399092547614.webp?size=96&quality=lossless">
+		</section>
+	{% else %}
 		<script>
 			var data = {{ data | safe }}
 			var chart_id = {{ chart_id | safe }}

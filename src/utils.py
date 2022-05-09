@@ -1,13 +1,12 @@
 import math, decimal, datetime
-from enum import IntEnum
+from enum import IntEnum, auto
 from markupsafe import escape
 
 class ChartType(IntEnum):
-	# Yay! Enums in Python
-	CALVING = 0
+	CALVING   = 0
 	FULL_MOON = 1
-	BREED = 2
-	PASTURE = 3
+	BREED     = 2
+	PASTURE   = 3
 	UNDEFINED = 4
 
 def validate_dates(first: str, second: str) -> bool:
@@ -21,6 +20,10 @@ def validate_dates(first: str, second: str) -> bool:
 	Returns:
 		- bool: True if dates are correct, False otherwise
 	"""
+
+	if first is None and second is None:
+		return True
+
 	first_bits, second_bits = first.split("-"), second.split("-")
 
 	try:
