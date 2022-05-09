@@ -22,11 +22,13 @@ class Family:
 	def count(self):
 		return int(sum(self.breeds.values()))
 
-def error_template(error: str, families: OrderedDict) -> str:
+def error_template(error: str, families: OrderedDict, min_date: str, max_date: str) -> str:
 	return render_template(
 		"index.html",
 		title="Error",
 		families=families,
+		min_date=min_date,
+		max_date=max_date,
 		error=error
 	)
 
@@ -60,6 +62,13 @@ def index():
 			for breed_id, in breed_ids:
 				family.breeds[breed_id] += 1 / len(breed_ids)
 
+	# get minimum and maximum dates
+
+	dates = ["-".join(date[0].split('/')[::-1]) for date in query("SELECT date FROM velages")]
+
+	min_date = dates[0]
+	max_date = dates[-1]
+
 	# process arguments
 
 	data = None
@@ -82,7 +91,7 @@ def index():
 	proper_cows = "proper_cows" in request.args
 
 	if "date_from" in request.args and "date_to" in request.args and not validate_dates(date_from, date_to):
-		return error_template(f"Les dates (du {date_from} au {date_to}) ne sont pas valides", families)
+		return error_template(f"Les dates (du {date_from} au {date_to}) ne sont pas valides", families, min_date, max_date)
 
 	if request.args.getlist("chart"):
 		radio = request.args.getlist("chart")[0]
@@ -91,7 +100,7 @@ def index():
 			chart_type = ChartType(int(radio))
 
 		except ValueError:
-			return error_template(f"Ce type de graphique ({radio}) n'est pas valide", families)
+			return error_template(f"Ce type de graphique ({radio}) n'est pas valide", families, min_date, max_date)
 
 	match chart_type:
 		case ChartType.CALVING:
@@ -103,30 +112,34 @@ def index():
 
 			# Check if day is full moon or not
 
-			n_full_moon = sum(map(is_full_moon, [*zip(*data)][0]))
-			data = [n_full_moon, len(data) - n_full_moon]
+			if not data:
+				return error_template(f"Aucune donnée à propos de {family} entre les dates spécifiées trouvée", families, min_date, max_date)
+
+			else:
+				n_full_moon = sum(map(is_full_moon, [*zip(*data)][0]))
+				data = [n_full_moon, len(data) - n_full_moon]
 
 		case ChartType.BREED:
 			percentage = request.args.get("percentage", "0")
 
 			if sum(map(bool, (h, j, b))) < 2:
-				return error_template("Vous devez sélectionner au moins deux races", families)
+				return error_template("Vous devez sélectionner au moins deux races", families, min_date, max_date)
 
 			if not percentage.isnumeric():
-				return error_template(f"Le pourcentage ({percentage}%) n'est pas un nombre entier", families)
+				return error_template(f"Le pourcentage ({percentage}%) n'est pas un nombre entier", families, min_date, max_date)
 
 			if not 0 <= int(percentage) <= 100:
-				return error_template(f"Le pourcentage ({percentage}%) doit être en 0% et 100%", families)
+				return error_template(f"Le pourcentage ({percentage}%) doit être en 0% et 100%", families, min_date, max_date)
 
 			data = query(gen_request(chart_type, family=family, breed=[h, j, b], percentage=percentage))
 			data = {k: v for k, v in data}
 
 		case ChartType.PASTURE:
 			if not max_cows.isnumeric():
-				return error_template(f"Le nombre maximum de vaches ({max_cows}) n'est pas un nombre entier", families)
+				return error_template(f"Le nombre maximum de vaches ({max_cows}) n'est pas un nombre entier", families, min_date, max_date)
 
 			if not cow_speed.isnumeric():
-				return error_template(f"La vitesse des vaches ({cow_speed}) n'est pas un nombre entier", families)
+				return error_template(f"La vitesse des vaches ({cow_speed}) n'est pas un nombre entier", families, min_date, max_date)
 
 			if proper_cows:
 				data = query(gen_request(chart_type))
@@ -144,11 +157,6 @@ def index():
 			# normalize data and multiply it by the number of cows we want to draw
 
 			data = {k: v / sum(data.values()) * int(max_cows) for k, v in data.items()}
-
-	dates = ["-".join(date[0].split('/')[::-1]) for date in query("SELECT date FROM velages")]
-
-	min_date = dates[0]
-	max_date = dates[-1]
 
 	return render_template(
 		"index.html",
