@@ -292,9 +292,9 @@ input[type="radio"]:checked::before {
 #chart4:checked ~ #paturage-selector { display: initial }
 
 #cow-note {
-	display: block;
+	display: none;
 }
 
-#random_cows:checked ~ #cow-note {
-	display: none;
+#proper_cows:checked ~ #cow-note {
+	display: block;
 }

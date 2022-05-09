@@ -41,7 +41,7 @@ def index():
 	max_cows = request.args.get("max_cows", 250)
 	cow_speed = request.args.get("cow_speed", 1)
 	invert_gravity = 1 if "invert_gravity" in request.args else 0
-	random_cows = "random_cows" in request.args
+	proper_cows = "proper_cows" in request.args
 
 	if "date_from" in request.args and "date_to" in request.args and not validate_dates(date_from, date_to):
 		# Dates are present in URL but not valid
@@ -82,7 +82,11 @@ def index():
 				data = {k: v for k, v in data}
 
 			case ChartType.PASTURE:
-				if random_cows:
+				if proper_cows:
+					data = query(gen_request(chart_type))
+					data = {k: v for k, v in data}
+
+				else:
 					# generate a random distribution of cow breeds
 
 					data = {
@@ -90,10 +94,6 @@ def index():
 						"Jersey":           random.randint(50, 100),
 						"Blanc Bleu Belge": random.randint(50, 100),
 					}
-
-				else:
-					data = query(gen_request(chart_type))
-					data = {k: v for k, v in data}
 
 				# normalize data and multiply it by the number of cows we want to draw
 
