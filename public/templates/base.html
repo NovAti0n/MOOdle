@@ -43,14 +43,6 @@ Attention : premier arrivé, premier servi. Bonne chance !
 	<body>
 		{% block content %}{% endblock %}
 
-		<script id="vert-shader" type="x-shader/x-vertex">
-			{{ static_include("glsl/vert.glsl") | safe }}
-		</script>
-
-		<script id="frag-shader" type="x-shader/x-fragment">
-			{{ static_include("glsl/frag.glsl") | safe }}
-		</script>
-
 		<script>
 			const disableNullFields = () => {
 				let inputs = document.getElementsByClassName("input")
