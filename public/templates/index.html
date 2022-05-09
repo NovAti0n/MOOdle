@@ -126,7 +126,11 @@
 		</script>
 
 		{% if chart_id == 3 %}
-			<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
+			<section id="paturage-error" class="card error" hidden>
+				<p>Votre appareil ne supporte malheureusement pas l'option pâturage</p>
+				<img src="https://cdn.discordapp.com/emojis/960935399092547614.webp?size=96&quality=lossless">
+			</section>
+
 			<canvas width = "600px" height = "480px" class = "card graph" id = "paturage"></canvas>
 
 			<!-- we don't need to load this straight away, -->
@@ -150,5 +154,12 @@
 			</script>
 		{% endif %}
 	{% endif %}
+
+	<noscript>
+		<section class="card error">
+			<p>Ce site - à mon plus grand malheur - a besoin de Javascript pour fonctionner</p>
+			<img src="https://cdn.discordapp.com/emojis/960935399092547614.webp?size=96&quality=lossless">
+		</section>
+	</noscript>
 </body>
 {% endblock %}

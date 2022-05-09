@@ -12,6 +12,7 @@
 	--shadow-colour: rgba(0, 0, 0, 0.2);
 	--accent-shadow-colour: rgba(183, 0, 255, 0.487);
 	--border-radius: 6px;
+	--error-colour: #fcc
 }
 
 /* TODO media selectors for increased contrast ('prefers-contrast'), reduced motion ('prefers-reduced-motion'), reduced transparency ('prefers-reduced-transparency') */
@@ -30,6 +31,7 @@
 		--accent-colour: rgb(255, 52, 221);
 		--shadow-colour: transparent;
 		--accent-shadow-colour: #ff00cc29;
+		--error-colour: #211
 	}
 }
 
@@ -220,12 +222,10 @@ input[type="checkbox"]:checked {
 }
 
 .error {
-	color: #721c24;
-	padding: 10px;
-	border: 1px solid #f7b1b7;
-	border-radius: 16px;
-	background-color: #f8d7da;
-	font-size: 60%;
+	background-color: var(--error-colour);
+	text-align: center;
+
+	transition: box-shadow .2s, background .2s;
 }
 
 /* sliders */
