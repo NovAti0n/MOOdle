@@ -20,16 +20,16 @@
 
 		<p class="form-divider">Type de graphique</p>
 
-		<input type="radio" id="chart1" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '0' else "" }}>
+		<input type="radio" id="chart1" name="chart-selector" {{ "checked" if request.args.get("chart") == '0' else "" }}>
 		<label for="chart1">Nombre de velages par jour 🐮</label><br>
 
-		<input type="radio" id="chart2" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '1' else "" }}>
+		<input type="radio" id="chart2" name="chart-selector" {{ "checked" if request.args.get("chart") == '1' else "" }}>
 		<label for="chart2">Animaux nés en période de pleine lune 🌙</label><br>
 
-		<input type="radio" id="chart3" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '2' else "" }}>
+		<input type="radio" id="chart3" name="chart-selector"{{ "checked" if request.args.get("chart") == '2' else "" }}>
 		<label for="chart3">Distribution des races 📊</label><br>
 
-		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '3' else "" }}><span></span></input>
+		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", '3') == '3' else "" }}><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage 🌱</label><br>
 
 		<!-- calvings per day -->
@@ -40,10 +40,10 @@
 
 			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
-			<label form="date_from">De</label>
+			<label for="date_from">De</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
-			<label form="date_to">à</label>
+			<label for="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
@@ -57,10 +57,10 @@
 
 			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
-			<label form="date_from">De</label>
+			<label for="date_from">De</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
 
-			<label form="date_to">à</label>
+			<label for="date_to">à</label>
 			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
@@ -72,21 +72,17 @@
 			<p class = "form-divider">Sélection de la race</p>
 			<input name="chart" value="2" hidden>
 
-			<div>
-				<input type="checkbox" id="h" name="h" {{ "checked" if request.args.get("h", None) else "" }}>
-				<label form="h">Holstein</label>
-			</div>
+			<input type="checkbox" id="h" name="h" {{ "checked" if "h" in request.args else "" }}>
+			<label for="h">Holstein</label><br>
 
-			<div>
-				<input type="checkbox" id="j" name="j" {{ "checked" if request.args.get("j", None) else "" }}>
-				<label form="j">Jersey</label>
-			</div>
+			<input type="checkbox" id="j" name="j" {{ "checked" if "j" in request.args else "" }}>
+			<label for="j">Jersey</label><br>
 
-			<div>
-				<input type="checkbox" id="bbb" name="bbb" {{ "checked" if request.args.get("bbb", None) else "" }}>
-				<label form="bbb²">Blanc Bleu Belge</label>
-			</div>
+			<input type="checkbox" id="b" name="b" {{ "checked" if "b" in request.args else "" }}>
+			<label for="b">Blanc Bleu Belge</label><br>
+
 			<input placeholder="Pourcentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}"><br>
+
 			<input class="button" type="submit" value="Afficher">
 		</form>
 
@@ -96,50 +92,43 @@
 			<p class = "form-divider">Paramètres</p>
 			<input name="chart" value="3" hidden>
 
+			<label for="max_cows">Nombre maximum de vaches à afficher en même temps</label>
+			<input type="range" min="5" max="500" value="{{ request.args.get("max_cows", 100) }}" name="max_cows" id="max_cows">
 
-			<div class="slidecontainer">
-				<label form="cow_size">Taille des vaches</label>
-				<input type="range" min="1" max="100" value="{{ cow_size }}" name="cow_size" class="slider" id="cow_size">
-			</div>
+			<label for="cow_speed">Multiplicateur de vitesse des vaches</label>
+			<input type="range" min="1" max="50" value="{{ request.args.get("cow_speed", 4) }}" name="cow_speed" id="cow_speed">
 
-			<div class="slidecontainer">
-				<label form="cow_size">Vitesse des vaches</label>
-				<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" class="slider" id="cow_speed">
-			</div>
+			<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if "invert_gravity" in request.args else "" }}>
+			<label for="invert_gravity">Vers les cieux</label><br>
 
-			<div>
-				<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if request.args.get("invert_gravity", None) else "" }}>
-				<label form="j">Inverser gravité</label>
-			</div>
+			<input type="checkbox" id="proper_cows" name="proper_cows" {{ "checked" if "proper_cows" in request.args else "" }}>
+			<label for="proper_cows">Utiliser la distribution réelle de vaches dans la ferme</label>
 
-			<div>
-				<p class="note">Attention, cette représentation est à l'échelle 1:5. Nous ne sommes en aucun cas responsable de l'explosion de PCs plus anciens suite à une trop grande surchage du GPU.</p>
-			</div>
+			<p class="note" id="cow-note"><b>ATTENTION</b> cette représentation est d'une <b>distribution</b> des vaches qui sont en ce moment même dans la ferme. Vous pouvez moduler le nombre <b>maximum</b> de vaches à afficher en même temps, mais nous ne sommes en aucun cas responsable de l'<b>explosion</b> de PCs plus anciens suite à une trop grande surchage du GPU.</p>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
 	</section>
 
-	{% if not error and request.args.get("chart", None) %}
+	{% if not error %}
 		<script>
-			let data = "{{ data | safe }}"
-			let chart_id = "{{ chart_id }}"
-			let cow_size = "{{ cow_size }}"
-			let cow_speed = "{{ cow_speed }}"
-			let invert_gravity = "{{ invert_gravity }}"
+			var data = {{ data | safe }}
+			var chart_id = {{ chart_id | safe }}
 
-
-			const regex = /(\[\(|\)\]|\)|\(|,\)|\[|\]|\')/g
-			data = data.replace(regex, '').split(',')
+			var cow_speed = {{ cow_speed | safe }}
+			var invert_gravity = {{ invert_gravity | safe }}
 		</script>
 
 		{% if chart_id == 3 %}
-			<p id = "paturage-error" class = "error" hidden>Votre appareil ne supporte pas l'option pâturage</p>
+			<section id="paturage-error" class="card error" hidden>
+				<p>Votre appareil ne supporte malheureusement pas l'option pâturage</p>
+				<img src="https://cdn.discordapp.com/emojis/960935399092547614.webp?size=96&quality=lossless">
+			</section>
+
 			<canvas width = "600px" height = "480px" class = "card graph" id = "paturage"></canvas>
 
 			<!-- we don't need to load this straight away, -->
 			<!-- so we can defer it to after the page has rendered -->
-
 
 			<script src="/models/paturage.js" defer></script>
 
@@ -151,11 +140,20 @@
 		{% else %}
 			<canvas style="padding:32px" class="card graph" id="graph" width="600px" height="480px"></canvas>
 
-			<script src="/js/chart.min.js"></script>
-			<script src="js/hammer.min.js"></script>
-			<script src="js/chartjs-plugin-zoom.min.js"></script>
-			<script src="/js/main.js"></script>
+			<script>
+				{{ static_include("js/chart.min.js") | safe }}
+				{{ static_include("js/hammer.min.js") | safe }}
+				{{ static_include("js/chartjs-plugin-zoom.min.js") | safe }}
+				{{ static_include("js/main.js") | safe }}
+			</script>
 		{% endif %}
 	{% endif %}
+
+	<noscript>
+		<section class="card error">
+			<p>Ce site - à mon plus grand malheur - a besoin de Javascript pour fonctionner</p>
+			<img src="https://cdn.discordapp.com/emojis/960935399092547614.webp?size=96&quality=lossless">
+		</section>
+	</noscript>
 </body>
 {% endblock %}
