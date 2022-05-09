@@ -113,6 +113,8 @@ section {
 .graph {
 	max-width: 600px;
 	max-height: 480px;
+
+	cursor: pointer;
 }
 
 .form-divider {

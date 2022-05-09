@@ -223,6 +223,7 @@ class Model {
 	}
 }
 
+const TAU = Math.PI * 2
 const GRAVITY = invert_gravity ? 0.3 : -32
 const JUMP_HEIGHT = 0.7
 const BOUNDS = 2.3
@@ -251,7 +252,7 @@ class Cow {
 
 		// give random initial rotation and position
 
-		this.target_rot = Math.random() * Math.PI * 2
+		this.target_rot = Math.random() * TAU
 
 		this.rot = this.target_rot
 		this.pos = [Math.random() * BOUNDS * 2 - BOUNDS, 0, Math.random() * BOUNDS * 2 - BOUNDS]
@@ -264,6 +265,10 @@ class Cow {
 		this.jump_height = JUMP_HEIGHT
 	}
 
+	force_jump() {
+		this.vel[1] = Math.sqrt(-2 * GRAVITY * this.jump_height)
+	}
+
 	jump() {
 		// jump if not grounded
 
@@ -271,7 +276,7 @@ class Cow {
 			return
 		}
 
-		this.vel[1] = Math.sqrt(-2 * GRAVITY * this.jump_height)
+		this.force_jump()
 	}
 
 	draw(gl, render_state, dt) {
@@ -322,7 +327,7 @@ class Cow {
 		}
 
 		if (this.pos[0] > BOUNDS || this.pos[2] > BOUNDS || this.pos[0] < -BOUNDS || this.pos[2] < -BOUNDS) {
-			this.target_rot = Math.random() * Math.PI * 2
+			this.target_rot = Math.random() * TAU
 
 			this.pos[0] = Math.max(Math.min(this.pos[0], BOUNDS), -BOUNDS)
 			this.pos[2] = Math.max(Math.min(this.pos[2], BOUNDS), -BOUNDS)
@@ -472,6 +477,9 @@ class Paturage {
 
 		// loop
 
+		this.target_fov = TAU / 4
+		this.fov = TAU / 5
+
 		this.prev = 0
 		requestAnimationFrame((now) => this.render(now))
 	}
@@ -486,8 +494,10 @@ class Paturage {
 
 		// create matrices
 
+		this.fov += (this.target_fov - this.fov) * dt * 5
+
 		let proj_matrix = new Matrix()
-		proj_matrix.perspective(Math.PI / 2, this.y_res / this.x_res, 0.1, 500)
+		proj_matrix.perspective(this.fov, this.y_res / this.x_res, 0.1, 500)
 
 		let view_matrix = new Matrix()
 
@@ -515,9 +525,20 @@ class Paturage {
 
 		requestAnimationFrame((now) => this.render(now))
 	}
+
+	click() {
+		this.fov = TAU / 4.3
+
+		for (let cow of this.cows) {
+			cow.force_jump()
+		}
+	}
 }
 
 // create a new instance of Paturage when the page loads
+
+var paturage
+
 window.addEventListener("load", () => {
-	new Paturage()
+	paturage = new Paturage()
 }, false)
