@@ -249,7 +249,7 @@ class Cow {
 		this.age = age // controls the size of the cow
 		this.shadow = shadow
 
-		// give random inital rotation and position
+		// give random initial rotation and position
 
 		this.target_rot = Math.random() * Math.PI * 2
 
@@ -347,7 +347,9 @@ class Cow {
 		// we also need to set the shadow uniform depending on the height of the cow (higher means smaller shadow)
 		// yeah this is a bit of a hacky way to do shadows, but it works okay!
 
-		gl.uniform1f(render_state.shadow_uniform, 1 - this.pos[1] / this.jump_height * scale)
+		console.log(1 - this.pos[1] / this.jump_height * scale)
+
+		gl.uniform1f(render_state.shadow_uniform, Math.max(1 - this.pos[1] / this.jump_height * scale, 0.01))
 		gl.enable(gl.BLEND)
 
 		model_matrix.translate(0, (-this.pos[1] + ++render_state.shadow_layer / 10000) / scale, 0)
