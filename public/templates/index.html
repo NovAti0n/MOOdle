@@ -126,7 +126,7 @@
 				<img src="https://media.discordapp.net/attachments/965729628218093580/973187724024627210/legitsad.png">
 			</section>
 
-			<canvas width = "600px" height = "480px" class = "card graph" id = "paturage"></canvas>
+			<canvas width="664px" height="480px" class="card graph" id="paturage"></canvas>
 
 			<!-- we don't need to load this straight away, -->
 			<!-- so we can defer it to after the page has rendered -->
@@ -139,7 +139,7 @@
 
 			<script src="/js/paturage.js" defer></script>
 		{% else %}
-			<canvas style="padding:32px" class="card graph" id="graph" width="600px" height="480px"></canvas>
+			<canvas style="padding:32px" width="664px" height="480px" class="card graph" id="graph"></canvas>
 
 			<script>
 				{{ static_include("js/chart.min.js") | safe }}
