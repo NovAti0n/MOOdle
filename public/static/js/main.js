@@ -42,7 +42,7 @@ switch (chart_id) {
 }
 
 chart_opt = {
-	responsive: false,
+	responsive: true,
 	plugins: {
 		zoom: {
 			pan: { enabled: true },
@@ -61,34 +61,16 @@ chart_opt = {
 if (chart_type) {
 	const _data = {
 		labels: labels,
-		datasets: [
-			{
-				label: graph_name,
-				data: chart_data,
-				fill: false,
-				borderColor: "rgb(75, 192, 192)",
-				tension: 0.1,
-				// Sets rainbow colors for graphs
-				backgroundColor: [
-					"rgba(255, 99, 132, 0.4)",
-					"rgba(255, 159, 64, 0.4)",
-					"rgba(255, 205, 86, 0.4)",
-					"rgba(75, 192, 192, 0.4)",
-					"rgba(54, 162, 235, 0.4)",
-					"rgba(153, 102, 255, 0.4)",
-					"rgba(201, 203, 207, 0.4)",
-				],
-				borderColor: [
-					"rgb(255, 99, 132)",
-					"rgb(255, 159, 64)",
-					"rgb(255, 205, 86)",
-					"rgb(75, 192, 192)",
-					"rgb(54, 162, 235)",
-					"rgb(153, 102, 255)",
-					"rgb(201, 203, 207)",
-				],
-			},
-		],
+		datasets: [{
+			label: graph_name,
+			data: chart_data,
+			borderWidth: 0,
+			backgroundColor: [
+				"rgb(126, 119, 255)",
+				"rgb(255, 52, 221)",
+				"rgb(255, 79, 79)",
+			],
+		}],
 	};
 
 	new Chart(ctx, {
