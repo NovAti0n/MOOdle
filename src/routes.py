@@ -109,8 +109,8 @@ def index():
 		case ChartType.BREED:
 			percentage = request.args.get("percentage", "0")
 
-			if not any((h, j, b)):
-				return error_template("Vous devez sélectionner au moins une race", families)
+			if sum(map(bool, (h, j, b))) < 2:
+				return error_template("Vous devez sélectionner au moins deux races", families)
 
 			if not percentage.isnumeric():
 				return error_template(f"Le pourcentage ({percentage}%) n'est pas un nombre entier", families)
