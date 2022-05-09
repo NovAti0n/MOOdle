@@ -265,8 +265,8 @@ class Cow {
 		this.jump_height = JUMP_HEIGHT
 	}
 
-	force_jump() {
-		this.vel[1] = Math.sqrt(-2 * GRAVITY * this.jump_height)
+	force_jump(height) {
+		this.vel[1] = Math.sqrt(-2 * GRAVITY * height)
 	}
 
 	jump() {
@@ -276,7 +276,7 @@ class Cow {
 			return
 		}
 
-		this.force_jump()
+		this.force_jump(this.jump_height)
 	}
 
 	draw(gl, render_state, dt) {
@@ -321,7 +321,7 @@ class Cow {
 
 		this.grounded = false
 
-		if (this.pos[1] < 0) {
+		if (this.pos[1] < 0 || isNaN(this.pos[1])) {
 			this.grounded = true
 			this.pos[1] = 0
 		}
@@ -530,7 +530,12 @@ class Paturage {
 		this.fov = TAU / 4.3
 
 		for (let cow of this.cows) {
-			cow.force_jump()
+			if (invert_gravity) {
+				cow.vel[1] = -Math.random()
+				continue
+			}
+
+			cow.force_jump(Math.random() * JUMP_HEIGHT * 2)
 		}
 	}
 }
