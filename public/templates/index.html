@@ -29,7 +29,7 @@
 		<input type="radio" id="chart3" name="chart-selector"{{ "checked" if request.args.get("chart") == '2' else "" }}>
 		<label for="chart3">Distribution des races 📊</label><br>
 
-		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart") == '3' else "" }}><span></span></input>
+		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", '3') == '3' else "" }}><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage 🌱</label><br>
 
 		<!-- calvings per day -->
@@ -99,10 +99,10 @@
 			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed"> -->
 
 			<label for="max_cows">Nombre maximum de vaches à afficher en même temps</label>
-			<input type="range" min="5" max="500" value="{{ request.args.get("max_cows", 250) }}" name="max_cows" id="max_cows">
+			<input type="range" min="5" max="500" value="{{ request.args.get("max_cows", 100) }}" name="max_cows" id="max_cows">
 
 			<label for="cow_speed">Multiplicateur de vitesse des vaches</label>
-			<input type="range" min="1" max="50" value="{{ request.args.get("cow_speed", 1) }}" name="cow_speed" id="cow_speed">
+			<input type="range" min="1" max="50" value="{{ request.args.get("cow_speed", 4) }}" name="cow_speed" id="cow_speed">
 
 			<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if "invert_gravity" in request.args else "" }}>
 			<label for="invert_gravity">Vers les cieux</label><br>
@@ -116,7 +116,7 @@
 		</form>
 	</section>
 
-	{% if not error and request.args.get("chart", None) %}
+	{% if not error %}
 		<script>
 			var data = {{ data | safe }}
 			var chart_id = {{ chart_id | safe }}

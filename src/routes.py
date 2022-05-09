@@ -27,7 +27,7 @@ def index():
 	data = None
 	percentage = 0
 
-	chart_type = ChartType.UNDEFINED
+	chart_type = ChartType.PASTURE
 
 	date_from = request.args.get("date_from", "1990-01-01")
 	date_to   = request.args.get("date_to",   "1990-01-02")
@@ -56,48 +56,48 @@ def index():
 		except ValueError:
 			error = "Ce type de graphique n'est pas valide !"
 
-		match chart_type:
-			case ChartType.CALVING:
-				data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+	match chart_type:
+		case ChartType.CALVING:
+			data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+			data = {k: v for k, v in data}
+
+		case ChartType.FULL_MOON:
+			data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+
+			# Check if day is full moon or not
+
+			n_full_moon = sum(map(is_full_moon, [*zip(*data)][0]))
+			data = [n_full_moon, len(data) - n_full_moon]
+
+		case ChartType.BREED:
+			percentage = request.args.get("percentage", 0) or 0
+
+			if not any((h, j, b)):
+				error = "Vous devez sélectionner au moins une race !"
+
+			if not 1 <= int(percentage) <= 100:
+				error = "Le pourcentage est invalide !"
+
+			data = query(gen_request(chart_type, family=family, breed=[h, j, b], percentage=percentage))
+			data = {k: v for k, v in data}
+
+		case ChartType.PASTURE:
+			if proper_cows:
+				data = query(gen_request(chart_type))
 				data = {k: v for k, v in data}
 
-			case ChartType.FULL_MOON:
-				data = query(gen_request(chart_type, family=family, date_from=date_from, date_to=date_to))
+			else:
+				# generate a random distribution of cow breeds
 
-				# Check if day is full moon or not
+				data = {
+					"Holstein":         random.randint(50, 100),
+					"Jersey":           random.randint(50, 100),
+					"Blanc Bleu Belge": random.randint(50, 100),
+				}
 
-				n_full_moon = sum(map(is_full_moon, [*zip(*data)][0]))
-				data = [n_full_moon, len(data) - n_full_moon]
+			# normalize data and multiply it by the number of cows we want to draw
 
-			case ChartType.BREED:
-				percentage = request.args.get("percentage", 0) or 0
-
-				if not any((h, j, b)):
-					error = "Vous devez sélectionner au moins une race !"
-
-				if not 1 <= int(percentage) <= 100:
-					error = "Le pourcentage est invalide !"
-
-				data = query(gen_request(chart_type, family=family, breed=[h, j, b], percentage=percentage))
-				data = {k: v for k, v in data}
-
-			case ChartType.PASTURE:
-				if proper_cows:
-					data = query(gen_request(chart_type))
-					data = {k: v for k, v in data}
-
-				else:
-					# generate a random distribution of cow breeds
-
-					data = {
-						"Holstein":         random.randint(50, 100),
-						"Jersey":           random.randint(50, 100),
-						"Blanc Bleu Belge": random.randint(50, 100),
-					}
-
-				# normalize data and multiply it by the number of cows we want to draw
-
-				data = {k: v / sum(data.values()) * int(max_cows) for k, v in data.items()}
+			data = {k: v / sum(data.values()) * int(max_cows) for k, v in data.items()}
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
