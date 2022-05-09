@@ -22,7 +22,7 @@ class Family:
 	def count(self):
 		return int(sum(self.breeds.values()))
 
-def error_template(error: str, families: dict):
+def error_template(error: str, families: OrderedDict) -> str:
 	return render_template(
 		"index.html",
 		title="Error",
@@ -82,7 +82,7 @@ def index():
 	proper_cows = "proper_cows" in request.args
 
 	if "date_from" in request.args and "date_to" in request.args and not validate_dates(date_from, date_to):
-		return error_template("Les dates ne sont pas valides")
+		return error_template("Les dates ne sont pas valides", families)
 
 	if request.args.getlist("chart"):
 		radio = request.args.getlist("chart")[0]

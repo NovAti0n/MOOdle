@@ -37,10 +37,10 @@
 			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
 			<label for="date_from">De</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
+			<input class="input" type="date" value={{ request.args.get("date_from", "jj/mm/aaaa") }} name="date_from" min="{{min_date}}" max="{{max_date}}">
 
 			<label for="date_to">à</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
+			<input class="input" type="date" value={{ request.args.get("date_to", "jj/mm/aaaa") }} name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
@@ -54,10 +54,10 @@
 			<input class="input" placeholder="Famille" list="families-datalist" id="family" name="family" value={{request.args.get("family", "")}}><br>
 
 			<label for="date_from">De</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_from" min="{{min_date}}" max="{{max_date}}">
+			<input class="input" type="date" value={{ request.args.get("date_from", "jj/mm/aaaa") }} name="date_from" min="{{min_date}}" max="{{max_date}}">
 
 			<label for="date_to">à</label>
-			<input class="input" type="date" value="jj/mm/aaaa" name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
+			<input class="input" type="date" value={{ request.args.get("date_to", "jj/mm/aaaa") }} name="date_to" min="{{min_date}}" max="{{max_date}}"><br>
 
 			<input class="button" type="submit" value="Afficher">
 		</form>
