@@ -11,7 +11,6 @@
 	--accent-colour: rgb(255, 34, 137);
 	--shadow-colour: rgba(0, 0, 0, 0.2);
 	--accent-shadow-colour: rgba(183, 0, 255, 0.487);
-	--border-radius: 6px;
 	--error-colour: #fcc
 }
 
@@ -49,7 +48,6 @@ body {
 	font-size: 22px;
 	font-display: optional;
 	font-family: "Montserrat", sans-serif;
-	/* overflow-y: hidden; */
 
 	display: flex;
 	align-items: center;
@@ -215,13 +213,6 @@ input[type="checkbox"]:checked {
 	background: var(--accent-colour);
 }
 
-.error {
-	background-color: var(--error-colour);
-	text-align: center;
-
-	transition: box-shadow .2s, background .2s;
-}
-
 /* sliders */
 
 input[type="range"] {
@@ -317,4 +308,15 @@ input[type="range"]:hover::-webkit-slider-thumb {
 	.input {
 		background-color: var(--section-colour);
 	}
+
+	.error {
+		width: 100%;
+	}
+}
+
+.error {
+	background-color: var(--error-colour);
+	text-align: center;
+
+	transition: box-shadow .2s, background .2s, border-radius .2s, width .2s;
 }

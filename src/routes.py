@@ -82,7 +82,7 @@ def index():
 	proper_cows = "proper_cows" in request.args
 
 	if "date_from" in request.args and "date_to" in request.args and not validate_dates(date_from, date_to):
-		return error_template("Les dates ne sont pas valides", families)
+		return error_template(f"Les dates (du {date_from} au {date_to}) ne sont pas valides", families)
 
 	if request.args.getlist("chart"):
 		radio = request.args.getlist("chart")[0]
@@ -91,7 +91,7 @@ def index():
 			chart_type = ChartType(int(radio))
 
 		except ValueError:
-			return error_template("Ce type de graphique n'est pas valide", families)
+			return error_template(f"Ce type de graphique ({radio}) n'est pas valide", families)
 
 	match chart_type:
 		case ChartType.CALVING:
@@ -113,20 +113,20 @@ def index():
 				return error_template("Vous devez sélectionner au moins une race", families)
 
 			if not percentage.isnumeric():
-				return error_template("Le pourcentage n'est pas un nombre entier", families)
+				return error_template(f"Le pourcentage ({percentage}%) n'est pas un nombre entier", families)
 
 			if not 0 <= int(percentage) <= 100:
-				return error_template("Le pourcentage doit être en 0% et 100%", families)
+				return error_template(f"Le pourcentage ({percentage}%) doit être en 0% et 100%", families)
 
 			data = query(gen_request(chart_type, family=family, breed=[h, j, b], percentage=percentage))
 			data = {k: v for k, v in data}
 
 		case ChartType.PASTURE:
 			if not max_cows.isnumeric():
-				return error_template("Le nombre maximum de vaches n'est pas un nombre entier", families)
+				return error_template(f"Le nombre maximum de vaches ({max_cows}) n'est pas un nombre entier", families)
 
 			if not cow_speed.isnumeric():
-				return error_template("La vitesse des vaches n'est pas un nombre entier", families)
+				return error_template(f"La vitesse des vaches ({cow_speed}) n'est pas un nombre entier", families)
 
 			if proper_cows:
 				data = query(gen_request(chart_type))
