@@ -455,13 +455,17 @@ class Paturage {
 
 		this.cows = []
 
-		for (let i = 0; i < data.length; i += 2) {
-			// Get the number of cow
-			let n_cow = parseInt(data[i + 1]) / 5
-			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
+		for (let breed in data) {
+			let cow_count = data[breed] / 5 // TODO make this user-changeable
 
-			for (let j = 0; j < n_cow; j++) {
-				this.cows.push(new Cow(breed, parseInt(cow_size), this.shadow))
+			let model = {
+				"Holstein":         this.holstein,
+				"Jersey":           this.jersey,
+				"Blanc Bleu Belge": this.bbb,
+			}[breed]
+
+			for (let j = 0; j < cow_count; j++) {
+				this.cows.push(new Cow(model, cow_size, this.shadow))
 			}
 		}
 

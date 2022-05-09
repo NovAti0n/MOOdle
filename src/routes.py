@@ -77,6 +77,8 @@ def index():
 
 			case ChartType.PASTURE:
 				data = query(gen_request(chart_type))
+				data = {k: v for k, v in data}
+
 				cow_size = request.args.get("cow_size", 10)
 				cow_speed = request.args.get("cow_speed", 1)
 				invert_gravity = 1 if request.args.get("invert_gravity", None) else 0

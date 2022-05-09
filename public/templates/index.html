@@ -125,9 +125,9 @@
 			let data = {{ data | safe }}
 			let chart_id = {{ chart_id | safe }}
 
-			let cow_size = "{{ cow_size }}"
-			let cow_speed = "{{ cow_speed }}"
-			let invert_gravity = "{{ invert_gravity }}"
+			let cow_size = {{ cow_size }}
+			let cow_speed = {{ cow_speed }}
+			let invert_gravity = {{ invert_gravity }}
 		</script>
 
 		{% if chart_id == 3 %}
