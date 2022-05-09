@@ -216,43 +216,41 @@ input[type="checkbox"]:checked {
 	font-size: 60%;
 }
 
-/* Sliders */
-.slider {
+/* sliders */
+
+input[type="range"] {
 	-webkit-appearance: none;
 	appearance: none;
 	width: 100%;
-	height: 10px;
+	height: 0.4em;
 	background-image: var(--gradient);
-	border-radius: 10px;
+	border-radius: 0.5em;
 	outline: none;
-	opacity: 0.7;
-	transition: opacity .2s;
+	transition: height .2s;
+	cursor: pointer;
 }
 
-.slider:hover {
-	opacity: 1;
+input[type="range"]:active {
+	height: 0.7em;
 }
 
-/* For Chrome, Edge, Safari, ... */
-.slider::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb, ::-moz-range-thumb {
 	-webkit-appearance: none;
 	appearance: none;
-	width: 25px;
-	height: 25px;
-	border: 1px solid #c527aa;
+
+	width: 1em;
+	height: 1em;
 	border-radius: 50%;
-	background: #ff34dd;
-	cursor: pointer;
+
+	border: 0.15em solid var(--accent-colour);
+	background: var(--section-colour);
+
+	transition: border .2s, background .2s;
 }
 
-/* For Firefox */
-.slider::-moz-range-thumb {
-	width: 25px;
-	height: 25px;
-	background: #ff34dd;
-	border: 1px solid #c527aa;
-	border-radius: 50%;
-	cursor: pointer;
+input[type="range"]:hover::-webkit-slider-thumb, ::-moz-range-thumb {
+	border: 0.15em solid var(--section-colour);
+	background: var(--accent-colour);
 }
 
 /* input[type="radio"]::before {
@@ -267,7 +265,8 @@ input[type="checkbox"]:checked {
 
 input[type="radio"]:checked::before {
 	transform: scale(1);
-} */
+}
+*/
 
 /* hide stuff in form we don't need */
 
