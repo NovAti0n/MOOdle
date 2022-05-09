@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
 
 :root {
 	/* default colourscheme is light because accessibility */
@@ -68,8 +68,6 @@ h1 {
 h2 {
 	color: var(--title-colour);
 	font-size: 24px;
-	font-display: optional;
-	font-family: "Roboto Slab", serif;
 
 	transition: color .2s;
 }
@@ -86,7 +84,7 @@ b {
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
-	font-weight: bold;
+	font-weight: 700;
 
 	transition: background .2s;
 }
@@ -128,7 +126,7 @@ section {
 }
 
 .form-divider {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .button {
@@ -141,7 +139,7 @@ section {
 	margin-top: 32px;
 	font-size: 24px;
 	font-display: optional;
-	font-weight: bold;
+	font-weight: 700;
 
 	opacity: 100%;
 	transition: background .2s, color .2s, opacity .2s, box-shadow .2s, transform .2s;
