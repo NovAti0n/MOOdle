@@ -1,6 +1,6 @@
 # MOOdle
 
-![Workflow status](https://github.com/NovAti0n/Statify/actions/workflows/main.yml/badge.svg)
+![Workflow status](https://github.com/NovAti0n/MOOdle/actions/workflows/main.yml/badge.svg)
 
 Advanced cow visualization tool
 

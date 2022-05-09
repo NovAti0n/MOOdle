@@ -248,8 +248,10 @@ input[type="range"]:active {
 	height: 0.7em;
 }
 
-input[type="range"]::-webkit-slider-thumb, ::-moz-range-thumb {
-	-webkit-appearance: none;
+/* have to write the same code once for both vendor prefixes because of Google being heinous */
+/* also, the em unit seems to be completely broken for borders on Chrome, but honestly just use Firefox */
+
+input[type="range"]::-moz-range-thumb {
 	appearance: none;
 
 	width: 1em;
@@ -262,25 +264,28 @@ input[type="range"]::-webkit-slider-thumb, ::-moz-range-thumb {
 	transition: border .2s, background .2s;
 }
 
-input[type="range"]:hover::-webkit-slider-thumb, :hover::-moz-range-thumb {
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+
+	width: 1em;
+	height: 1em;
+	border-radius: 50%;
+
+	border: 0.15em solid var(--accent-colour);
+	background: var(--section-colour);
+
+	transition: border .2s, background .2s;
+}
+
+input[type="range"]:hover::-moz-range-thumb {
 	border: 0.15em solid var(--section-colour);
 	background: var(--accent-colour);
 }
 
-/* input[type="radio"]::before {
-	content: "";
-	width: 1em;
-	height: 1em;
-	transform: scale(0);
-	transition: 120ms transform ease-in-out;
+input[type="range"]:hover::-webkit-slider-thumb {
+	border: 0.15em solid var(--section-colour);
 	background: var(--accent-colour);
-	border-radius: 50%;
 }
-
-input[type="radio"]:checked::before {
-	transform: scale(1);
-}
-*/
 
 /* hide stuff in form we don't need */
 
