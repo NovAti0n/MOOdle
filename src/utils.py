@@ -1,5 +1,5 @@
 import math, decimal, datetime
-from enum import IntEnum, auto
+from enum import IntEnum
 from markupsafe import escape
 
 class ChartType(IntEnum):
@@ -9,7 +9,7 @@ class ChartType(IntEnum):
 	PASTURE   = 3
 	UNDEFINED = 4
 
-def validate_dates(first: str, second: str) -> bool:
+def validate_dates(first: str | None, second: str | None) -> bool:
 	"""
 	Checks if dates are in a valid format (first date is before second date)
 
@@ -21,7 +21,7 @@ def validate_dates(first: str, second: str) -> bool:
 		- bool: True if dates are correct, False otherwise
 	"""
 
-	if first is None and second is None:
+	if first is None or second is None:
 		return True
 
 	first_bits, second_bits = first.split("-"), second.split("-")
@@ -99,8 +99,6 @@ def is_full_moon(time: str) -> bool:
 	Returns:
 		- bool: True if full moon period, False otherwise
 	"""
-
-	# print(time)
 
 	year, month, day = time.split("-")
 	dec = decimal.Decimal
