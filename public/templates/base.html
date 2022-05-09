@@ -55,10 +55,12 @@ Attention : premier arrivé, premier servi. Bonne chance !
 			const disableNullFields = () => {
 				let inputs = document.getElementsByClassName("input")
 
-				for (let i = 0; i < inputs.length; i++) {
-					if (inputs.item(i).value == "") {
-						inputs.item(i).setAttribute("disabled", "")
+				for (let input of inputs) {
+					if (input.value) {
+						continue
 					}
+
+					input.setAttribute("disabled", "")
 				}
 			};
 		</script>
