@@ -9,6 +9,7 @@ def init_db() -> None:
 	"""
 	Initializes the database by executing every file in sql/init
 	"""
+
 	start = time.time() # Get current time
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
@@ -45,6 +46,7 @@ def query(statement: str, *args: str) -> list:
 	Returns:
 		- list: Results of the query
 	"""
+
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 

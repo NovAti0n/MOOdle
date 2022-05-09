@@ -20,16 +20,16 @@
 
 		<p class="form-divider">Type de graphique</p>
 
-		<input type="radio" id="chart1" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '0' else "" }}>
+		<input type="radio" id="chart1" name="chart-selector" {{ "checked" if request.args.get("chart") == '0' else "" }}>
 		<label for="chart1">Nombre de velages par jour 🐮</label><br>
 
-		<input type="radio" id="chart2" name="chart-selector" {{ "checked" if request.args.get("chart", None) == '1' else "" }}>
+		<input type="radio" id="chart2" name="chart-selector" {{ "checked" if request.args.get("chart") == '1' else "" }}>
 		<label for="chart2">Animaux nés en période de pleine lune 🌙</label><br>
 
-		<input type="radio" id="chart3" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '2' else "" }}>
+		<input type="radio" id="chart3" name="chart-selector"{{ "checked" if request.args.get("chart") == '2' else "" }}>
 		<label for="chart3">Distribution des races 📊</label><br>
 
-		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart", None) == '3' else "" }}><span></span></input>
+		<input type="radio" id="chart4" name="chart-selector"{{ "checked" if request.args.get("chart") == '3' else "" }}><span></span></input>
 		<label class="radio-label" for="chart4">Pâturage 🌱</label><br>
 
 		<!-- calvings per day -->
@@ -72,13 +72,13 @@
 			<p class = "form-divider">Sélection de la race</p>
 			<input name="chart" value="2" hidden>
 
-			<input type="checkbox" id="h" name="h" {{ "checked" if request.args.get("h", None) else "" }}>
+			<input type="checkbox" id="h" name="h" {{ "checked" if "h" in request.args else "" }}>
 			<label for="h">Holstein</label><br>
 
-			<input type="checkbox" id="j" name="j" {{ "checked" if request.args.get("j", None) else "" }}>
+			<input type="checkbox" id="j" name="j" {{ "checked" if "j" in request.args else "" }}>
 			<label for="j">Jersey</label><br>
 
-			<input type="checkbox" id="b" name="b" {{ "checked" if request.args.get("b", None) else "" }}>
+			<input type="checkbox" id="b" name="b" {{ "checked" if "b" in request.args else "" }}>
 			<label for="b">Blanc Bleu Belge</label><br>
 
 			<input placeholder="Pourcentage" class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}"><br>
@@ -98,11 +98,14 @@
 			<label for="cow_size">Vitesse des vaches</label>
 			<input type="range" min="1" max="10" value="{{ cow_speed }}" name="cow_speed" id="cow_speed"> -->
 
-			<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if request.args.get("invert_gravity", None) else "" }}>
-			<label for="invert_gravity">Inverser gravité</label><br>
+			<label for="max_cows">Nombre max. à afficher en même temps</label>
+			<input type="range" min="5" max="500" value="{{ request.args.get("max_cows", 250) }}" name="max_cows" id="max_cows">
 
-			<input type="checkbox" id="ded_cows" name="ded_cows" {{ "checked" if request.args.get("ded_cows", None) else "" }}>
-			<label for="ded_cows">Afficher vaches historiques</label>
+			<input type="checkbox" id="invert_gravity" name="invert_gravity" {{ "checked" if "invert_gravity" in request.args else "" }}>
+			<label for="invert_gravity">Vers les cieux</label><br>
+
+			<input type="checkbox" id="random_cows" name="random_cows" {{ "checked" if "random_cows" in request.args else "" }}>
+			<label for="random_cows">Afficher une séléction aléatoire de vaches</label>
 
 			<p class="note">Attention, cette représentation est à l'échelle 1:5. Nous ne sommes en aucun cas responsable de l'explosion de PCs plus anciens suite à une trop grande surchage du GPU.</p>
 
@@ -115,9 +118,7 @@
 			var data = {{ data | safe }}
 			var chart_id = {{ chart_id | safe }}
 
-			var cow_size = {{ cow_size }}
-			var cow_speed = {{ cow_speed }}
-			var invert_gravity = {{ invert_gravity }}
+			var invert_gravity = {{ invert_gravity | safe }}
 		</script>
 
 		{% if chart_id == 3 %}

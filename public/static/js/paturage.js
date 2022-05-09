@@ -223,11 +223,11 @@ class Model {
 	}
 }
 
-const GRAVITY = invert_gravity === '1' ? 1 : -32
+const GRAVITY = invert_gravity ? 0.3 : -32
 const JUMP_HEIGHT = 0.7
-const BOUNDS = 2
+const BOUNDS = 2.3
 const SHADOW_SIZE = 2
-const SPEED = cow_speed
+const SPEED = 3
 
 function abs_min(x, y) {
 	if (Math.abs(x) < Math.abs(y)) {
@@ -350,7 +350,7 @@ class Cow {
 		gl.uniform1f(render_state.shadow_uniform, 1 - this.pos[1] / this.jump_height * scale)
 		gl.enable(gl.BLEND)
 
-		model_matrix.translate(0, (-this.pos[1] + ++render_state.shadow_layer / 1000) / scale, 0)
+		model_matrix.translate(0, (-this.pos[1] + ++render_state.shadow_layer / 10000) / scale, 0)
 		this.shadow.draw(gl, render_state, model_matrix)
 
 		gl.uniform1f(render_state.shadow_uniform, -1)
@@ -453,10 +453,11 @@ class Paturage {
 
 		// cows
 
+		let cow_sum = Object.values(data).reduce((x, y) => x + y)
 		this.cows = []
 
 		for (let breed in data) {
-			let cow_count = data[breed] / 5 // TODO make this user-changeable
+			let cow_count = data[breed]
 
 			let model = {
 				"Holstein":         this.holstein,
@@ -465,7 +466,7 @@ class Paturage {
 			}[breed]
 
 			for (let j = 0; j < cow_count; j++) {
-				this.cows.push(new Cow(model, cow_size, this.shadow))
+				this.cows.push(new Cow(model, 7 + 160 / cow_sum, this.shadow))
 			}
 		}
 

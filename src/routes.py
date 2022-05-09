@@ -1,8 +1,9 @@
+import random
+from collections import defaultdict, OrderedDict
+
 from flask import render_template, request
 from src.db import query
 from src.utils import validate_dates, gen_request, ChartType, is_full_moon
-
-from collections import defaultdict, OrderedDict
 
 class Family:
 	def __init__(self, name):
@@ -22,23 +23,31 @@ class Family:
 		return int(sum(self.breeds.values()))
 
 def index():
+	# TODO necessary?
+
 	error = family = date_from = date_to = data = None
 	percentage = invert_gravity = 0
-	cow_size = 10
-	cow_speed = 1
 
 	chart_type = ChartType.UNDEFINED
 
-	if request.args.get("date_from", None) and request.args.get("date_to", None) and not validate_dates(request.args.get("date_from", "1990-01-01"), request.args.get("date_to", "1990-01-02")):
+	date_from = request.args.get("date_from", "1990-01-01")
+	date_to   = request.args.get("date_to",   "1990-01-02")
+
+	if "date_from" in request.args and "date_to" in request.args and not validate_dates(date_from, date_to):
 		# Dates are present in URL but not valid
 		error = "Les dates ne sont pas valides !"
 
 	if request.args.getlist("chart"):
-		# Get all URL parameters
-		radio = request.args.getlist("chart")[0]
-		family = request.args.get("family", None)
-		date_from = request.args.get("date_from", None)
-		date_to = request.args.get("date_to", None)
+		radio  = request.args.getlist("chart")[0]
+		family = request.args.get("family")
+
+		h = "Holstein"         if "h" in request.args else None
+		j = "Jersey"           if "j" in request.args else None
+		b = "Blanc Bleu Belge" if "b" in request.args else None
+
+		max_cows = request.args.get("max_cows", 250)
+		invert_gravity = 1 if "invert_gravity" in request.args else 0
+		random_cows = "random_cows" in request.args
 
 		try:
 			chart_type = ChartType(int(radio))
@@ -62,10 +71,6 @@ def index():
 			case ChartType.BREED:
 				percentage = request.args.get("percentage", 0) or 0
 
-				h = "Holstein" if request.args.get("h", None) else None
-				j = "Jersey" if request.args.get("j", None) else None
-				b = "Blanc Bleu Belge" if request.args.get("b", None) else None
-
 				if not any((h, j, b)):
 					error = "Vous devez sélectionner au moins une race !"
 
@@ -76,15 +81,22 @@ def index():
 				data = {k: v for k, v in data}
 
 			case ChartType.PASTURE:
-				data = query(gen_request(chart_type))
-				data = {k: v for k, v in data}
+				if random_cows:
+					# generate a random distribution of cow breeds
 
-				cow_size = request.args.get("cow_size", 10)
-				cow_speed = request.args.get("cow_speed", 1)
-				invert_gravity = 1 if request.args.get("invert_gravity", None) else 0
+					data = {
+						"Holstein":         random.randint(50, 100),
+						"Jersey":           random.randint(50, 100),
+						"Blanc Bleu Belge": random.randint(50, 100),
+					}
 
-				if not 1 <= int(cow_size) <= 100 or not 1 <= int(cow_speed) <= 10:
-					error = "Certains paramètres sont invalides"
+				else:
+					data = query(gen_request(chart_type))
+					data = {k: v for k, v in data}
+
+				# normalize data and multiply it by the number of cows we want to draw
+
+				data = {k: v / sum(data.values()) * int(max_cows) for k, v in data.items()}
 
 	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
@@ -127,9 +139,7 @@ def index():
 		error=error,
 		data=data,
 		chart_id=chart_type.value,
-		cow_size=cow_size,
 		invert_gravity=invert_gravity,
-		cow_speed=cow_speed
 	)
 
 def route_handler(app):
