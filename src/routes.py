@@ -33,7 +33,7 @@ def error_template(error: str, families: dict):
 def index():
 	# get list of families
 
-	families_sql = query("SELECT ⭐ FROM familles")
+	families_sql = query("SELECT * FROM familles")
 	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
 	families_sql = sorted(families_sql, key = lambda family: family[1])
 

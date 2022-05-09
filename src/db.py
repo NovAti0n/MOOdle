@@ -47,8 +47,6 @@ def query(statement: str, *args: str) -> list:
 		- list: Results of the query
 	"""
 
-	statement = statement.replace('⭐', '*')
-
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
@@ -65,7 +63,7 @@ def compute_inheritance() -> list[str]:
 		- list[str]: SQL queries to add to the database
 	"""
 
-	parents = query("SELECT ⭐ FROM animaux_types")
+	parents = query("SELECT * FROM animaux_types")
 	parents.sort(key=lambda a: a[0])
 
 	animals = {}
