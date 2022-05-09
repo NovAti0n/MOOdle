@@ -9,12 +9,14 @@ def init_db() -> None:
 	"""
 	Initializes the database by executing every file in sql/init
 	"""
+
 	start = time.time() # Get current time
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
 	with click.progressbar(sorted(os.listdir("./src/sql")), label="Generating database...") as files:
 		# Generate the database with files in /sql
+
 		for i in files:
 			script = pathlib.Path(f"./src/sql/{i}").read_text()
 			cursor.executescript(script)
@@ -24,9 +26,10 @@ def init_db() -> None:
 
 	with click.progressbar(compute_inheritance(), label="Updating database with inheritance...") as script:
 		# Insert inheritance data
+
 		for i in script:
-				cursor.execute(i)
-				db.commit()
+			cursor.execute(i)
+			db.commit()
 
 	db.close()
 
@@ -43,6 +46,9 @@ def query(statement: str, *args: str) -> list:
 	Returns:
 		- list: Results of the query
 	"""
+
+	statement = statement.replace('⭐', '*')
+
 	db = sqlite3.connect("db.sqlite3")
 	cursor = db.cursor()
 
@@ -59,58 +65,61 @@ def compute_inheritance() -> list[str]:
 		- list[str]: SQL queries to add to the database
 	"""
 
-	parents = query("SELECT * FROM animaux_types")
-	parents.sort(key=lambda a : a[0])
+	parents = query("SELECT ⭐ FROM animaux_types")
+	parents.sort(key=lambda a: a[0])
 
-	map = {}
+	animals = {}
 
 	# Add all parent in map
 
 	while parents:
 		animal_id, type_id, pourcentage = parents.pop(0)
-		map[animal_id] = [(type_id, pourcentage)]
+		animals[animal_id] = [(type_id, pourcentage)]
 
-	to_process = [(int(i[0]), int(i[1]), int(i[2])) for i in query("SELECT id, mere_id, pere_id FROM velages")]
+	to_process = [tuple(map(int, calving)) for calving in query("SELECT id, mere_id, pere_id FROM velages")]
 
 	# Loop until all is processed
 
 	while to_process:
-
 		for velage_id, mere_id, pere_id in to_process:
-
 			# Check if both parents are here for this calving
 
-			if map.get(mere_id, False) and map.get(pere_id, False):
+			if not animals.get(mere_id, False) or not animals.get(pere_id, False):
+				continue
 
-				# Get the animal ID
+			# Get the animal ID
 
-				animal_id = query(f"SELECT animal_id FROM animaux_velages where velage_id = {velage_id}")
-				for calving in [*zip(*animal_id)][0]:
-					repartition = {1: 0, 2: 0, 3: 0}
+			animal_id = query(f"SELECT animal_id FROM animaux_velages where velage_id = {velage_id}")
 
-					# compute the percentage
-					mother = map.get(mere_id)
-					father = map.get(pere_id)
+			for calving in [*zip(*animal_id)][0]:
+				distrib = {1: 0, 2: 0, 3: 0}
 
-					if not mother or not father: raise ValueError("Missing data in map") # mother or father are unlikely to be None, but let's make sure that nothing terrible happens
+				# compute the percentage
 
-					for i in mother:
-						type_id, pourcentage = i
-						repartition[type_id] += pourcentage / 2
+				mother = animals.get(mere_id)
+				father = animals.get(pere_id)
 
-					for i in father:
-						type_id, pourcentage = i
-						repartition[type_id] += pourcentage / 2
+				if mother is None or father is None:
+					# mother or father are unlikely to be None, but let's make sure that nothing terrible happens
+					raise ValueError("Missing data in map")
 
-					# Add the animal as a parent
+				for breed in mother:
+					type_id, pourcentage = breed
+					distrib[type_id] += pourcentage / 2
 
-					map[calving] = [(key, value) for key, value in repartition.items() if value > 0]
+				for breed in father:
+					type_id, pourcentage = breed
+					distrib[type_id] += pourcentage / 2
 
-				to_process.remove((velage_id, mere_id, pere_id))
+				# Add the animal as a parent
+
+				animals[calving] = [(key, value) for key, value in distrib.items() if value > 0]
+
+			to_process.remove((velage_id, mere_id, pere_id))
 
 	result = ["DELETE FROM animaux_types"]
 
-	for key, values in map.items():
+	for key, values in animals.items():
 		result.extend(f"INSERT INTO animaux_types VALUES ({key}, {value[0]}, {value[1]});\n" for value in values)
 
 	return result

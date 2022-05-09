@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
 
 :root {
 	/* default colourscheme is light because accessibility */
@@ -12,6 +12,7 @@
 	--shadow-colour: rgba(0, 0, 0, 0.2);
 	--accent-shadow-colour: rgba(183, 0, 255, 0.487);
 	--border-radius: 6px;
+	--error-colour: #fcc
 }
 
 /* TODO media selectors for increased contrast ('prefers-contrast'), reduced motion ('prefers-reduced-motion'), reduced transparency ('prefers-reduced-transparency') */
@@ -30,6 +31,7 @@
 		--accent-colour: rgb(255, 52, 221);
 		--shadow-colour: transparent;
 		--accent-shadow-colour: #ff00cc29;
+		--error-colour: #211
 	}
 }
 
@@ -53,24 +55,30 @@ body {
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
+
+	transition: background .2s, color .2s;
 }
 
 h1 {
 	color: var(--title-colour);
 	font-size: 70px;
 	margin-block: 0;
+
+	transition: color .2s;
 }
 
 h2 {
 	color: var(--title-colour);
 	font-size: 24px;
-	font-display: optional;
-	font-family: "Roboto Slab", serif;
+
+	transition: color .2s;
 }
 
 a {
 	color: var(--accent-colour);
 	text-decoration: none;
+
+	transition: color .2s;
 }
 
 b {
@@ -78,7 +86,9 @@ b {
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
-	font-weight: bold;
+	font-weight: 700;
+
+	transition: background .2s;
 }
 
 label {
@@ -93,6 +103,8 @@ label {
 	margin: 32px;
 
 	max-width: 100vw;
+
+	transition: background .2s, box-shadow .2s;
 }
 
 @media only screen and (max-width: 600px) {
@@ -116,7 +128,7 @@ section {
 }
 
 .form-divider {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .button {
@@ -129,10 +141,10 @@ section {
 	margin-top: 32px;
 	font-size: 24px;
 	font-display: optional;
-	font-weight: bold;
+	font-weight: 700;
 
 	opacity: 100%;
-	transition: opacity 0.2s, box-shadow 0.2s, transform 0.2s;
+	transition: background .2s, color .2s, opacity .2s, box-shadow .2s, transform .2s;
 
 	float: right;
 }
@@ -158,6 +170,8 @@ section {
 
 	margin-block: 8px;
 	padding: 16px;
+
+	transition: background .2s, color .2s, box-shadow .2s;
 }
 
 .note {
@@ -208,51 +222,47 @@ input[type="checkbox"]:checked {
 }
 
 .error {
-	color: #721c24;
-	padding: 10px;
-	border: 1px solid #f7b1b7;
-	border-radius: 16px;
-	background-color: #f8d7da;
-	font-size: 60%;
+	background-color: var(--error-colour);
+	text-align: center;
+
+	transition: box-shadow .2s, background .2s;
 }
 
-/* Sliders */
-.slider {
+/* sliders */
+
+input[type="range"] {
 	-webkit-appearance: none;
 	appearance: none;
 	width: 100%;
-	height: 10px;
+	height: 0.4em;
 	background-image: var(--gradient);
-	border-radius: 10px;
+	border-radius: 0.5em;
 	outline: none;
-	opacity: 0.7;
-	transition: opacity .2s;
+	transition: height .2s;
+	cursor: pointer;
 }
 
-.slider:hover {
-	opacity: 1;
+input[type="range"]:active {
+	height: 0.7em;
 }
 
-/* For Chrome, Edge, Safari, ... */
-.slider::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb, ::-moz-range-thumb {
 	-webkit-appearance: none;
 	appearance: none;
-	width: 25px;
-	height: 25px;
-	border: 1px solid #c527aa;
+
+	width: 1em;
+	height: 1em;
 	border-radius: 50%;
-	background: #ff34dd;
-	cursor: pointer;
+
+	border: 0.15em solid var(--accent-colour);
+	background: var(--section-colour);
+
+	transition: border .2s, background .2s;
 }
 
-/* For Firefox */
-.slider::-moz-range-thumb {
-	width: 25px;
-	height: 25px;
-	background: #ff34dd;
-	border: 1px solid #c527aa;
-	border-radius: 50%;
-	cursor: pointer;
+input[type="range"]:hover::-webkit-slider-thumb, :hover::-moz-range-thumb {
+	border: 0.15em solid var(--section-colour);
+	background: var(--accent-colour);
 }
 
 /* input[type="radio"]::before {
@@ -267,7 +277,8 @@ input[type="checkbox"]:checked {
 
 input[type="radio"]:checked::before {
 	transform: scale(1);
-} */
+}
+*/
 
 /* hide stuff in form we don't need */
 
@@ -279,3 +290,11 @@ input[type="radio"]:checked::before {
 #chart2:checked ~ #moon-selector     { display: initial }
 #chart3:checked ~ #breed-selector    { display: initial }
 #chart4:checked ~ #paturage-selector { display: initial }
+
+#cow-note {
+	display: none;
+}
+
+#proper_cows:checked ~ #cow-note {
+	display: block;
+}

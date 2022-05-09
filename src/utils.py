@@ -44,7 +44,9 @@ def gen_request(chart_type: ChartType, family: None | str = None, breed: None | 
 	Returns:
 		- str: SQL query
 	"""
-	sql, args = "", []
+
+	sql = ""
+	args = []
 
 	if family:
 		args.append(f"f.nom = \"{escape(family)}\"")
@@ -94,6 +96,9 @@ def is_full_moon(time: str) -> bool:
 	Returns:
 		- bool: True if full moon period, False otherwise
 	"""
+
+	# print(time)
+
 	year, month, day = time.split("-")
 	dec = decimal.Decimal
 

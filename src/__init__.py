@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from src.db import init_db
+from src import routes
 
 app = Flask(
 	__name__,
@@ -18,12 +19,11 @@ def static_include(path: str) -> str:
 	Args:
 		- path (str): path to file
 	"""
+
 	path = os.path.join(app.static_folder, path)
 
 	with open(path) as f:
 		return f.read()
 
 app.cli.add_command(init_db) # Registers init-db command to the cli
-
-from src import routes # Import is at the bottom because of circular imports
 routes.route_handler(app)

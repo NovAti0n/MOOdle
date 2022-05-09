@@ -223,11 +223,11 @@ class Model {
 	}
 }
 
-const GRAVITY = invert_gravity === '1' ? 1 : -32
+const GRAVITY = invert_gravity ? 0.3 : -32
 const JUMP_HEIGHT = 0.7
-const BOUNDS = 2
+const BOUNDS = 2.3
 const SHADOW_SIZE = 2
-const SPEED = cow_speed
+const SPEED = 3 * cow_speed
 
 function abs_min(x, y) {
 	if (Math.abs(x) < Math.abs(y)) {
@@ -240,7 +240,7 @@ function abs_min(x, y) {
 class Cow {
 	// an instance of a cow is an individual who kind of jumps around the place aimlessly
 
-	constructor (model, age, shadow) {
+	constructor(model, age, shadow) {
 		// model:  designated cow model (either this.holstein, this.jersey, or this.bbb)
 		// age:    the age of the cow (this controls its size; smaller cows are younger obviously)
 		// shadow: the shadow model (simply this.shadow in all cases)
@@ -303,8 +303,8 @@ class Cow {
 		// apply input acceleration & adjust for friction/drag
 		// here, we want our cow moving in its rotation direction at all times
 
-		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt * SPEED
-		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt * SPEED
+		this.vel[0] -= Math.cos(this.target_rot + 6.28 / 4) * friction[0] * dt * SPEED * this.age / 50
+		this.vel[2] += Math.sin(this.target_rot + 6.28 / 4) * friction[2] * dt * SPEED * this.age / 50
 
 		// apply velocity, gravity acceleration, and friction/drag
 
@@ -350,7 +350,7 @@ class Cow {
 		gl.uniform1f(render_state.shadow_uniform, 1 - this.pos[1] / this.jump_height * scale)
 		gl.enable(gl.BLEND)
 
-		model_matrix.translate(0, (-this.pos[1] + ++render_state.shadow_layer / 1000) / scale, 0)
+		model_matrix.translate(0, (-this.pos[1] + ++render_state.shadow_layer / 10000) / scale, 0)
 		this.shadow.draw(gl, render_state, model_matrix)
 
 		gl.uniform1f(render_state.shadow_uniform, -1)
@@ -438,8 +438,8 @@ class Paturage {
 			indices: new Uint16Array([0, 1, 2, 2, 3, 0]),
 			vertices: new Float32Array([
 				-SHADOW_SIZE, 0, -SHADOW_SIZE, 0, 0, 0, 1, 0, // 0
-				SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
-				SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
+				+SHADOW_SIZE, 0, -SHADOW_SIZE, 1, 0, 0, 1, 0, // 1
+				+SHADOW_SIZE, 0,  SHADOW_SIZE, 1, 1, 0, 1, 0, // 2
 				-SHADOW_SIZE, 0,  SHADOW_SIZE, 0, 1, 0, 1, 0, // 3
 			])
 		}
@@ -453,15 +453,20 @@ class Paturage {
 
 		// cows
 
+		let cow_sum = Object.values(data).reduce((x, y) => x + y)
 		this.cows = []
 
-		for(let i = 0; i < data.length; i += 2) {
-			// Get the number of cow
-			let n_cow = parseInt(data[i + 1]) / 5
-			let breed = data[i] == "Holstein" ? this.holstein : data[i] == " Jersey" ? this.jersey : this.bbb
+		for (let breed in data) {
+			let cow_count = data[breed]
 
-			for(let j = 0; j < n_cow; j++) {
-				this.cows.push(new Cow(breed, parseInt(cow_size), this.shadow))
+			let model = {
+				"Holstein":         this.holstein,
+				"Jersey":           this.jersey,
+				"Blanc Bleu Belge": this.bbb,
+			}[breed]
+
+			for (let j = 0; j < cow_count; j++) {
+				this.cows.push(new Cow(model, (7 + 160 / cow_sum) * (Math.random() / 2 + 0.5), this.shadow))
 			}
 		}
 
