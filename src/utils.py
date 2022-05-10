@@ -27,7 +27,7 @@ def validate_dates(first: str | None, second: str | None) -> bool:
 	first_bits, second_bits = first.split("-"), second.split("-")
 
 	try:
-		return datetime.date(*map(int, first_bits)) < datetime.date(*map(int, second_bits))
+		return datetime.date(*map(int, first_bits)) <= datetime.date(*map(int, second_bits))
 
 	except ValueError:
 		return False

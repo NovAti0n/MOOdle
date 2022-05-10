@@ -53,7 +53,8 @@ switch (chart_id) {
 		chart_type = "bar"
 
 		for (let date in data) {
-			labels.push(date)
+			const [year, month, day] = date.split("-")
+			labels.push([day, month, year].join("/"))
 			chart_data.push(data[date])
 		}
 
