@@ -129,7 +129,7 @@ function create_chart(dark) {
 	}
 
 	for (let i = 0; i < chart_data.length; i++) {
-		const range = i / (chart_data.length - 1)
+		const range = chart_data.length == 1 ? 0 : i / (chart_data.length - 1)
 
 		const h = lerp(range, H_INTERVAL) / 360 * TAU
 		const s = lerp(range, S_INTERVAL)

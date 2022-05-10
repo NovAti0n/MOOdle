@@ -77,7 +77,7 @@
 			<input type="checkbox" id="b" name="b" {{ "checked" if "b" in request.args else "" }}>
 			<label for="b">Blanc Bleu Belge</label><br>
 
-			<input class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}">
+			<input class="input" type="number" id="percentage" name="percentage" min="0" max="100" value="{{ request.args.get("percentage", "") }}" placeholder="0">
 			<label for="percentage">% min de correspondance génétique</label><br>
 
 			<input class="button" type="submit" value="Afficher">
