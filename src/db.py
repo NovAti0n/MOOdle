@@ -7,7 +7,7 @@ import time
 @click.command("init-db")
 def init_db() -> None:
 	"""
-	Initializes the database by executing every file in sql/init
+	Initializes the database by executing every file in /sql
 	"""
 
 	start = time.time() # Get current time
@@ -92,13 +92,13 @@ def compute_inheritance() -> list[str]:
 			for calving in [*zip(*animal_id)][0]:
 				distrib = {1: 0, 2: 0, 3: 0}
 
-				# compute the percentage
+				# Compute the percentage
 
 				mother = animals.get(mere_id)
 				father = animals.get(pere_id)
 
 				if mother is None or father is None:
-					# mother or father are unlikely to be None, but let's make sure that nothing terrible happens
+					# Mother or father are unlikely to be None, but let's make sure that nothing terrible happens
 					raise ValueError("Missing data in map")
 
 				for breed in mother:
