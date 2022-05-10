@@ -494,7 +494,15 @@ class Paturage {
 
 		// create matrices
 
-		this.fov += (this.target_fov - this.fov) * dt * 5
+		const multiplier = dt * 5
+
+		if (multiplier > 1) {
+			this.fov = this.target_fov
+		}
+
+		else {
+			this.fov += (this.target_fov - this.fov) * multiplier
+		}
 
 		let proj_matrix = new Matrix()
 		proj_matrix.perspective(this.fov, this.y_res / this.x_res, 0.1, 500)
