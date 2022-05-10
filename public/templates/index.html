@@ -7,8 +7,8 @@
 		<h1><b>MOOdle</b></h1>
 
 		<datalist id="families-datalist">
-			{% for family in families.values() %}
-				<option value="{{ family.name }}">
+			{% for family in families %}
+				<option value="{{ family }}">
 			{% endfor %}
 		</datalist>
 

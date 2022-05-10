@@ -1,28 +1,10 @@
 import random
-from collections import defaultdict, OrderedDict
 
 from flask import render_template, request
 from src.db import query
 from src.utils import validate_dates, gen_request, ChartType, is_full_moon
 
-class Family:
-	def __init__(self, name):
-		self.name = name
-
-		# how many animals of which breed?
-		# unknown breed is represented by '-1'
-		# some animals may be half of one breed, half of another
-
-		self.breeds = defaultdict(float)
-
-	def __repr__(self):
-		return self.name
-
-	@property
-	def count(self):
-		return int(sum(self.breeds.values()))
-
-def error_template(error: str, families: OrderedDict, min_date: str, max_date: str) -> str:
+def error_template(error: str, families: list, min_date: str, max_date: str) -> str:
 	return render_template(
 		"index.html",
 		title="Error",
@@ -33,34 +15,11 @@ def error_template(error: str, families: OrderedDict, min_date: str, max_date: s
 	)
 
 def index():
-	# get list of families
+	# get alphabetically ordered list of families
 
-	families_sql = query("SELECT * FROM familles")
-	families_sql = filter(lambda family: family[1] != "Unknown", families_sql)
-	families_sql = sorted(families_sql, key = lambda family: family[1])
-
-	# ordered (alphabetically) dictionary of families with their id as key and a 'Family' object as value
-
-	families = OrderedDict()
-
-	for family_id, name in families_sql[1:]:
-		family = Family(name)
-		families[family_id] = family
-
-		animals = query(f"SELECT id FROM animaux WHERE famille_id = {family_id}")
-
-		if not animals:
-			continue
-
-		for animal, in animals:
-			breed_ids = query(f"SELECT type_id FROM animaux_types WHERE animal_id = {animal}")
-
-			if not breed_ids:
-				family.breeds[-1] += 1
-				break
-
-			for breed_id, in breed_ids:
-				family.breeds[breed_id] += 1 / len(breed_ids)
+	*families, = zip(*query("SELECT * FROM familles")[1:])
+	families = filter(lambda name: name != "Unknown", families[1])
+	families = sorted(families)
 
 	# get minimum and maximum dates
 
