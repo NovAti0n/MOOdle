@@ -133,6 +133,12 @@ Bypassing is generally a bad idea, since this hook is also run in the GitHub wor
 $ git commit -m "db: Detailed commit message" --no-verify
 ```
 
+## Eyecandy
+
+![Paturage mode](eyecandy/paturage.png)
+![Also in white](eyecandy/velages.png)
+![And with a responsive design (for mobile)](eyecandy/lune.png)
+
 ## Authors
 
 -   Alexis Englebert ([@alexisloic21](https://github.com/alexisloic21))
