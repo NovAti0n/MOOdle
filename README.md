@@ -6,7 +6,7 @@ Advanced cow visualization tool
 
 ## Initial setup
 
-**Before proceeding, make sure that you at least have Python 3.10 installed as `python3`. On some Linux distros, you may have to substitute `python3` for `python3.10`. On Windows, `python3` must be substituted by `python` or `py`.**
+**Before proceeding, make sure that you at least have Python 3.10 installed as `python3`. On some Linux distros, you may have to substitute `python3` for `python3.10`. On Windows, `python3` may be substituted by `python` or `py`.**
 
 Create a Python virtual environment and activate it.
 
