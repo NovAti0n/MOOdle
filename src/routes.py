@@ -17,7 +17,7 @@ def error_template(error: str, families: list, min_date: str, max_date: str) -> 
 def index():
 	# get alphabetically ordered list of families
 
-	*families, = zip(*query("SELECT * FROM familles")[1:])
+	*families, = zip(*query("SELECT ⭐ FROM familles")[1:])
 	families = filter(lambda name: name != "Unknown", families[1])
 	families = sorted(families)
 
