@@ -1,7 +1,6 @@
 # MOOdle
 
 ![Workflow status](https://github.com/NovAti0n/MOOdle/actions/workflows/main.yml/badge.svg)
-
 Advanced cow visualization tool
 
 ## Initial setup
@@ -13,21 +12,21 @@ Create a Python virtual environment and activate it.
 On realOS (i.e. most Unix-like OS', such as Linux, FreeBSD, or macOS):
 
 ```sh
-$ python3 -m venv env
-$ source env/bin/activate
+python3 -m venv env
+source env/bin/activate
 ```
 
 On Windows:
 
 ```powershell
-> python -m venv env
-> .\env\Scripts\activate
+python -m venv env
+.\env\Scripts\activate
 ```
 
 Install the requirements with `pip`:
 
 ```sh
-(env) $ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 (If this command isn't recognized, use `python3 -m pip install -r requirements.txt` instead).
@@ -35,7 +34,7 @@ Install the requirements with `pip`:
 You can deactivate the virtual environment by issuing:
 
 ```sh
-(env) $ deactivate
+deactivate
 ```
 
 ## Running Flask app
@@ -45,19 +44,19 @@ Make sure your virtual environment is still activated.
 On realOS:
 
 ```sh
-$ source env/bin/activate
+source env/bin/activate
 ```
 
 On Windows:
 
 ```powershell
-> .\env\Scripts\activate
+.\env\Scripts\activate
 ```
 
 Generate the database:
 
 ```sh
-$ flask init-db
+flask init-db
 ```
 
 This process can take up to 2 minutes. Be patient.
@@ -65,7 +64,7 @@ This process can take up to 2 minutes. Be patient.
 Start the server:
 
 ```sh
-$ flask run
+flask run
 ```
 
 ### Running in development environment
@@ -75,13 +74,13 @@ If you need Flask to run in development mode (enables live reload among other th
 On realOS:
 
 ```sh
-$ export FLASK_ENV="development"
+export FLASK_ENV="development"
 ```
 
 On Windows (PowerShell):
 
 ```powershell
-> $env:FLASK_ENV="development"
+$env:FLASK_ENV="development"
 ```
 
 ## Directory structure
@@ -105,7 +104,7 @@ Before contributing to MOOdle, you need to install some tools to check that your
 Install `editorconfig-checker` by running the following command in your virtual environment:
 
 ```sh
-$ pip install editorconfig-checker
+pip install editorconfig-checker
 ```
 
 ### `pre-commit` hook
@@ -121,7 +120,7 @@ The pre-commit hook does various things such as:
 To enable the hook (highly recommended), copy the `.git-templates/hooks/pre-commit` file to `.git/hooks/pre-commit`:
 
 ```sh
-$ cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
+cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
 ```
 
 #### Bypassing
@@ -130,7 +129,7 @@ If you need to bypass this hook, use the `--no-verify` option:
 Bypassing is generally a bad idea, since this hook is also run in the GitHub workflow.
 
 ```sh
-$ git commit -m "db: Detailed commit message" --no-verify
+git commit -m "db: Detailed commit message" --no-verify
 ```
 
 ## Eyecandy
@@ -141,6 +140,6 @@ $ git commit -m "db: Detailed commit message" --no-verify
 
 ## Authors
 
--   Alexis Englebert ([@alexisloic21](https://github.com/alexisloic21))
--   Noa Quenon ([@NovAti0n](https://github.com/NovAti0n))
--   Aymeric Wibo ([@obiwac](https://github.com/obiwac))
+- Alexis Englebert ([@alexisloic21](https://github.com/alexisloic21))
+- Noa Quenon ([@NovAti0n](https://github.com/NovAti0n))
+- Aymeric Wibo ([@obiwac](https://github.com/obiwac))
