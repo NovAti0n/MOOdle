@@ -1,7 +1,10 @@
 # MOOdle
 
 ![Workflow status](https://github.com/NovAti0n/MOOdle/actions/workflows/main.yml/badge.svg)
-Advanced cow visualization tool
+
+Advanced cow visualization tool.
+
+![Paturage mode](eyecandy/paturage.png)
 
 ## Initial setup
 
@@ -132,9 +135,8 @@ Bypassing is generally a bad idea, since this hook is also run in the GitHub wor
 git commit -m "db: Detailed commit message" --no-verify
 ```
 
-## Eyecandy
+## More screenshots
 
-![Paturage mode](eyecandy/paturage.png)
 ![Also in white](eyecandy/velages.png)
 ![And with a responsive design (for mobile)](eyecandy/lune.png)
 
