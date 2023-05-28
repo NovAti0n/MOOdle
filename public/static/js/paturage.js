@@ -374,10 +374,9 @@ class Paturage {
 		let canvas = document.getElementById("paturage")
 		let error = document.getElementById("paturage-error")
 
-		this.gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+		this.gl = canvas.getContext("webgl2") || canvas.getContext("experimental-webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 
-		if (!this.gl || !(this.gl instanceof WebGLRenderingContext)) {
-
+		if (!this.gl || (!(this.gl instanceof WebGLRenderingContext) && !(this.gl instanceof WebGL2RenderingContext))) {
 			error.hidden = false
 			canvas.hidden = true
 
