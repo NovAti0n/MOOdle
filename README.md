@@ -2,6 +2,8 @@
 
 ![Workflow status](https://github.com/NovAti0n/MOOdle/actions/workflows/main.yml/badge.svg)
 
+> This is a modified version of MOOdle designed to use the postgreSQL DBMS for Heroku deployment. ***Do not use this version***.
+
 Advanced cow visualization tool.
 
 ![Paturage mode](eyecandy/paturage.png)

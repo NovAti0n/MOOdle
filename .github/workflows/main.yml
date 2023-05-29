@@ -30,6 +30,3 @@ jobs:
 
       - name: Test with editorconfig-checker
         run: ec -config .editorconfig
-
-      - name: Test with pytest
-        run: pytest tests
