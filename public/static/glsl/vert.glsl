@@ -1,20 +1,20 @@
-#version 100
+#version 300 es
 
 precision mediump float;
 
-attribute vec3 a_pos;
-attribute vec2 a_tex_coord;
-attribute vec3 a_normal;
+layout(location = 0) in vec3 a_pos;
+layout(location = 1) in vec2 a_tex_coord;
+layout(location = 2) in vec3 a_normal;
 
 uniform mat4 u_model;
 uniform mat4 u_vp;
 
-varying vec3 pos;
-varying vec2 tex_coord;
-varying vec3 normal;
+out vec3 pos;
+out vec2 tex_coord;
+out vec3 normal;
 
-varying vec4 world_pos;
-varying float shading;
+out vec4 world_pos;
+out float shading;
 
 void main(void) {
 	tex_coord = a_tex_coord;
