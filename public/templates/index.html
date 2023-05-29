@@ -131,13 +131,8 @@
 
 			<!-- GLSL source for vertex & fragment shaders -->
 
-			<script id="vert-shader" type="x-shader/x-vertex">
-				{{ static_include("glsl/vert.glsl") | safe }}
-			</script>
-
-			<script id="frag-shader" type="x-shader/x-fragment">
-				{{ static_include("glsl/frag.glsl") | safe }}
-			</script>
+			<script id="vert-shader" type="x-shader/x-vertex">{{ static_include("glsl/vert.glsl") | safe }}</script>
+			<script id="frag-shader" type="x-shader/x-fragment">{{ static_include("glsl/frag.glsl") | safe }}</script>
 
 			<!-- we don't need to load this straight away, -->
 			<!-- so we can defer it to after the page has rendered -->
