@@ -1,0 +1,8 @@
+/.git-template
+/.github
+/eyecandy
+/tests
+/work
+.editorconfig
+.gitignore
+README.md

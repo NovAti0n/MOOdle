@@ -1,7 +1,6 @@
 import os
 
 from flask import Flask
-from src.db import init_db
 from src import routes
 
 app = Flask(
@@ -25,5 +24,4 @@ def static_include(path: str) -> str:
 	with open(path) as f:
 		return f.read()
 
-app.cli.add_command(init_db) # Registers init-db command to the cli
 routes.route_handler(app)
