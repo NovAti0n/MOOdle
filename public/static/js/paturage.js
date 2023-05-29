@@ -350,7 +350,7 @@ class Cow {
 
 		// enable blending and reset the Y axis of the model matrix to render the shadow
 		// we also need to set the shadow uniform depending on the height of the cow (higher means smaller shadow)
-		// yeah this is a bit of a hacky way to do shadows, but it works okay!
+		// this is totally the right way of doing shadows and i perfectly know what i'm doing
 
 		gl.uniform1f(render_state.shadow_uniform, Math.max(1 - this.pos[1] / this.jump_height * scale, 0.01))
 
