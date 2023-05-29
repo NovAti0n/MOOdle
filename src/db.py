@@ -13,7 +13,7 @@ def query(statement: str, *args: str) -> list:
 		- list: Results of the query
 	"""
 
-	with psycopg.connect(f"host={os.environ['DBHOST']} port={os.environ['DBPORT']} dbname={os.environ['DBNAME']} user={os.environ['DBUSER']} password={os.environ['DBPASSWD']}") as db:
+	with psycopg.connect(os.environ["DATABASE_URL"]) as db:
 		with db.cursor() as cursor:
 			result = list(cursor.execute(statement, args).fetchall())
 
