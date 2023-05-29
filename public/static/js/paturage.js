@@ -179,7 +179,7 @@ class Model {
 		}
 	}
 
-	draw(gl, render_state, model_matrix) {
+	draw(gl, render_state, rot_matrix, model_matrix) {
 		// gl:           instance of WebGLRenderingContext
 		// render_state: the render_state object
 		// model_matrix: the model matrix to use to transform the model
@@ -195,8 +195,10 @@ class Model {
 		gl.bindTexture(gl.TEXTURE_2D, this.tex)
 
 		// pass the model matrix of our model (so that's like its own translation/rotation/scale) to the model uniform
+		// also inverse (only taking into account rotation) for calculating normals
 
 		gl.uniformMatrix4fv(render_state.model_uniform, false, model_matrix.data.flat())
+		gl.uniformMatrix4fv(render_state.rot_uniform, false, rot_matrix.data.flat())
 
 		// set buffers up for drawing
 		// the attribute layout here is as follows (in total, we use 8 32-bit floats per attribute so 32 bytes total):
@@ -279,11 +281,8 @@ class Cow {
 		this.force_jump(this.jump_height)
 	}
 
-	draw(gl, render_state, dt) {
-		// gl:           instance of WebGLRenderingContext
-		// render_state: the render_state object
-		// dt:           time delta between frames (in seconds)
-
+	update(dt) {
+		// dt: time delta between frames (in seconds)
 		// "AI" computation
 
 		if (Math.random() < 0.5 * dt) {
@@ -335,35 +334,44 @@ class Cow {
 			this.vel = [0, 0, 0]
 		}
 
-		// render cow
-		// create a model matrix for it depending on its position/age/rotation
-		// then, draw it
+		// create a model matrix for rendering cow depending on its position/age/rotation
 
-		let model_matrix = new Matrix()
-		let scale = 0.1 + this.age / 100
+		this.model_matrix = new Matrix()
+		this.scale = 0.1 + this.age / 100
 
-		model_matrix.translate(...this.pos)
-		model_matrix.rotate(this.rot, 0, 1, 0)
-		model_matrix.scale(scale, scale, scale)
+		this.model_matrix.translate(...this.pos)
+		this.model_matrix.rotate(this.rot, 0, 1, 0)
+		this.model_matrix.scale(this.scale, this.scale, this.scale)
 
-		this.model.draw(gl, render_state, model_matrix)
+		// just rotation matrix
 
-		// enable blending and reset the Y axis of the model matrix to render the shadow
+		this.rot_matrix = new Matrix()
+		this.rot_matrix.rotate(this.rot, 0, 1, 0)
+	}
+
+	draw(gl, render_state) {
+		// gl:           instance of WebGLRenderingContext
+		// render_state: the render_state object
+
+		this.model.draw(gl, render_state, this.rot_matrix, this.model_matrix)
+	}
+
+	draw_shadow(gl, render_state) {
+		// gl:           instance of WebGLRenderingContext
+		// render_state: the render_state object
+
+		const model_matrix = new Matrix(this.model_matrix)
+
+		// reset the Y axis of the model matrix to render the shadow
 		// we also need to set the shadow uniform depending on the height of the cow (higher means smaller shadow)
 		// yeah this is a bit of a hacky way to do shadows, but it works okay!
 
-		gl.uniform1f(render_state.shadow_uniform, Math.max(1 - this.pos[1] / this.jump_height * scale, 0.01))
+		gl.uniform1f(render_state.shadow_uniform, Math.max(1 - this.pos[1] / this.jump_height * this.scale, 0.01))
 
-		gl.enable(gl.BLEND)
-		gl.disable(gl.DEPTH_TEST)
-
-		model_matrix.translate(0, (-this.pos[1] + 0.05) / scale, 0)
-		this.shadow.draw(gl, render_state, model_matrix)
+		model_matrix.translate(0, (-this.pos[1] + 0.05) / this.scale, 0)
+		this.shadow.draw(gl, render_state, this.rot_matrix, model_matrix)
 
 		gl.uniform1f(render_state.shadow_uniform, -1)
-
-		gl.disable(gl.BLEND)
-		gl.enable(gl.DEPTH_TEST)
 	}
 }
 
@@ -435,6 +443,7 @@ class Paturage {
 			normal_attr:     2, // this.gl.getAttribLocation (this.program, "a_normal"),
 
 			model_uniform:   this.gl.getUniformLocation(this.program, "u_model"),
+			rot_uniform:     this.gl.getUniformLocation(this.program, "u_rot"),
 			vp_uniform:      this.gl.getUniformLocation(this.program, "u_vp"),
 			sampler_uniform: this.gl.getUniformLocation(this.program, "u_sampler"),
 			shadow_uniform:  this.gl.getUniformLocation(this.program, "u_shadow")
@@ -526,10 +535,30 @@ class Paturage {
 		this.gl.useProgram(this.program)
 		this.gl.uniformMatrix4fv(this.render_state.vp_uniform, false, vp_matrix.data.flat())
 
-		this.paturage.draw(this.gl, this.render_state, identity /* no special transformation for paturage */)
+		this.paturage.draw(this.gl, this.render_state, identity, identity /* no special transformation for paturage */)
+
+		// first, update cows
 
 		for (let cow of this.cows) {
-			cow.draw(this.gl, this.render_state, dt)
+			cow.update(dt)
+		}
+
+		// then, render their shadows
+
+		this.gl.enable(this.gl.BLEND)
+		this.gl.disable(this.gl.DEPTH_TEST)
+
+		for (let cow of this.cows) {
+			cow.draw_shadow(this.gl, this.render_state)
+		}
+
+		this.gl.disable(this.gl.BLEND)
+		this.gl.enable(this.gl.DEPTH_TEST)
+
+		// finally, render the cows themselves
+
+		for (let cow of this.cows) {
+			cow.draw(this.gl, this.render_state)
 		}
 
 		requestAnimationFrame((now) => this.render(now))

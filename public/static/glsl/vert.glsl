@@ -7,6 +7,7 @@ layout(location = 1) in vec2 a_tex_coord;
 layout(location = 2) in vec3 a_normal;
 
 uniform mat4 u_model;
+uniform mat4 u_rot;
 uniform mat4 u_vp;
 
 out vec3 pos;
@@ -18,7 +19,7 @@ out float shading;
 
 void main(void) {
 	tex_coord = a_tex_coord;
-	normal = a_normal;
+	normal = (u_rot * vec4(a_normal, 1.0)).xyz;
 
 	pos = a_pos;
 	world_pos = u_model * vec4(a_pos, 1.0);
@@ -27,10 +28,9 @@ void main(void) {
 
 	// lighting
 
-	vec3 adjusted_normal = (vec4(normal, 1.0) * u_model).xyz;
 	vec3 sunlight = vec3(-1.0, 0.0, 1.0);
 
-	vec3 normalized_normal = normalize(adjusted_normal);
+	vec3 normalized_normal = normalize(normal);
 	vec3 normalized_sunlight = normalize(sunlight);
 
 	float product = dot(normalized_normal, normalized_sunlight);
