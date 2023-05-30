@@ -71,7 +71,7 @@ def gen_request(chart_type: ChartType, family: None | str = None, breed: None | 
 	match chart_type:
 		case ChartType.CALVING:
 			sql = "SELECT velages.date, COUNT(velages.date) FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
-			sql += f"{args} GROUP BY velages.date"
+			sql += f"{args} GROUP BY velages.date ORDER BY velages.date"
 
 		case ChartType.FULL_MOON:
 			sql = "SELECT velages.date FROM velages LEFT JOIN animaux a ON velages.mere_id = a.id LEFT JOIN familles f ON a.famille_id = f.id"
