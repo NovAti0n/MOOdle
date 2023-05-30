@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, request
 from src import routes
 
 app = Flask(
@@ -9,6 +9,11 @@ app = Flask(
 	static_folder="../public/static",
 	static_url_path=""
 )
+
+@app.before_request
+def redirect_from_heroku():
+	if request.headers.get("Host") == "moodle-ucl.herokuapp.com/":
+		return redirect("https://moodle.novation.dev", code=301)
 
 @app.template_global()
 def static_include(path: str) -> str:
