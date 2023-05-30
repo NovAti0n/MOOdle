@@ -12,6 +12,7 @@ app = Flask(
 
 @app.before_request
 def redirect_from_heroku():
+	print(request.headers.get("Host"))
 	if request.headers.get("Host") == "moodle-ucl.herokuapp.com/":
 		return redirect("https://moodle.novation.dev", code=301)
 
