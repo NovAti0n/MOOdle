@@ -16,21 +16,21 @@ Create a Python virtual environment and activate it.
 
 On realOS (i.e. most Unix-like OS', such as Linux, FreeBSD, or macOS):
 
-```sh
+```console
 python3 -m venv env
 source env/bin/activate
 ```
 
 On Windows:
 
-```powershell
+```console
 python -m venv env
 .\env\Scripts\activate
 ```
 
 Install the requirements with `pip`:
 
-```sh
+```console
 pip install -r requirements.txt
 ```
 
@@ -38,7 +38,7 @@ pip install -r requirements.txt
 
 You can deactivate the virtual environment by issuing:
 
-```sh
+```console
 deactivate
 ```
 
@@ -48,19 +48,19 @@ Make sure your virtual environment is still activated.
 
 On realOS:
 
-```sh
+```console
 source env/bin/activate
 ```
 
 On Windows:
 
-```powershell
+```console
 .\env\Scripts\activate
 ```
 
 Generate the database:
 
-```sh
+```console
 flask init-db
 ```
 
@@ -68,7 +68,7 @@ This process can take up to 2 minutes. Be patient.
 
 Start the server:
 
-```sh
+```console
 flask run
 ```
 
@@ -78,13 +78,13 @@ If you need Flask to run in development mode (enables live reload among other th
 
 On realOS:
 
-```sh
+```console
 export FLASK_ENV="development"
 ```
 
 On Windows (PowerShell):
 
-```powershell
+```console
 $env:FLASK_ENV="development"
 ```
 
@@ -108,7 +108,7 @@ Before contributing to MOOdle, you need to install some tools to check that your
 
 Install `editorconfig-checker` by running the following command in your virtual environment:
 
-```sh
+```console
 pip install editorconfig-checker
 ```
 
@@ -124,7 +124,7 @@ The pre-commit hook does various things such as:
 
 To enable the hook (highly recommended), copy the `.git-templates/hooks/pre-commit` file to `.git/hooks/pre-commit`:
 
-```sh
+```console
 cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
 ```
 
@@ -133,7 +133,7 @@ cp .git-templates/hooks/pre-commit .git/hooks/pre-commit
 If you need to bypass this hook, use the `--no-verify` option:
 Bypassing is generally a bad idea, since this hook is also run in the GitHub workflow.
 
-```sh
+```console
 git commit -m "db: Detailed commit message" --no-verify
 ```
 
