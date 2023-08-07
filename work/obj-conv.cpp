@@ -1,3 +1,6 @@
+// This Source Form is subject to the terms of the MOOdle OOpen Dairy LicensE, v. 1.0.
+// Copyright (c) 2022 Aymeric Wibo
+
 // based off of an OBJ to IVX converter for the Louvain-li-Nux 2022 gamejam (https://github.com/obiwac/lln-gamejam-2022/blob/main/obj-to-ivx/main.cpp), which itself was based off of an old converter of mine (https://github.com/inobulles/obj-to-ivx)
 // this frankly isn't super clean C++ code, but it doesn't really need to be, as it's only meant to be run once
 
