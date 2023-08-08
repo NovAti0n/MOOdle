@@ -1,3 +1,6 @@
+/* This Source Form is subject to the terms of the MOOdle OOpen Dairy LicensE, v. 1.0. */
+/* Copyright (c) 2022 Noa Quenon */
+
 DROP TABLE IF EXISTS animaux;
 DROP TABLE IF EXISTS familles;
 DROP TABLE IF EXISTS types;

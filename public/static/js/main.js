@@ -1,3 +1,8 @@
+// This Source Form is subject to the terms of the MOOdle OOpen Dairy LicensE, v. 1.0.
+// Copyright (c) 2022 Alexis Englebert
+// Copyright (c) 2022 Noa Quenon
+// Copyright (c) 2022 Aymeric Wibo
+
 // this took me so much time to figure out
 // incomprehensible why chartjs doesn't simply have an option to change legend margins
 

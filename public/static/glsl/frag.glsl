@@ -1,5 +1,8 @@
 #version 300 es
 
+// This Source Form is subject to the terms of the MOOdle OOpen Dairy LicensE, v. 1.0.
+// Copyright (c) 2022, 2023 Aymeric Wibo
+
 precision mediump float;
 precision lowp int;
 

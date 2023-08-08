@@ -1,3 +1,7 @@
+# This Source Form is subject to the terms of the MOOdle OOpen Dairy LicensE, v. 1.0.
+# Copyright (c) 2022 Alexis Englebert
+# Copyright (c) 2022 Noa Quenon
+
 from pytest import fail
 from src.db import query
 
